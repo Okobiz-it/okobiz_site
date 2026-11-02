@@ -1,0 +1,145 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  --background: #0B0C0E;
+  --foreground: #F3F4F6;
+}
+
+body {
+  color: var(--foreground);
+  background: var(--background);
+  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  overflow-x: hidden;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: #111215;
+}
+::-webkit-scrollbar-thumb {
+  background: #252830;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #3368B2;
+}
+
+.glass-panel {
+  background: rgba(19, 20, 23, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* Ensure all buttons, inputs, selects, textareas, and components in the admin panel get 4px border radius */
+button,
+input,
+select,
+textarea,
+[type="button"],
+[type="reset"],
+[type="submit"],
+.btn,
+.card,
+.admin-card,
+.modal-box,
+.rounded-sm,
+.rounded-md,
+.rounded-lg,
+.rounded-xl,
+.rounded-2xl,
+.rounded-3xl {
+  border-radius: 4px !important;
+}
+
+/* WYSIWYG Editor In-Place Typography Styles (MS Word style) */
+.wysiwyg-editor {
+  min-height: 200px;
+  outline: none;
+  color: #e5e7eb;
+}
+.wysiwyg-editor strong,
+.wysiwyg-editor b {
+  font-weight: 700 !important;
+  color: #ffffff !important;
+}
+.wysiwyg-editor em,
+.wysiwyg-editor i {
+  font-style: italic !important;
+  color: #f3f4f6 !important;
+}
+.wysiwyg-editor u {
+  text-decoration: underline !important;
+  text-decoration-thickness: 1.5px !important;
+  text-underline-offset: 3px !important;
+  color: #ffffff !important;
+}
+.wysiwyg-editor h2 {
+  font-size: 1.35rem !important;
+  font-weight: 700 !important;
+  color: #ffffff !important;
+  margin-top: 0.75rem !important;
+  margin-bottom: 0.35rem !important;
+}
+.wysiwyg-editor h3 {
+  font-size: 1.15rem !important;
+  font-weight: 600 !important;
+  color: #ffffff !important;
+  margin-top: 0.6rem !important;
+  margin-bottom: 0.25rem !important;
+}
+.wysiwyg-editor blockquote {
+  border-left: 3px solid #3368B2 !important;
+  background: rgba(255, 255, 255, 0.04) !important;
+  padding: 8px 14px !important;
+  margin: 8px 0 !important;
+  font-style: italic !important;
+  color: #d1d5db !important;
+  border-radius: 0 4px 4px 0 !important;
+}
+.wysiwyg-editor ul {
+  list-style-type: disc !important;
+  margin-left: 1.5rem !important;
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.35rem !important;
+}
+.wysiwyg-editor ol {
+  list-style-type: decimal !important;
+  margin-left: 1.5rem !important;
+  margin-top: 0.35rem !important;
+  margin-bottom: 0.35rem !important;
+}
+.wysiwyg-editor li {
+  margin-top: 0.15rem !important;
+  margin-bottom: 0.15rem !important;
+  line-height: 1.6 !important;
+}
+.wysiwyg-editor code {
+  background: #22242a !important;
+  color: #fcd34d !important;
+  padding: 2px 6px !important;
+  border-radius: 4px !important;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace !important;
+  font-size: 0.9em !important;
+  border: 1px solid rgba(75, 85, 99, 0.6) !important;
+}
+.wysiwyg-editor a {
+  color: #3368B2 !important;
+  text-decoration: underline !important;
+  text-underline-offset: 2px !important;
+}
+.wysiwyg-editor a:hover {
+  color: #60a5fa !important;
+}
+.wysiwyg-editor:empty:before {
+  content: attr(data-placeholder);
+  color: #6b7280;
+  pointer-events: none;
+  display: block;
+}
+

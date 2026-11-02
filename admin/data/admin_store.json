@@ -1,0 +1,2110 @@
+{
+  "heroSlides": [
+    {
+      "_id": "hero-1",
+      "title": "Drive Business, Elevate Success",
+      "img": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852950/okobiz/assets/Untitled-10-C-7O9vGO.jpg",
+      "order": 1,
+      "isActive": true,
+      "buttonText": "More Information",
+      "buttonLink": "/contact-us"
+    },
+    {
+      "_id": "hero-2",
+      "title": "Boosting Business Digitally",
+      "img": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852952/okobiz/assets/Untitled-11-BtrXcvlB.jpg",
+      "order": 2,
+      "isActive": true,
+      "buttonText": "Our Services",
+      "buttonLink": "/services"
+    },
+    {
+      "_id": "hero-3",
+      "title": "Transforming Ideas into Growth",
+      "img": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852954/okobiz/assets/Untitled-12-DD3oUXmC.jpg",
+      "order": 3,
+      "isActive": true,
+      "buttonText": "Explore Portfolio",
+      "buttonLink": "/portfolio"
+    },
+    {
+      "_id": "hero-4",
+      "title": "Where Creativity Meets Technology",
+      "img": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852955/okobiz/assets/Untitled-13-C9Bpoyra.jpg",
+      "order": 4,
+      "isActive": true,
+      "buttonText": "Get In Touch",
+      "buttonLink": "/contact-us"
+    },
+    {
+      "_id": "hero-5",
+      "title": "Empowering Your Digital future",
+      "img": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852957/okobiz/assets/Untitled-14-FHKbdJRS.jpg",
+      "order": 5,
+      "isActive": true,
+      "buttonText": "Our Story",
+      "buttonLink": "/about"
+    }
+  ],
+  "clients": [
+    {
+      "_id": "c-1",
+      "name": "Nitol Niloy",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852877/okobiz/assets/nitol_niloy-C3PFPoNU.png",
+      "websiteLink": "",
+      "order": 1,
+      "isActive": true
+    },
+    {
+      "_id": "c-2",
+      "name": "Agro Infusion",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852860/okobiz/assets/agroinfusion-Drvh30g_.png",
+      "websiteLink": "",
+      "order": 2,
+      "isActive": true
+    },
+    {
+      "_id": "c-3",
+      "name": "OGV",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852934/okobiz/assets/ogv-C2n4LvNa.png",
+      "websiteLink": "",
+      "order": 3,
+      "isActive": true
+    },
+    {
+      "_id": "c-4",
+      "name": "DOOLA",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852867/okobiz/assets/DOOLA-BwowQigu.png",
+      "websiteLink": "",
+      "order": 4,
+      "isActive": true
+    },
+    {
+      "_id": "c-5",
+      "name": "VENUES",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852863/okobiz/assets/VENUES-CXz5tN5L.png",
+      "websiteLink": "",
+      "order": 5,
+      "isActive": true
+    },
+    {
+      "_id": "c-6",
+      "name": "KORTE",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852870/okobiz/assets/KORTE-D3466O8E.png",
+      "websiteLink": "",
+      "order": 6,
+      "isActive": true
+    },
+    {
+      "_id": "c-7",
+      "name": "Eatclub",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
+      "websiteLink": "",
+      "order": 7,
+      "isActive": true
+    },
+    {
+      "_id": "c-8",
+      "name": "Town",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852873/okobiz/assets/town-Byov5Sui.png",
+      "websiteLink": "",
+      "order": 8,
+      "isActive": true
+    },
+    {
+      "_id": "c-9",
+      "name": "Olanka",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852871/okobiz/assets/olanka-C704RPQS.png",
+      "websiteLink": "",
+      "order": 9,
+      "isActive": true
+    },
+    {
+      "_id": "c-10",
+      "name": "Nexlin",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
+      "websiteLink": "",
+      "order": 10,
+      "isActive": true
+    },
+    {
+      "_id": "c-11",
+      "name": "Aladal",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852876/okobiz/assets/aladal-D3Ja3ziT.png",
+      "websiteLink": "",
+      "order": 11,
+      "isActive": true
+    },
+    {
+      "_id": "c-12",
+      "name": "Rich",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852874/okobiz/assets/rich-CJPpOdtN.png",
+      "websiteLink": "",
+      "order": 12,
+      "isActive": true
+    },
+    {
+      "_id": "c-13",
+      "name": "Meven",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852875/okobiz/assets/meven-DkVAU9li.png",
+      "websiteLink": "",
+      "order": 13,
+      "isActive": true
+    },
+    {
+      "_id": "c-14",
+      "name": "BD Hajj",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+      "websiteLink": "",
+      "order": 14,
+      "isActive": true
+    }
+  ],
+  "themes": [
+    {
+      "_id": "64f1001",
+      "websiteTitle": "BD Hajj & Umrah Agency Portal",
+      "category": "Agency",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 15000,
+      "discountPrice": 12000,
+      "websiteLink": "https://bdhajj.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Complete Hajj & Umrah agency management system with package booking, pilgrim management, visa tracking, and automated SMS notifications.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Custom responsive design for desktop and mobile",
+        "Package management and direct pilgrim booking system",
+        "Integrated payment gateways (bKash, Nagad, Cards)",
+        "Automated visa tracking and flight schedule dashboard",
+        "SEO optimized architecture with fast loading speeds"
+      ],
+      "createdAt": "2024-01-15T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1002",
+      "websiteTitle": "Agro Infusion - Fresh Agro eCommerce",
+      "category": "E-Commerce",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 18000,
+      "discountPrice": 14500,
+      "websiteLink": "https://agroinfusion.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852860/okobiz/assets/agroinfusion-Drvh30g_.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Modern, high-converting organic food and agro product eCommerce platform with inventory management, cart, checkout, and order tracking.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Modern clean UI crafted specifically for organic produce",
+        "Category filters, instant live search, and stock tracking",
+        "Instant checkout with cash on delivery and mobile banking",
+        "Admin order management and invoice printing system",
+        "SSL secured and 100% responsive"
+      ],
+      "createdAt": "2024-02-10T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1003",
+      "websiteTitle": "Corporate Brand & Business Portfolio",
+      "category": "Business",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 12000,
+      "discountPrice": 9500,
+      "websiteLink": "https://okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852862/okobiz/assets/right-img-DsJocw4s.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": false,
+      "description": "High-impact corporate portfolio with service catalog, company presentation, client testimonials, and contact lead capture system.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Sleek dark mode aesthetics with subtle animations",
+        "Interactive service showcase with expandable details",
+        "Case studies and clients testimonials section",
+        "Direct WhatsApp and email lead capture integrations"
+      ],
+      "createdAt": "2024-03-01T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1004",
+      "websiteTitle": "Real Estate & Luxury Venues Booking",
+      "category": "Booking",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 22000,
+      "discountPrice": 18000,
+      "websiteLink": "https://venues.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852863/okobiz/assets/VENUES-CXz5tN5L.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "description": "Property and event venue reservation portal featuring date scheduling, room catalogs, pricing calculators, and interactive location maps.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Visual venue gallery and room specification sheets",
+        "Real-time calendar booking and availability checker",
+        "Google Maps integration with neighborhood highlights",
+        "Multi-currency support and customer review module"
+      ],
+      "createdAt": "2024-03-20T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1005",
+      "websiteTitle": "Food & Restaurant Order App - EatClub",
+      "category": "Food",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 16000,
+      "discountPrice": 13000,
+      "websiteLink": "https://eatclub.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": false,
+      "description": "Full-featured restaurant menu, table reservation, and home delivery order application with kitchen order ticketing.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Categorized digital food menu with dietary tags",
+        "Interactive cart with add-on toppings selection",
+        "Delivery zone calculation and live order status",
+        "Mobile-first app-like progressive web experience"
+      ],
+      "createdAt": "2024-04-05T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1006",
+      "websiteTitle": "Tech & Software SaaS Presentation",
+      "category": "Technology",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 14000,
+      "discountPrice": 11000,
+      "websiteLink": "https://tech.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852865/okobiz/assets/website-app-DOXr3sR7.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "description": "Cutting-edge SaaS landing page with feature deep-dives, interactive pricing toggles, integration ecosystem badges, and demo requests.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "SaaS product walkthrough and feature tabs",
+        "Monthly vs Annual pricing toggle calculator",
+        "Modern dark UI with glowing tech badges",
+        "Lead scoring and direct CRM integrations"
+      ],
+      "createdAt": "2024-04-18T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1007",
+      "websiteTitle": "Fintech & Global Invoicing Solution",
+      "category": "Business",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 26000,
+      "discountPrice": 21500,
+      "websiteLink": "https://doola.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852867/okobiz/assets/DOOLA-BwowQigu.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Enterprise grade fintech billing, invoice generation, multi-currency wallet, and compliance management platform.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Automated recurrent invoice scheduling",
+        "Multi-currency conversion with real-time exchange rates",
+        "Tax filing and compliance reporting exports",
+        "Role-based staff permissions and audit logs"
+      ],
+      "createdAt": "2024-05-02T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1008",
+      "websiteTitle": "Nexlin Industrial Automation Suite",
+      "category": "Technology",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 25000,
+      "discountPrice": 19500,
+      "websiteLink": "https://nexlin.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "description": "Smart industrial automation and hardware monitoring web dashboard with real-time telemetry charts.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Real-time sensor telemetry and WebSocket integration",
+        "Incident logging and SMS alert dispatch system",
+        "Preventive maintenance scheduling module",
+        "High performance SVG diagram visualization"
+      ],
+      "createdAt": "2024-05-14T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1009",
+      "websiteTitle": "KORTE Smart Construction & Architectural ERP",
+      "category": "Agency",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 28000,
+      "discountPrice": 22000,
+      "websiteLink": "https://korte.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852870/okobiz/assets/KORTE-D3466O8E.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": false,
+      "description": "Comprehensive construction lifecycle management portal with 3D blueprint viewing and contractor milestone tracking.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Project Gantt chart milestone tracking",
+        "Material procurement order and vendor bidding system",
+        "On-site mobile engineer reporting interface",
+        "Detailed financial budgeting and variance analysis"
+      ],
+      "createdAt": "2024-05-25T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1010",
+      "websiteTitle": "Olanka Luxury Travel & Tour Operator Portal",
+      "category": "Booking",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 21000,
+      "discountPrice": 17000,
+      "websiteLink": "https://olanka.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852871/okobiz/assets/olanka-C704RPQS.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "International tour booking and travel itinerary builder with custom travel packages, flight connections, and hotel vouchers.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Custom multi-day travel package itinerary builder",
+        "Instant deposit and installment payments",
+        "Automated traveler visa document upload checklist",
+        "Customer reviews, trip ratings, and photo galleries"
+      ],
+      "createdAt": "2024-06-05T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1011",
+      "websiteTitle": "Town Community & Local Classifieds Portal",
+      "category": "Business",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 17500,
+      "discountPrice": 13500,
+      "websiteLink": "https://town.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852873/okobiz/assets/town-Byov5Sui.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": false,
+      "description": "Hyperlocal classifieds and community business directory with map pinning, reviews, and featured spot boosting.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "User profile verification and listing submission wizard",
+        "Interactive map search with radius filters",
+        "Featured listing monetization with bKash/Cards",
+        "Instant buyer-seller WhatsApp and chat messaging"
+      ],
+      "createdAt": "2024-06-18T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1012",
+      "websiteTitle": "Rich Lifestyle & Fashion eCommerce Store",
+      "category": "E-Commerce",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 24000,
+      "discountPrice": 18500,
+      "websiteLink": "https://rich.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852874/okobiz/assets/rich-CJPpOdtN.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "High fashion clothing and accessory online boutique with size guides, lookbook showcases, and fast checkout.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Modern editorial lookbook and apparel catalog",
+        "Size and color variant inventory matrix",
+        "Integrated coupon codes, flash sales, and countdown timers",
+        "Automated courier API delivery slip generation"
+      ],
+      "createdAt": "2024-07-02T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1013",
+      "websiteTitle": "Meven Creative Studio & Digital Agency",
+      "category": "Agency",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 19000,
+      "discountPrice": 15000,
+      "websiteLink": "https://meven.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852875/okobiz/assets/meven-DkVAU9li.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": false,
+      "description": "Bold visual design studio website featuring interactive case study slideshows and agency project proposals.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Dynamic interactive project slider with smooth motion",
+        "Client testimonial video embed showcase",
+        "Direct project scope estimator and pricing calculator",
+        "High speed static page generation architecture"
+      ],
+      "createdAt": "2024-07-15T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1014",
+      "websiteTitle": "Aladal Legal & Corporate Advisory Portal",
+      "category": "Business",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 23000,
+      "discountPrice": 17500,
+      "websiteLink": "https://aladal.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852876/okobiz/assets/aladal-D3Ja3ziT.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "description": "Professional law firm and attorney consultation booking platform with secure document exchange and case file tracking.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Attorney profile directory with specialization tags",
+        "Confidential client consultation booking calendar",
+        "Encrypted client document vault and contract viewer",
+        "Multilingual legal articles and knowledge repository"
+      ],
+      "createdAt": "2024-08-01T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1015",
+      "websiteTitle": "Nitol Niloy Automotive Parts Marketplace",
+      "category": "E-Commerce",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 29000,
+      "discountPrice": 23500,
+      "websiteLink": "https://nitolniloy.com.bd",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852877/okobiz/assets/nitol_niloy-C3PFPoNU.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Automotive vehicle catalog, spare parts distributor marketplace, and service booking portal.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "VIN number and vehicle model parts compatibility filter",
+        "Wholesale dealer B2B tier pricing module",
+        "Service center maintenance appointment booking",
+        "Bulk ERP inventory synchronization"
+      ],
+      "createdAt": "2024-08-18T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1016",
+      "websiteTitle": "CloudServe DevOps & Cloud Hosting Dashboard",
+      "category": "Technology",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 27000,
+      "discountPrice": 21000,
+      "websiteLink": "https://cloudserve.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852879/okobiz/assets/aws-Mk_6g64u.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "description": "VPS hosting, domain management, and cloud server provisioning control panel interface.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Server resource CPU, RAM, and bandwidth meters",
+        "Automated SSL certificate install & DNS editor",
+        "Automated weekly cloud backup management",
+        "24/7 technical ticket system with attachments"
+      ],
+      "createdAt": "2024-09-02T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1017",
+      "websiteTitle": "Gourmet Bistro & Artisanal Bakery Menu",
+      "category": "Food",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 14500,
+      "discountPrice": 11500,
+      "websiteLink": "https://bistro.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": false,
+      "featuredBadge": false,
+      "description": "Elegant restaurant menu website with table reservations, chef special previews, and gift card sales.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Interactive QR code contactless digital menu",
+        "Table reservation with email & SMS confirmation",
+        "Chef special event and seasonal degustation promo",
+        "Customer reviews with Instagram feed integration"
+      ],
+      "createdAt": "2024-09-15T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1018",
+      "websiteTitle": "DoctorCare Telehealth & Clinic Appointment",
+      "category": "Booking",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 24500,
+      "discountPrice": 19000,
+      "websiteLink": "https://doctorcare.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Doctor directory, clinic appointment scheduling, digital prescription storage, and telehealth consultation portal.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "Department and doctor specialty search filter",
+        "Real-time appointment slot booking with token numbers",
+        "Patient health record PDF download dashboard",
+        "Telemedicine video meeting link automation"
+      ],
+      "createdAt": "2024-09-28T10:00:00.000Z"
+    },
+    {
+      "_id": "64f1019",
+      "websiteTitle": "PixelCraft Motion & 3D Design Portfolio",
+      "category": "Agency",
+      "clientName": "",
+      "mediaType": "image",
+      "price": 18500,
+      "discountPrice": 14000,
+      "websiteLink": "https://pixelcraft.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852880/okobiz/assets/motion-1q7Q6TgM.jpg",
+      "video": "",
+      "videoThumbnail": "",
+      "popularBadge": true,
+      "featuredBadge": false,
+      "description": "Showcase website for motion artists and 3D animators with full screen video headers and interactive project cases.",
+      "challenge": "",
+      "solution": "",
+      "features": [
+        "High framerate embedded video showcase",
+        "Interactive 3D model canvas viewer",
+        "Project deliverable breakdown and client testimonials",
+        "Smooth dark mode glassmorphism layout"
+      ],
+      "createdAt": "2024-10-05T10:00:00.000Z"
+    },
+    {
+      "_id": "proj-1",
+      "websiteTitle": "Agro Infusion Smart Supply & Agro-Commerce Hub",
+      "category": "E-Commerce",
+      "clientName": "Agro Infusion Ltd.",
+      "mediaType": "video",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://agroinfusion.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852860/okobiz/assets/agroinfusion-Drvh30g_.png",
+      "video": "https://res.cloudinary.com/dccui8s58/video/upload/v1790852881/okobiz/assets/banner-video-CeAGn-Vz.webm",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852860/okobiz/assets/agroinfusion-Drvh30g_.png",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "End-to-end organic agricultural e-commerce platform and inventory tracking system built with Next.js, PostgreSQL, and automated logistics dispatch.",
+      "challenge": "Perishable items require strict shelf-life monitoring, immediate dispatch confirmation, and instant mobile payment verification without latency during morning rush hours.",
+      "solution": "Engineered a Next.js server-rendered application connected to a distributed PostgreSQL cluster. Integrated bKash, Nagad, and Card instant IPN listeners for sub-second payment clearance.",
+      "features": [
+        "Dynamic multi-warehouse inventory allocation",
+        "Instant checkout with automated SMS order confirmation",
+        "Interactive delivery zone calculator with pin-drop geolocation",
+        "Automated batch printing for fulfillment warehouse slips"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-2",
+      "websiteTitle": "DOOLA US Global Entity & Invoicing Infrastructure",
+      "category": "Web Applications",
+      "clientName": "DOOLA Inc.",
+      "mediaType": "video",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://doola.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1791355926/okobiz/www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
+      "video": "https://www.youtube.com/watch?v=LbuawsCaIz0",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1791355926/okobiz/www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Global enterprise client portal for international founders to incorporate businesses, generate compliant invoices, and manage multi-currency billing.",
+      "challenge": "Managing international currency conversions and strict regulatory data handling while maintaining a smooth and friendly user onboarding journey.",
+      "solution": "Architected a modular microservices infrastructure with role-based access control, cryptographic session handling, and real-time exchange rate integrations.",
+      "features": [
+        "Multi-currency dynamic invoice generator with PDF exports",
+        "Automated Stripe & PayPal merchant ledger integration",
+        "Real-time KYC identity verification pipeline",
+        "Customizable team permission roles and activity logs"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "youtubeUrl": "https://www.youtube.com/watch?v=LbuawsCaIz0",
+      "featuresText": "Multi-currency dynamic invoice generator with PDF exports\nAutomated Stripe & PayPal merchant ledger integration\nReal-time KYC identity verification pipeline\nCustomizable team permission roles and activity logs"
+    },
+    {
+      "_id": "proj-3",
+      "websiteTitle": "The Venues Collection Luxury Booking & Event Portal",
+      "category": "Corporate Systems",
+      "clientName": "The Venues Group",
+      "mediaType": "image",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://venues.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852863/okobiz/assets/VENUES-CXz5tN5L.png",
+      "video": "",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852863/okobiz/assets/VENUES-CXz5tN5L.png",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Interactive 3D venue explorer and reservation platform for premium banquet halls, corporate retreats, and luxury wedding spaces.",
+      "challenge": "High customer bounce rate on legacy booking systems due to clunky date pickers and lack of high-fidelity spatial previews.",
+      "solution": "Designed a sleek dark-themed visual experience with interactive 360 degree panoramic viewports and instant date-holding reservation locks.",
+      "features": [
+        "High resolution photo gallery and virtual venue tours",
+        "Real-time calendar slot lock during checkout",
+        "Custom catering and audio-visual package add-on calculator",
+        "Automated digital contract signature workflow"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-4",
+      "websiteTitle": "BD Hajj & Umrah Agency ERP & Pilgrim Mobile System",
+      "category": "Mobile & SaaS",
+      "clientName": "BD Hajj Services",
+      "mediaType": "video",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://bdhajj.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+      "video": "https://res.cloudinary.com/dccui8s58/video/upload/v1790852881/okobiz/assets/banner-video-CeAGn-Vz.webm",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "Comprehensive pilgrimage management ERP, hotel allotment tracker, and emergency pilgrim companion application.",
+      "challenge": "Coordinating multi-thousand pilgrim logistics with unstable mobile connectivity in crowded holy sites abroad.",
+      "solution": "Developed an offline-first mobile companion paired with a centralized cloud administrative ERP dashboard and automated SMS broadcast gateway.",
+      "features": [
+        "Passport OCR scanning and automated pilgrim profile creation",
+        "Saudi ministry visa verification API integration",
+        "Hotel room allocation and flight seat grouping module",
+        "Offline pilgrim emergency SOS button with GPS coordinate dispatch"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-5",
+      "websiteTitle": "KORTE Smart Construction ERP & Field Inspector App",
+      "category": "Corporate Systems",
+      "clientName": "Korte Building Smart",
+      "mediaType": "image",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://korte.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852870/okobiz/assets/KORTE-D3466O8E.png",
+      "video": "",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852870/okobiz/assets/KORTE-D3466O8E.png",
+      "popularBadge": false,
+      "featuredBadge": false,
+      "description": "Enterprise construction blueprint tracking, contractor milestone billing, and mobile site inspection audit software.",
+      "challenge": "Paper checklists caused delays and discrepancies between site engineers and corporate procurement teams.",
+      "solution": "Deployed a progressive web application with instant photo annotation, offline sync, and automated billing milestone approvals.",
+      "features": [
+        "Architectural CAD/PDF blueprint layer viewer",
+        "Daily progress inspection checklist with timestamped photos",
+        "Subcontractor requisition approval chains",
+        "Automated safety hazard notification alerts"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-6",
+      "websiteTitle": "EatClub Food Delivery & Kitchen Ticketing Application",
+      "category": "Mobile & SaaS",
+      "clientName": "EatClub Restaurant Network",
+      "mediaType": "video",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://eatclub.okobiz.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
+      "video": "https://res.cloudinary.com/dccui8s58/video/upload/v1790852881/okobiz/assets/banner-video-CeAGn-Vz.webm",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "High-speed food ordering platform with real-time kitchen display system (KDS) and live delivery rider GPS tracking.",
+      "challenge": "Handling extreme order surges during peak meal times without kitchen printer stalls or dropped orders.",
+      "solution": "Used WebSocket bidirectionality and Redis in-memory pub/sub to stream tickets directly onto kitchen display tablets.",
+      "features": [
+        "Customizable meal modifier and add-on selector",
+        "Kitchen Display System (KDS) with color-coded ticket timers",
+        "Live rider GPS route tracking via Leaflet/Mapbox",
+        "Instant push notifications on order cooking stages"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-7",
+      "websiteTitle": "Nitol Niloy Automotive Parts B2B Wholesale Portal",
+      "category": "Web Applications",
+      "clientName": "Nitol Niloy Group",
+      "mediaType": "image",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://nitolniloy.com.bd",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852877/okobiz/assets/nitol_niloy-C3PFPoNU.png",
+      "video": "",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852877/okobiz/assets/nitol_niloy-C3PFPoNU.png",
+      "popularBadge": false,
+      "featuredBadge": false,
+      "description": "B2B automotive dealer portal with VIN verification, bulk spare parts ordering, and dealer credit limit tracking.",
+      "challenge": "Catalog containing over 60,000 spare parts SKUs requires sub-second search and strict dealership credit validation.",
+      "solution": "Built an Elasticsearch-powered faceted search engine integrated with corporate ERP accounting ledgers.",
+      "features": [
+        "Faceted spare parts search by model, year, and chassis number",
+        "Real-time dealer credit balance and outstanding dues ledger",
+        "Bulk CSV purchase order upload and instant quotation",
+        "Automated logistics dispatch tracking"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z"
+    },
+    {
+      "_id": "proj-8",
+      "websiteTitle": "Nexlin IoT Smart Sensor & Factory Automation Dashboard",
+      "category": "Corporate Systems",
+      "clientName": "Nexlin Industrial",
+      "mediaType": "image",
+      "price": 25000,
+      "discountPrice": 20000,
+      "websiteLink": "https://nexlin.com",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
+      "video": "",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "description": "<b style=\"font-size: 0.875rem;\">Visualizing</b><span style=\"font-size: 0.875rem;\"> </span><i style=\"font-size: 0.875rem;\">high </i><u style=\"font-size: 0.875rem;\">frequency&nbsp;</u><div bis_skin_checked=\"1\"><ul><li><span style=\"font-size: 0.875rem;\">telemetry</span></li></ul></div><div bis_skin_checked=\"1\"><ol><li><span style=\"font-size: 0.875rem;\">&nbsp;data</span></li></ol></div><blockquote><span style=\"font-size: 0.875rem;\">&nbsp;from&nbsp;</span></blockquote><div bis_skin_checked=\"1\"><span style=\"font-size: 0.875rem;\"><code>over&nbsp;</code></span></div><div bis_skin_checked=\"1\"><span style=\"font-size: 0.875rem;\">400 factory sensors without browser memory leaks or sluggish charts.</span></div>",
+      "challenge": "Visualizing high frequency telemetry data from over 400 factory sensors without browser memory leaks or sluggish charts.",
+      "solution": "Leveraged Web Workers and Canvas-based charting to render real-time telemetry at a steady 60 frames per second.",
+      "features": [
+        "Live multi-channel telemetry gauges and time-series graphs",
+        "Machine failure predictive alerts via statistical thresholding",
+        "Shift-by-shift energy consumption analytics report generator",
+        "Emergency machine shutdown trigger with dual authorization"
+      ],
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "youtubeUrl": "",
+      "featuresText": "Live multi-channel telemetry gauges and time-series graphs\nMachine failure predictive alerts via statistical thresholding\nShift-by-shift energy consumption analytics report generator\nEmergency machine shutdown trigger with dual authorization"
+    }
+  ],
+  "blogs": [
+    {
+      "_id": "b101",
+      "title": "Why Modern Businesses Need Custom Website & Mobile App Development",
+      "content": "\n      <p>In today's fast-paced digital ecosystem, off-the-shelf templates rarely capture the unique essence of a growing brand. Custom web and mobile app development allows organizations to engineer digital touchpoints tailored specifically to their client journeys, ensuring maximum conversion and retention.</p>\n      <br/>\n      <h3>1. Scalability and High Performance</h3>\n      <p>Custom applications built with technologies like Next.js, Node.js, and Flutter can handle exponential user growth without breaking. Optimized code bases ensure sub-second page loads, boosting Google search rankings and Core Web Vitals.</p>\n      <br/>\n      <h3>2. Enhanced Data Security</h3>\n      <p>Off-the-shelf plugins often expose websites to common vulnerabilities. Custom enterprise solutions feature bespoke authentication, encrypted databases, and strict API access controls.</p>\n      <br/>\n      <h3>3. Tailored User Experiences</h3>\n      <p>By tailoring user journeys specifically for your audience, from intuitive navigation to custom checkout flows, businesses consistently report conversion increases above 35%.</p>\n    ",
+      "category": "Web Development",
+      "author": "Md. Sorower Jahan",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852865/okobiz/assets/website-app-DOXr3sR7.png",
+      "createdAt": "2024-03-12T08:30:00.000Z",
+      "commentsCount": 4,
+      "isPublished": true
+    },
+    {
+      "_id": "b102",
+      "title": "Maximizing ROI with Targeted Digital Marketing and Pixel Tracking",
+      "content": "\n      <p>Digital marketing is no longer about blindly spending advertising budget across broad channels. In 2024, data-driven targeting via Facebook Pixel, Google Tag Manager, and Demand-Side Platforms (DSP) allows brands to trace every single dollar back to revenue.</p>\n      <br/>\n      <h3>Precise Audience Retargeting</h3>\n      <p>Implementing proper tracking pixels allows you to retarget high-intent visitors who added products to their cart but left before completing the purchase. Dynamic ads remind them with special offers, reducing abandoned carts by over 40%.</p>\n      <br/>\n      <h3>Search Engine Optimization (SEO)</h3>\n      <p>Organic search remains the highest ROI channel online. Combining high-quality content marketing with structured technical SEO ensures long-term domain authority and sustainable traffic growth.</p>\n    ",
+      "category": "Digital Marketing",
+      "author": "Anowar Hossain",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852889/okobiz/assets/seo-C2Lrhrz-.png",
+      "createdAt": "2024-03-22T14:15:00.000Z",
+      "commentsCount": 2,
+      "isPublished": true
+    },
+    {
+      "_id": "b103",
+      "title": "The Art of Visual Storytelling: Motion Graphics & Brand Identity",
+      "content": "\n      <p>In a world of short attention spans, static visuals alone are often ignored. Dynamic motion graphics, 3D modeling, and cohesive brand identities capture attention within the first 3 seconds, conveying complex ideas effortlessly.</p>\n      <br/>\n      <h3>Instant Brand Recognition</h3>\n      <p>A memorable logo and consistent typography establish subconscious trust with potential clients. Brands with cohesive visual guidelines see up to 23% greater revenue growth.</p>\n      <br/>\n      <h3>Engaging Video Content</h3>\n      <p>Video content on social platforms generates up to 1200% more shares than text and image content combined. Investing in custom animations and product explainers pays immediate dividends.</p>\n    ",
+      "category": "Graphics Solution",
+      "author": "Sumiya Siddiqua",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852891/okobiz/assets/graphic-CV7N5QQ5.png",
+      "createdAt": "2024-04-02T11:00:00.000Z",
+      "commentsCount": 6,
+      "isPublished": true
+    },
+    {
+      "_id": "b104",
+      "title": "Architecting Ultra-Fast Web Applications with Next.js 14 and Server Components",
+      "content": "\n      <p>Next.js 14 has redefined modern frontend engineering with React Server Components, streaming SSR, and automated font optimization. By executing data fetches on the edge, initial page loads become nearly instantaneous.</p>\n      <br/>\n      <h3>Zero-Bundle-Size Server Components</h3>\n      <p>Server components eliminate unnecessary client-side JavaScript, ensuring that even users on low-bandwidth mobile connections enjoy snappy interactions without layout shift.</p>\n    ",
+      "category": "Web Development",
+      "author": "MD. Ridoy Islam Nasim",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852892/okobiz/assets/next-pbmXyU91.png",
+      "createdAt": "2024-04-15T09:20:00.000Z",
+      "commentsCount": 3,
+      "isPublished": true
+    },
+    {
+      "_id": "b105",
+      "title": "How to Build a High-Converting B2B Lead Generation Funnel in 2024",
+      "content": "\n      <p>Converting enterprise visitors into qualified corporate inquiries requires trust signals, authoritative case studies, and streamlined contact touchpoints without unnecessary friction.</p>\n      <br/>\n      <h3>Social Proof and Credibility</h3>\n      <p>Highlighting established enterprise clients, verified testimonials, and certifications reduces buyer hesitation by over 60%.</p>\n    ",
+      "category": "Digital Marketing",
+      "author": "Md. Nahiduzzaman",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852893/okobiz/assets/digital-advertising-BPpRew5e.png",
+      "createdAt": "2024-04-28T16:00:00.000Z",
+      "commentsCount": 5,
+      "isPublished": true
+    },
+    {
+      "_id": "b106",
+      "title": "3D Animation in Modern UI: Enhancing Customer Engagement without Sacrificing Speed",
+      "content": "\n      <p>Integrating 3D elements and interactive motion graphics provides an unforgettable experience when optimized using modern WebGL and compressed WebP/AVIF formats.</p>\n      <br/>\n      <h3>Balancing Aesthetics and FPS</h3>\n      <p>By leveraging CSS transforms, GPU acceleration, and lightweight glTF models, you can maintain a buttery 60 FPS while delivering stunning visuals.</p>\n    ",
+      "category": "Graphics Solution",
+      "author": "Sumiya Siddiqua",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852880/okobiz/assets/motion-1q7Q6TgM.jpg",
+      "createdAt": "2024-05-10T12:00:00.000Z",
+      "commentsCount": 8,
+      "isPublished": true
+    },
+    {
+      "_id": "b107",
+      "title": "Cross-Platform Mobile App Development: Flutter vs React Native in Enterprise",
+      "content": "\n      <p>Choosing between Flutter and React Native is a critical strategic decision. Both deliver native-grade performance while dramatically reducing time to market and development costs.</p>\n      <br/>\n      <h3>Code Reusability and Native Modules</h3>\n      <p>Modern cross-platform frameworks achieve 95% single codebase coverage while retaining direct access to camera, biometrics, and push notifications.</p>\n    ",
+      "category": "Web Development",
+      "author": "Farhan Hassan Jabil",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852894/okobiz/assets/fluter-B6Xx9c-F.png",
+      "createdAt": "2024-05-22T10:45:00.000Z",
+      "commentsCount": 2,
+      "isPublished": true
+    },
+    {
+      "_id": "b108",
+      "title": "Search Engine Optimization for Single Page Applications: Common Pitfalls and Fixes",
+      "content": "\n      <p>SPAs that depend heavily on client-side JavaScript rendering often suffer from indexing delays and missed search crawl opportunities. Implementing SSR and pre-rendering solves this definitively.</p>\n      <br/>\n      <h3>Canonical Tags, OpenGraph and Meta tags</h3>\n      <p>Dynamic metadata injection guarantees beautiful preview cards on WhatsApp, LinkedIn, and Facebook, increasing social click-through rates.</p>\n    ",
+      "category": "Digital Marketing",
+      "author": "Anowar Hossain",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852895/okobiz/assets/seo-2-Chqa_ILp.png",
+      "createdAt": "2024-06-04T13:30:00.000Z",
+      "commentsCount": 7,
+      "isPublished": true
+    },
+    {
+      "_id": "b109",
+      "title": "Creating High-Impact Brand Style Guides for Fast-Scaling Startups",
+      "content": "\n      <p>A style guide is the compass of your brand. It defines typography scales, color accessibility ratios, voice and tone, and iconography principles to ensure uniformity across all channels.</p>\n    ",
+      "category": "Graphics Solution",
+      "author": "Sumiya Siddiqua",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852896/okobiz/assets/branding-01-C63SjeXF.png",
+      "createdAt": "2024-06-18T15:20:00.000Z",
+      "commentsCount": 1,
+      "isPublished": true
+    },
+    {
+      "_id": "b110",
+      "title": "Database Optimization at Scale: Indexing Strategies in MongoDB & PostgreSQL",
+      "content": "\n      <p>As application traffic reaches hundreds of thousands of requests, poorly indexed queries quickly saturate server resources. Understanding compound indexes and query plans is essential.</p>\n    ",
+      "category": "Web Development",
+      "author": "Al Mamon",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852897/okobiz/assets/mongodb-BhSBY_rK.png",
+      "createdAt": "2024-07-01T11:10:00.000Z",
+      "commentsCount": 9,
+      "isPublished": true
+    },
+    {
+      "_id": "b111",
+      "title": "Mastering Facebook and Google Ads Attribution in a Privacy-First World",
+      "content": "\n      <p>With third-party cookie phaseouts and iOS privacy constraints, Conversions API (CAPI) and server-side tracking are mandatory for modern media buyers.</p>\n    ",
+      "category": "Digital Marketing",
+      "author": "Anowar Hossain",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852898/okobiz/assets/social-BBufWNV2.png",
+      "createdAt": "2024-07-16T14:40:00.000Z",
+      "commentsCount": 4,
+      "isPublished": true
+    },
+    {
+      "_id": "b112",
+      "title": "The Psychology of Color in UI/UX Design: Driving High-Conversion Decisions",
+      "content": "\n      <p>Colors evoke distinct psychological responses. Strategic contrast, visual hierarchy, and CTA button colors directly dictate user journey pathways and click velocities.</p>\n    ",
+      "category": "Graphics Solution",
+      "author": "Nowrin Islam",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852899/okobiz/assets/graphic-2-C80LdtU9.jpg",
+      "createdAt": "2024-08-03T10:00:00.000Z",
+      "commentsCount": 3,
+      "isPublished": true
+    },
+    {
+      "_id": "b113",
+      "title": "Secure Payment Gateway Integration: bKash, Nagad, Stripe, and SSLCommerz",
+      "content": "\n      <p>Building secure and resilient checkout flows requires tokenized payments, webhook verification, idempotent order processing, and fallback recovery.</p>\n    ",
+      "category": "Web Development",
+      "author": "Ifshad Sharan",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852900/okobiz/assets/bikash-C84onyK_.png",
+      "createdAt": "2024-08-19T09:00:00.000Z",
+      "commentsCount": 6,
+      "isPublished": true
+    },
+    {
+      "_id": "b114",
+      "title": "Automating Email Marketing Workflows to Boost Customer Lifetime Value",
+      "content": "\n      <p>Nurture sequences, abandoned cart triggers, and post-purchase follow-ups transform one-time customers into loyal repeat brand advocates automatically.</p>\n    ",
+      "category": "Digital Marketing",
+      "author": "Anowar Hossain",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852901/okobiz/assets/email-marketing-DXvvNc4U.png",
+      "createdAt": "2024-09-05T12:30:00.000Z",
+      "commentsCount": 2,
+      "isPublished": true
+    },
+    {
+      "_id": "b115",
+      "title": "Responsive Typography and Micro-Interactions: Elevating Frontend Polish",
+      "content": "\n      <p>Micro-interactions provide delightful tactile feedback when users click buttons, toggle states, or submit forms, elevating your product from standard to extraordinary.</p>\n    ",
+      "category": "Graphics Solution",
+      "author": "Sumiya Siddiqua",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852902/okobiz/assets/StockFootage-bNm9m1vC.jpg",
+      "createdAt": "2024-09-20T16:15:00.000Z",
+      "commentsCount": 5,
+      "isPublished": false
+    },
+    {
+      "_id": "b116",
+      "title": "Containerizing Node.js and Next.js Microservices with Docker and AWS",
+      "content": "\n      <p>Containerization ensures reproducible deployment environments, automated rollback capabilities, and zero-downtime rolling upgrades across production clusters.</p>\n    ",
+      "category": "Web Development",
+      "author": "Md. Sorower Jahan",
+      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852903/okobiz/assets/docker-BRV4pgF-.png",
+      "createdAt": "2024-10-01T10:00:00.000Z",
+      "commentsCount": 8,
+      "isPublished": true
+    }
+  ],
+  "team": [
+    {
+      "_id": "tm-1",
+      "name": "Md. Sorower Jahan",
+      "designation": "CEO",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852935/okobiz/assets/CEO-0fmQDjG-.png",
+      "type": "team",
+      "order": 1
+    },
+    {
+      "_id": "tm-2",
+      "name": "Yeasmin Ara",
+      "designation": "Founder & HR admin",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852936/okobiz/assets/hr_mam-DEUYuDH6.png",
+      "type": "team",
+      "order": 2
+    },
+    {
+      "_id": "tm-3",
+      "name": "Md. Nahiduzzaman",
+      "designation": "Head of Business Development",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852937/okobiz/assets/nahid_sir-HBNJJFiH.png",
+      "type": "team",
+      "order": 3
+    },
+    {
+      "_id": "tm-4",
+      "name": "MD. Ridoy Islam Nasim",
+      "designation": "Sr. Software Engineer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852938/okobiz/assets/nasim-lv8VX_nF.png",
+      "type": "team",
+      "order": 4
+    },
+    {
+      "_id": "tm-5",
+      "name": "Farhan Hassan Jabil",
+      "designation": "Software Engineer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852939/okobiz/assets/farhan-BeQWWmJ1.png",
+      "type": "team",
+      "order": 5
+    },
+    {
+      "_id": "tm-6",
+      "name": "Ifshad Sharan",
+      "designation": "Software Engineer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852940/okobiz/assets/ifshad-Bui8Kg56.png",
+      "type": "team",
+      "order": 6
+    },
+    {
+      "_id": "tm-7",
+      "name": "Al Mamon",
+      "designation": "Software Engineer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852941/okobiz/assets/mamon-BuE-A5fh.png",
+      "type": "team",
+      "order": 7
+    },
+    {
+      "_id": "tm-8",
+      "name": "Nowrin Islam",
+      "designation": "Associate Software Engineer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852943/okobiz/assets/nowrin-BZB-MTca.png",
+      "type": "team",
+      "order": 8
+    },
+    {
+      "_id": "tm-9",
+      "name": "Anowar Hossain",
+      "designation": "Digital Marketer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852946/okobiz/assets/anwar-CoNwu0Ld.png",
+      "type": "team",
+      "order": 9
+    },
+    {
+      "_id": "tm-10",
+      "name": "Sumiya Siddiqua",
+      "designation": "Motion & Graphic Designer",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852947/okobiz/assets/sumaiya-z9J32P0W.png",
+      "type": "team",
+      "order": 10
+    },
+    {
+      "_id": "adv-1",
+      "name": "Subir Dewan",
+      "designation": "Legal Advisor",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852948/okobiz/assets/advisor-1-DYoVYteC.jpg",
+      "type": "advisor",
+      "order": 11
+    },
+    {
+      "_id": "adv-2",
+      "name": "A.K.M Ahasunuddin",
+      "designation": "Legal Advisor",
+      "image": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852949/okobiz/assets/advisor-2-DHZ2dHIJ.jpg",
+      "type": "advisor",
+      "order": 12
+    }
+  ],
+  "services": [
+    {
+      "_id": "srv-1",
+      "title": "Website & App Development",
+      "slug": "website-app-development-service",
+      "image": "/assets/website-app-DOXr3sR7.webp",
+      "bannerImage": "/assets/web-CPDVLYNo.jpeg",
+      "bannerSubtitle": "Custom, scalable, and high-performance digital platforms",
+      "shortDesc": "We offer professional website and app development services that are suited to your business requirements.",
+      "fullDesc": "<p><b>To </b><i>provide</i> a <u>consistent </u>user experience, our team of skilled developers guarantees that your website works perfectly across all devices and platforms. Whether it's an online store, an app page, or a business website, we use the newest technology.</p>",
+      "icon": "Monitor",
+      "features": [
+        "Custom Web Applications",
+        "Mobile App (iOS & Android)",
+        "E-Commerce Platforms",
+        "API & Cloud Integrations"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Expert Team",
+          "desc": "Highly skilled developers with extensive experience in Next.js, MERN stack, Flutter, and cloud architecture.",
+          "_id": "6ac626d40d9b092b09efe6b9"
+        },
+        {
+          "title": "Customized Solutions",
+          "desc": "Tailored to meet your specific business goals, user personas, and conversion milestones.",
+          "_id": "6ac626d40d9b092b09efe6ba"
+        },
+        {
+          "title": "Agile Methodology",
+          "desc": "Rapid sprint cycles with regular demos, quality testing, and continuous deployment.",
+          "_id": "6ac626d40d9b092b09efe6bb"
+        },
+        {
+          "title": "Transparent Process",
+          "desc": "Clear roadmap tracking, milestone reports, and dedicated account management.",
+          "_id": "6ac626d40d9b092b09efe6bc"
+        },
+        {
+          "title": "Post-Development Support",
+          "desc": "Comprehensive 24/7 maintenance, server monitoring, and feature upgrades.",
+          "_id": "6ac626d40d9b092b09efe6bd"
+        }
+      ],
+      "techStack": [
+        "React",
+        "Next.js",
+        "TypeScript",
+        "Node.js",
+        "Express",
+        "Tailwind CSS",
+        "MongoDB",
+        "PostgreSQL",
+        "Flutter",
+        "AWS",
+        "Docker"
+      ],
+      "priceRange": "$500 - $5,000",
+      "order": 1
+    },
+    {
+      "_id": "srv-2",
+      "title": "Seo And Website Development",
+      "slug": "seo-website-development-service",
+      "image": "/assets/seo-C2Lrhrz-.webp",
+      "bannerImage": "/assets/seo-2-Chqa_ILp.png",
+      "bannerSubtitle": "Rank higher on Google, drive organic traffic, and accelerate customer conversion",
+      "shortDesc": "We specialize in expert digital marketing consultation, customized for your business, location, and target audience. Our comprehensive services encompass website management and SEO, aimed at boosting online presence, enhancing search rankings, improving user experience, and optimizing performance through targeted keywords and content updates.",
+      "fullDesc": "<p>Dominate search engine rankings with okobiz's end-to-end SEO and website optimization services. We conduct deep technical site audits, keyword competitor analysis, on-page optimization, and high-authority link-building strategies.</p><p>Our developers ensure your website scores 95+ on Google PageSpeed Insights with core web vitals optimization, structured data schemas, and lightning-fast loading speeds.</p>",
+      "icon": "Search",
+      "features": [
+        "Technical SEO & Core Web Vitals Optimization",
+        "Keyword Research & High-Intent Strategy",
+        "On-Page Optimization & Semantic HTML Hierarchy",
+        "Local Google Business Profile Ranking",
+        "Competitor Gap Analysis & Link Building"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Data-Driven Strategy",
+          "desc": "We base every decision on search intent analytics and live ranking signals."
+        },
+        {
+          "title": "Sustainable Rankings",
+          "desc": "100% white-hat SEO techniques that protect your domain against algorithm updates."
+        },
+        {
+          "title": "Transparent Monthly Reports",
+          "desc": "Detailed keyword movement and traffic attribution reports every 30 days."
+        }
+      ],
+      "techStack": [
+        "Google Search Console",
+        "Google Analytics",
+        "Ahrefs",
+        "SEMrush",
+        "Screaming Frog",
+        "Schema Markup"
+      ],
+      "priceRange": "$300 - $2,500 / mo",
+      "order": 2
+    },
+    {
+      "_id": "srv-3",
+      "title": "Consultancy On Digital Marketing",
+      "slug": "digital-marketing-service",
+      "image": "/assets/digital-4ufNPyE6.webp",
+      "bannerImage": "/assets/digital-2-snBkV2Qy.jpeg",
+      "bannerSubtitle": "Data-driven campaigns, retargeting pixels, and search engine dominance",
+      "shortDesc": "Our specialized digital marketing consultation is customized to fit your business, location, and target audience perfectly. We analyze strategies, audiences, and trends to optimize your marketing approach. With tailored plans, we ensure effective messaging, resource allocation, and robust online growth. Contact us today to begin maximizing your digital presence!",
+      "fullDesc": "<p>Accelerate your brand growth with data-backed digital marketing campaigns engineered for high conversion rates. We design multi-channel acquisition funnels spanning Facebook, Instagram, Google Ads, LinkedIn, and programmatic display networks.</p><p>By integrating pixel tracking, server-side conversion APIs, and custom CRM attribution, we ensure your ad budget delivers measurable ROI and sustainable pipeline growth.</p>",
+      "icon": "BarChart",
+      "features": [
+        "PPC & Google Ads Campaign Management",
+        "Meta & TikTok High-Converting Ad Creative",
+        "Server-Side Facebook Pixel & Conversion API",
+        "Email & SMS Automated Retargeting Funnels",
+        "Conversion Rate Optimization (CRO)"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Targeted Precision",
+          "desc": "Laser-focused audience segments tailored to buyer personas."
+        },
+        {
+          "title": "Maximized Ad Spend ROI",
+          "desc": "Continuous A/B testing of creatives and bid strategies to lower CPA."
+        },
+        {
+          "title": "Full-Funnel Tracking",
+          "desc": "End-to-end analytics from first impression to verified purchase."
+        }
+      ],
+      "techStack": [
+        "Meta Ads Manager",
+        "Google Ads",
+        "TikTok Ads",
+        "Google Tag Manager",
+        "Mailchimp",
+        "Klaviyo"
+      ],
+      "priceRange": "$400 - $3,500 / mo",
+      "order": 3
+    },
+    {
+      "_id": "srv-4",
+      "title": "Creative Graphic Solution",
+      "slug": "graphics-solution-service",
+      "image": "/assets/graphic-CV7N5QQ5.webp",
+      "bannerImage": "/assets/graphic-2-C80LdtU9.jpeg",
+      "bannerSubtitle": "Visual identity, motion design, and high-impact branding",
+      "shortDesc": "We elevate your online presence by seamlessly integrating creative graphics into your virtual platforms. Our innovative graphic solutions deliver captivating visual concepts that effectively convey messages through inventive design, enhancing brand recognition and driving engagement.",
+      "fullDesc": "<p>Visuals define how customers perceive your company within the first second. okobiz provides comprehensive creative graphic solutions, from memorable corporate logos and brand guidelines to dynamic 3D motion graphics and print collateral.</p><p>Our creative team blends modern aesthetics with persuasive visual psychology to elevate your brand prestige across digital and physical mediums.</p>",
+      "icon": "PenTool",
+      "features": [
+        "Logo Design & Complete Brand Identity Kit",
+        "Poster, Banner & Digital Marketing Creatives",
+        "Social Media Kits & Carousel Post Systems",
+        "Print Materials (Brochures, Catalog, Packaging)",
+        "Motion Graphics, 3D Renders & UI/UX Figma Mockups"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Award-Winning Aesthetics",
+          "desc": "Distinctive, memorable designs tailored to your corporate vision."
+        },
+        {
+          "title": "Ready-To-Use Formats",
+          "desc": "Full vector, print-ready CMYK, and web-optimized asset delivery."
+        },
+        {
+          "title": "Rapid Turnaround",
+          "desc": "Quick conceptualization sprints with unlimited collaborative revisions."
+        }
+      ],
+      "techStack": [
+        "Figma",
+        "Adobe Photoshop",
+        "Adobe Illustrator",
+        "After Effects",
+        "Blender 3D",
+        "InDesign"
+      ],
+      "priceRange": "$200 - $2,500",
+      "order": 4
+    },
+    {
+      "_id": "srv-5",
+      "title": "Social Media Management",
+      "slug": "social-media-management-service",
+      "image": "/assets/social-WzytKsh-.webp",
+      "bannerImage": "/assets/clientsfotter-o_Y4RCBU.webp",
+      "bannerSubtitle": "Engaging social storytelling, community moderation, and brand loyalty",
+      "shortDesc": "We specialize in offering superior website and app development services customized for your business, location, and target audience. Our collaborative design and development teams create user-friendly interfaces, responsive layouts, and practical features, enhancing digital interactions and maximizing user satisfaction across websites and mobile apps.",
+      "fullDesc": "<p>Build an active, loyal community around your brand with okobiz's complete social media management services. We handle content calendar planning, graphic creation, reels/shorts production, copywriting, and daily audience engagement.</p><p>From LinkedIn thought leadership to viral TikTok and Instagram campaigns, we keep your brand at the forefront of your industry.</p>",
+      "icon": "Share2",
+      "features": [
+        "Monthly Content Calendar Strategy",
+        "Short-Form Video Production (Reels & TikToks)",
+        "Daily Community Engagement & DM Management",
+        "Influencer Outreach & Strategic Collabs",
+        "Monthly Reach, Sentiment & Growth Analytics"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Consistent Brand Voice",
+          "desc": "Harmonious messaging and visuals across all social touchpoints."
+        },
+        {
+          "title": "Active Community Nurturing",
+          "desc": "Fast response times to comments and inquiries to build trust."
+        },
+        {
+          "title": "Trend Jacking",
+          "desc": "Capitalizing on viral cultural trends to boost organic reach."
+        }
+      ],
+      "techStack": [
+        "Canva",
+        "CapCut",
+        "Buffer",
+        "Hootsuite",
+        "Meta Business Suite",
+        "LinkedIn Campaign Mgr"
+      ],
+      "priceRange": "$350 - $2,000 / mo",
+      "order": 5
+    },
+    {
+      "_id": "srv-6",
+      "title": "Digital Advertising & DSP",
+      "slug": "digital-advertising-dsp-service",
+      "image": "/assets/advertising-AjUZBcZg.webp",
+      "bannerImage": "/assets/about-33-B_PGTXVg.webp",
+      "bannerSubtitle": "Programmatic ad buying, demand-side platforms, and global reach",
+      "shortDesc": "Businesses can effectively target and manage online ad campaigns, optimize ad spend, and reach their desired demographic with precision through digital advertising and DSP (Demand-Side Platform) services. Explore the optimal solution at okobiz.",
+      "fullDesc": "<p>Take your advertising beyond walled gardens with Demand-Side Platform (DSP) programmatic advertising. okobiz leverages real-time bidding (RTB) to deliver high-impact display, native, audio, and connected TV (CTV) ads across premium publisher networks globally.</p><p>Optimize CPM, avoid ad fraud, and reach hyper-targeted audiences with first-party data onboarding and behavioral tracking.</p>",
+      "icon": "Tv",
+      "features": [
+        "Programmatic RTB Media Buying & Management",
+        "Connected TV (CTV) & Digital Audio Ads",
+        "First-Party Data Audience Onboarding",
+        "Cross-Device Retargeting & Frequency Capping",
+        "Brand Safety & Anti-Fraud Real-Time Filters"
+      ],
+      "whyChooseUs": [
+        {
+          "title": "Global Inventory Access",
+          "desc": "Access top-tier publisher inventory across millions of websites and apps."
+        },
+        {
+          "title": "Hyper-Precise Geo & Demographics",
+          "desc": "Target down to specific zip codes, device types, and interests."
+        },
+        {
+          "title": "Cost-Efficient CPMs",
+          "desc": "Algorithmic bidding ensures you never overpay for ad impressions."
+        }
+      ],
+      "techStack": [
+        "Google Display & Video 360",
+        "The Trade Desk",
+        "Amazon DSP",
+        "AdForm",
+        "Moat Analytics"
+      ],
+      "priceRange": "$600 - $6,000 / mo",
+      "order": 6
+    }
+  ],
+  "faqs": [
+    {
+      "_id": "faq-1",
+      "question": "What services does okobiz provide?",
+      "answer": "okobiz provides end-to-end digital solutions including Website & Web App Development, Mobile Applications (Flutter, React Native, iOS, Android), UI/UX Design, Motion Graphics, Branding, and Data-Driven Digital Marketing.",
+      "category": "General",
+      "order": 1
+    },
+    {
+      "_id": "faq-2",
+      "question": "How can I start a project with okobiz?",
+      "answer": "You can click 'Get In Touch' or contact us via WhatsApp (+880 1973-590937) or email (info@okobiz.com). Our team will schedule a discovery call to discuss your specifications and provide a custom quote.",
+      "category": "Process",
+      "order": 2
+    },
+    {
+      "_id": "faq-3",
+      "question": "Do you offer post-launch maintenance and support?",
+      "answer": "Yes! Every project includes dedicated warranty support, bug fixes, performance monitoring, security updates, and flexible monthly maintenance retainers.",
+      "category": "Support",
+      "order": 3
+    },
+    {
+      "_id": "faq-4",
+      "question": "What is your typical project timeline?",
+      "answer": "Timelines depend on project complexity: standard corporate websites typically take 2-3 weeks, custom web apps take 4-8 weeks, and full mobile applications take 6-12 weeks.",
+      "category": "Timeline",
+      "order": 4
+    }
+  ],
+  "media": [
+    {
+      "_id": "med-1791355929187",
+      "name": "www.beatsnoop.com-3000-MJzN4BhWpk_xq8vlp.jpg",
+      "filename": "www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1791355926/okobiz/www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
+      "type": "image",
+      "size": 405313,
+      "mimeType": "image/jpeg",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1791355926/okobiz/www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
+      "publicId": "okobiz/www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685",
+      "createdAt": "2026-10-07T06:52:09.187Z"
+    },
+    {
+      "_id": "med-1791355848107",
+      "name": "Crendetials (1).pdf",
+      "filename": "Crendetials__1__1791355846344.pdf",
+      "path": "https://res.cloudinary.com/dccui8s58/raw/upload/v1791355845/okobiz/Crendetials__1__1791355846344.pdf",
+      "type": "pdf",
+      "size": 78862,
+      "mimeType": "application/pdf",
+      "url": "https://res.cloudinary.com/dccui8s58/raw/upload/v1791355845/okobiz/Crendetials__1__1791355846344.pdf",
+      "publicId": "okobiz/Crendetials__1__1791355846344.pdf",
+      "createdAt": "2026-10-07T06:50:48.107Z"
+    },
+    {
+      "_id": "med-1791354464467",
+      "name": "Mapple_Bill.pdf",
+      "filename": "Mapple_Bill_1791354461791.pdf",
+      "path": "https://res.cloudinary.com/dccui8s58/raw/upload/v1791354461/okobiz/Mapple_Bill_1791354461791",
+      "type": "pdf",
+      "size": 316335,
+      "mimeType": "application/pdf",
+      "url": "https://res.cloudinary.com/dccui8s58/raw/upload/v1791354461/okobiz/Mapple_Bill_1791354461791",
+      "publicId": "okobiz/Mapple_Bill_1791354461791",
+      "createdAt": "2026-10-07T06:27:44.467Z"
+    },
+    {
+      "_id": "med-1790850961383",
+      "name": "Cloudinary Verification Sample",
+      "filename": "test_sample_1790850959887.png",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1790850960/okobiz/test_sample_1790850959887.png",
+      "type": "image",
+      "size": 68,
+      "mimeType": "image/png",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1790850960/okobiz/test_sample_1790850959887.png",
+      "publicId": "okobiz/test_sample_1790850959887",
+      "createdAt": "2026-10-01T10:36:01.383Z"
+    },
+    {
+      "_id": "med-1790846758481",
+      "name": "814126887_1850018786443004_3198543907026936720_n.jpg",
+      "filename": "814126887_1850018786443004_3198543907026936720_n_1790846758446.jpg",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852905/okobiz/assets/814126887_1850018786443004_3198543907026936720_n_1790846758446.jpg",
+      "type": "image",
+      "size": 36847,
+      "mimeType": "image/jpeg",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852905/okobiz/assets/814126887_1850018786443004_3198543907026936720_n_1790846758446.jpg",
+      "createdAt": "2026-10-01T09:25:58.481Z"
+    },
+    {
+      "_id": "med-1790771407230",
+      "name": "Sample Contract Proposal 2026",
+      "filename": "sample_contract_proposal_1790771407227.pdf",
+      "path": "/uploads/sample_contract_proposal_1790771407227.pdf",
+      "type": "pdf",
+      "size": 18,
+      "mimeType": "application/pdf",
+      "url": "/uploads/sample_contract_proposal_1790771407227.pdf",
+      "createdAt": "2026-09-30T12:30:07.230Z"
+    },
+    {
+      "_id": "med-1",
+      "name": "Okobiz Logo",
+      "filename": "okobiz-logo-C_Tt48xb.png",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852959/okobiz/assets/okobiz-logo-C_Tt48xb.png",
+      "type": "image",
+      "size": 45200,
+      "mimeType": "image/png",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852959/okobiz/assets/okobiz-logo-C_Tt48xb.png",
+      "createdAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "_id": "med-2",
+      "name": "Company Brochure Profile 2024",
+      "filename": "okobiz_company_profile_2024.pdf",
+      "path": "/assets/okobiz_company_profile.pdf",
+      "type": "pdf",
+      "size": 1845000,
+      "mimeType": "application/pdf",
+      "url": "/assets/okobiz_company_profile.pdf",
+      "createdAt": "2024-02-15T00:00:00.000Z"
+    },
+    {
+      "_id": "med-3",
+      "name": "Okobiz Corporate Showreel Demo",
+      "filename": "okobiz_corporate_reel.mp4",
+      "path": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "type": "video",
+      "size": 0,
+      "mimeType": "video/mp4",
+      "url": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "createdAt": "2024-03-01T00:00:00.000Z"
+    }
+  ],
+  "inquiries": [
+    {
+      "_id": "inq-1",
+      "name": "Tanvir Ahmed",
+      "email": "tanvir@techcorp.com",
+      "phone": "+8801812345678",
+      "service": "Website & App Development",
+      "message": "We need an enterprise ERP portal and mobile application for our distribution network.",
+      "status": "new",
+      "createdAt": "2024-04-10T12:00:00.000Z"
+    },
+    {
+      "_id": "inq-2",
+      "name": "Sarah Jenkins",
+      "email": "sarah@ukevents.co.uk",
+      "phone": "+447911123456",
+      "service": "Creative Solution",
+      "message": "Looking for complete rebranding and 3D animated promotional video for our upcoming summit.",
+      "status": "in_progress",
+      "createdAt": "2024-04-12T14:30:00.000Z"
+    }
+  ],
+  "settings": {
+    "siteName": "okobiz",
+    "contactPhone": "01973-590937",
+    "contactEmail": "info@okobiz.com",
+    "contactAddress": "House-24, Road-14, Sector-11, Uttara, Dhaka, Bangladesh",
+    "whatsappNumber": "+8801973590937",
+    "stats": {
+      "journeyStarted": "2018",
+      "happyClients": "150",
+      "teamMembers": "20",
+      "yearsOfExcellence": "6+"
+    },
+    "portfolioPdf": {
+      "heading": "okobiz Official Profile & Credentials 2024",
+      "subheading": "Corporate capabilities brochure, technology stack & verified client references • PDF (2.8 MB)",
+      "pdfUrl": "https://res.cloudinary.com/dccui8s58/raw/upload/v1791355845/okobiz/Crendetials__1__1791355846344.pdf",
+      "badge": ""
+    }
+  },
+  "gallery": [
+    {
+      "_id": "gal-1",
+      "title": "Annual Tech Innovation Summit & Award Ceremony",
+      "category": "Achievements",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852906/okobiz/assets/about-33-B_PGTXVg.png",
+      "description": "Celebrating our milestones, top engineering achievements, and stellar client success stories.",
+      "order": 1,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.677Z"
+    },
+    {
+      "_id": "gal-2",
+      "title": "okobiz Core Engineering & Creative Team",
+      "category": "Team Moments",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852909/okobiz/assets/clientsfotter-o_Y4RCBU.jpg",
+      "description": "Collaboration and team unity at the heart of our software architecture and product design.",
+      "order": 2,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-3",
+      "title": "Creative Brainstorming & UI/UX Design Sprint",
+      "category": "Office Life",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852910/okobiz/assets/about-BPfvng5e.png",
+      "description": "Designing intuitive client experiences, wireframes, and modern visual design concepts.",
+      "order": 3,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-4",
+      "title": "High-Performance Web & Mobile Architecture Session",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852912/okobiz/assets/web-2-DujjTO8C.jpg",
+      "description": "Deep dive code review into Next.js server components and distributed backend systems.",
+      "order": 4,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-5",
+      "title": "Motion Graphics & 3D Visual Rendering Lab",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852899/okobiz/assets/graphic-2-C80LdtU9.jpg",
+      "description": "Crafting captivating micro-animations, 3D brand visuals, and digital promotional assets.",
+      "order": 5,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-6",
+      "title": "Digital Marketing Strategy & Conversion Workshop",
+      "category": "Events",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852913/okobiz/assets/digital-2-snBkV2Qy.jpg",
+      "description": "Audience analytics, conversion rate optimization, and international ad campaigns analysis.",
+      "order": 6,
+      "featured": true,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-7",
+      "title": "Company Journey: From 2018 to Industry Leaders",
+      "category": "Achievements",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852914/okobiz/assets/journey-Crn2qHA1.jpg",
+      "description": "Over 6 years of excellence, 150+ happy clients worldwide, and an unstoppable team.",
+      "order": 7,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-8",
+      "title": "Team Strategy Retreat & Milestone Dinner",
+      "category": "Events",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852916/okobiz/assets/about-1-01-BUuIOxb-.jpg",
+      "description": "Aligning on okobiz vision, future roadmap, and expanding client horizons globally.",
+      "order": 8,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-9",
+      "title": "Agile Standup & Sprint Planning",
+      "category": "Office Life",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852917/okobiz/assets/about-2-01-CE0yQuDo.jpg",
+      "description": "Fast-paced agile iterations ensuring on-time delivery for mission-critical client projects.",
+      "order": 9,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-10",
+      "title": "Client Showcase & Product Launch Demo",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852902/okobiz/assets/StockFootage-bNm9m1vC.jpg",
+      "description": "Live demonstration of customized web platforms and interactive mobile applications.",
+      "order": 10,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-11",
+      "title": "Creative Visual Identity Design & Branding",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852891/okobiz/assets/graphic-CV7N5QQ5.png",
+      "description": "High impact visual storytelling and typography design crafted for leading global brands.",
+      "order": 11,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-12",
+      "title": "International Client Advisory & Strategy Meeting",
+      "category": "Team Moments",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852918/okobiz/assets/approch-Bly-XrCn.jpg",
+      "description": "Partnering closely with founders across the USA, UK, and Asia to accelerate business growth.",
+      "order": 12,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-13",
+      "title": "Full-Stack Web Engineering Showcase",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852919/okobiz/assets/web-development-01-YVpNVtyB.png",
+      "description": "Developing robust enterprise portals and scalable cloud architectures.",
+      "order": 13,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-14",
+      "title": "Motion & 3D Interactive Graphics Lab",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852921/okobiz/assets/motion-01-BIzEjDQF.png",
+      "description": "Exploring next-generation micro-animations and dynamic video content.",
+      "order": 14,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-15",
+      "title": "Cross-Platform Mobile Application Lab",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852922/okobiz/assets/app-development-01-CVsYJoHh.png",
+      "description": "Engineering Flutter and native mobile apps with delightful fluid gestures.",
+      "order": 15,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-16",
+      "title": "Brand Evolution & Creative Identity Workshop",
+      "category": "Office Life",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852923/okobiz/assets/graphic-service-CBLOV81S.jpg",
+      "description": "Collaborating on visual identities, design tokens, and corporate design languages.",
+      "order": 16,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-17",
+      "title": "Digital Growth & Analytics Hackathon",
+      "category": "Events",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852924/okobiz/assets/digital-D8eN50lc.jpg",
+      "description": "Analyzing real-time campaign telemetry, conversions, and ad optimizations.",
+      "order": 17,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-18",
+      "title": "Quarterly Strategy Review & Executive Dinner",
+      "category": "Team Moments",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852925/okobiz/assets/sub-banner-DifPcO04.jpg",
+      "description": "Reviewing company milestones and planning upcoming product releases.",
+      "order": 18,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-19",
+      "title": "UI Design System & Component Library Sprint",
+      "category": "Office Life",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852926/okobiz/assets/graphic1-CbjDHmgh.png",
+      "description": "Creating unified React and Next.js design component systems.",
+      "order": 19,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-20",
+      "title": "Global Advertising & DSP Campaigns Launch",
+      "category": "Achievements",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852928/okobiz/assets/advertising-AjUZBcZg.png",
+      "description": "Reaching millions across targeted programmatic ad networks globally.",
+      "order": 20,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-21",
+      "title": "Modern Web Performance & SEO Benchmark Session",
+      "category": "Office Life",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852929/okobiz/assets/web-CPDVLYNo.jpg",
+      "description": "Benchmarking Core Web Vitals, sub-second TTFB, and edge rendering speeds.",
+      "order": 21,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-22",
+      "title": "3D Product Visualization & Modeling Review",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852930/okobiz/assets/3dmodeling-01-DQkhQyBI.png",
+      "description": "Crafting realistic 3D product renders and interactive web viewports.",
+      "order": 22,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-23",
+      "title": "Digital Ecosystem Strategy & Cloud Architecture",
+      "category": "Events",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852932/okobiz/assets/digital-4ufNPyE6.png",
+      "description": "Exploring resilient multi-region cloud infrastructures and microservices.",
+      "order": 23,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    },
+    {
+      "_id": "gal-24",
+      "title": "Print & Packaging Creative Design Showcase",
+      "category": "Projects",
+      "imageUrl": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852933/okobiz/assets/staticdesign-01-ClBDGJkC.png",
+      "description": "Excellence in print collateral, exhibition booths, and packaging artwork.",
+      "order": 24,
+      "featured": false,
+      "createdAt": "2026-10-01T10:13:56.678Z"
+    }
+  ],
+  "products": [
+    {
+      "_id": "prod-1",
+      "title": "PharmaCare Pro - Pharmacy Management System",
+      "tagline": "Complete Cloud Pharmacy & Medical Store POS, Batch Expiry Tracker, Generic Drug Search & Accounting ERP",
+      "category": "Custom",
+      "mediaType": "video",
+      "thumbnail": "/assets/web-2-DujjTO8C.webp",
+      "images": [
+        "/assets/web-2-DujjTO8C.webp",
+        "/assets/about-BPfvng5e.webp",
+        "/assets/about-33-B_PGTXVg.webp"
+      ],
+      "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoThumbnail": "/assets/web-2-DujjTO8C.webp",
+      "description": "<h2>Enterprise Pharmacy Management System (PharmaCare Pro)</h2><p>PharmaCare Pro is an all-in-one, highly scalable SaaS software designed specifically for retail pharmacies, pharmacy chains, and hospital drug dispensaries. Eliminate medicine expiry losses, streamline supplier procurement, and accelerate checkout with instant barcode POS billing.</p><h3>Key Business Capabilities:</h3><ul><li><strong>Intelligent Batch &amp; Expiry Alert:</strong> Automatic advance warnings before medicines reach expiration date, preventing inventory waste.</li><li><strong>Generic Alternative Lookup:</strong> Instant generic substitute suggestion when a branded drug is out of stock.</li><li><strong>High-Speed Barcode POS:</strong> Fast checkout billing with thermal receipt printers, itemized VAT, and customer change calculators.</li><li><strong>Supplier &amp; Purchase Ledger:</strong> Track drug purchase orders, payment terms, and vendor return vouchers effortlessly.</li><li><strong>Complete Financial Accounting:</strong> Daily cash register reconciliation, profit-and-loss reports, and stock valuation audits.</li></ul><blockquote><span style=\"font-style: normal;\">Note: This is a privacy and policy</span></blockquote>",
+      "features": [
+        "Automated Batch & Expiry Date Alert",
+        "Generic Brand Recommendation System",
+        "High-Speed Barcode & Thermal POS Billing",
+        "Supplier Purchase Ledger & Return System",
+        "Role-Based User Permissions (Cashier/Admin)",
+        "Daily Cash Drawer & Profit-Loss Analytics"
+      ],
+      "pricingPlans": [
+        {
+          "name": "Starter Pharmacy",
+          "price": 15000,
+          "discountPrice": 20000,
+          "period": "One-Time Setup",
+          "badge": "Single Store",
+          "description": "Ideal for independent retail pharmacies and individual medicine dispensaries.",
+          "features": [
+            "Single Counter POS Terminal",
+            "Unlimited Medicines & Batches",
+            "Batch & Expiry Date Tracking",
+            "Thermal Receipt Printing",
+            "Daily Sales & Profit Reports",
+            "1 Year Free Cloud Hosting & Backups",
+            "Free Onboarding & Data Migration"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Professional Pro",
+          "price": 28000,
+          "discountPrice": 35000,
+          "period": "One-Time Setup",
+          "badge": "Most Popular",
+          "description": "The complete standard for busy retail pharmacies with multiple billing counters.",
+          "features": [
+            "Up to 3 Billing Counters",
+            "Customer Due/Credit Ledger & SMS Alert",
+            "Generic Drug Search & Alternate Lookup",
+            "Supplier Purchase & Return Invoicing",
+            "Damage & Expired Drug Write-Off Module",
+            "Lifetime Software License",
+            "Priority WhatsApp Support (24/7)"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Enterprise Multi-Branch",
+          "price": 55000,
+          "discountPrice": 70000,
+          "period": "One-Time Setup",
+          "badge": "Multi-Store",
+          "description": "Engineered for pharmacy chains and central warehouse medicine distributors.",
+          "features": [
+            "Unlimited Branches & Central Warehouse",
+            "Inter-Branch Stock Transfer & Approvals",
+            "Custom Branded Android/Web Dashboard",
+            "Automated Multi-Branch Cloud Sync",
+            "Advanced Multi-Level Staff Roles",
+            "Dedicated Account Manager",
+            "On-site Staff Training & Full Customization"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "New Tier Plan",
+          "price": 20000,
+          "discountPrice": 25000,
+          "period": "One-Time Setup",
+          "badge": "",
+          "description": "Plan description & target audience",
+          "features": [
+            "Core Feature 1",
+            "Core Feature 2",
+            "Dedicated Support"
+          ],
+          "isPopular": false
+        }
+      ],
+      "liveUrl": "https://okobiz.com/demo",
+      "whatsappNumber": "+8801973590937",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "order": 1,
+      "status": "active",
+      "createdAt": "2024-03-01T10:00:00.000Z",
+      "updatedAt": "2026-10-10T12:25:15.972Z",
+      "slug": "prod-1",
+      "reviews": [
+        {
+          "name": "Dr. Rafiqul Islam",
+          "designation": "Managing Director",
+          "company": "Al-Madina Pharma Care Ltd.",
+          "location": "Dhaka",
+          "rating": 5,
+          "comment": "PharmaCare Pro completely eliminated our medicine expiry losses. The automatic advance alerts and barcode POS billing have made our checkout 3x faster.",
+          "tag": "Healthcare & Pharmacy"
+        },
+        {
+          "name": "Tanvir Ahmed",
+          "designation": "Founder & Owner",
+          "company": "The Smokehouse Grill & Cafe",
+          "location": "Gulshan",
+          "rating": 5,
+          "comment": "The kitchen order token (KOT) and table occupancy system transformed our dining service. Zero order mistakes and fast billing.",
+          "tag": "SaaS & ERP"
+        }
+      ]
+    },
+    {
+      "_id": "prod-2",
+      "title": "RestoMaster - Restaurant POS & Cloud Kitchen ERP",
+      "tagline": "Modern Dine-In, Table QR Ordering, Kitchen Display System (KDS), Parcel POS & Multi-Branch Cloud Management",
+      "category": "Restaurant & Food",
+      "mediaType": "image",
+      "thumbnail": "/assets/about-BPfvng5e.webp",
+      "images": [
+        "/assets/about-BPfvng5e.webp",
+        "/assets/web-2-DujjTO8C.webp",
+        "/assets/clientsfotter-o_Y4RCBU.webp"
+      ],
+      "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "videoThumbnail": "/assets/about-BPfvng5e.webp",
+      "description": "<h2>Complete Restaurant POS & Management System (RestoMaster)</h2><p>RestoMaster is built to deliver fast, mistake-free dining service for cafes, fine dining restaurants, fast-food outlets, and cloud kitchens. From table reservation to kitchen token generation and automated VAT billing, manage everything from any device.</p><h3>Why Leading Restaurants Trust RestoMaster:</h3><ul><li><strong>Interactive Floor Plan & Table Management:</strong> Real-time visual table occupancy, waiter order taking, and bill splitting.</li><li><strong>Kitchen Display System (KDS) & KOT:</strong> Instant kitchen ticket printing or screen display directly on kitchen tablets.</li><li><strong>Menu & Recipe Food Costing:</strong> Track raw ingredient usage (meat, oil, vegetables) with every food order to prevent wastage.</li><li><strong>Online Delivery Aggregator Integration:</strong> Centralize dine-in, takeaway, and delivery orders into a unified dashboard.</li><li><strong>Daily Shift & Cash Drawer Closeout:</strong> Detailed daily register settlement reports with cash, card, and mobile banking reconciliation.</li></ul>",
+      "features": [
+        "Live Table Management & Floor Plan",
+        "Kitchen Order Token (KOT) & KDS Screen",
+        "Takeaway & Home Delivery Dispatch",
+        "Recipe & Raw Ingredient Stock Control",
+        "Waiter Mobile Tablet App Support",
+        "Daily Register Cash Reconciliations"
+      ],
+      "pricingPlans": [
+        {
+          "name": "Cafe & Takeaway",
+          "price": 14000,
+          "discountPrice": 18000,
+          "period": "One-Time Setup",
+          "badge": "Starter",
+          "description": "Ideal for coffee shops, bakeries, food trucks, and small quick-service eateries.",
+          "features": [
+            "1 Cashier Billing Counter",
+            "Instant KOT Ticket Printing",
+            "Takeaway & Dine-in Support",
+            "Thermal Receipt Customization with Logo",
+            "Daily Shift Sales Summary",
+            "Lifetime License with No Monthly Fees",
+            "Online Setup & Configuration"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Full Restaurant Pro",
+          "price": 26000,
+          "discountPrice": 34000,
+          "period": "One-Time Setup",
+          "badge": "Most Popular",
+          "description": "The complete powerhouse for dine-in restaurants, buffet halls, and busy cafes.",
+          "features": [
+            "Unlimited Dining Tables & Floor Layout",
+            "Waiter Tablet Ordering Interface",
+            "Kitchen Display System (KDS) Screen",
+            "Recipe Ingredient Deductions & Inventory",
+            "Split Bill & Discount Coupons",
+            "Customer Loyalty & Birthday SMS",
+            "24/7 Dedicated Support Hotline"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Franchise & Cloud Kitchens",
+          "price": 48000,
+          "discountPrice": 62000,
+          "period": "One-Time Setup",
+          "badge": "Enterprise",
+          "description": "Built for multi-location restaurant chains, central kitchens, and food franchises.",
+          "features": [
+            "Multi-Outlet Centralized Dashboard",
+            "Central Commissary Raw Material Dispatches",
+            "Aggregator Orders Central Hub",
+            "Consolidated Group Financial Auditing",
+            "Custom Mobile App for Brand Ordering",
+            "Dedicated Software Engineer Support",
+            "On-site Staff Training Included"
+          ],
+          "isPopular": false
+        }
+      ],
+      "liveUrl": "https://okobiz.com/demo",
+      "whatsappNumber": "+8801973590937",
+      "popularBadge": true,
+      "featuredBadge": true,
+      "order": 2,
+      "status": "active",
+      "createdAt": "2024-03-05T10:00:00.000Z",
+      "slug": "prod-2"
+    },
+    {
+      "_id": "prod-3",
+      "title": "ShopFlow Pro - Supermarket & Retail POS ERP",
+      "tagline": "High-Speed Barcode Billing, Multi-Warehouse Inventory, Customer Loyalty & Accounting ERP",
+      "category": "Retail & Supermarket",
+      "mediaType": "image",
+      "thumbnail": "/assets/about-33-B_PGTXVg.webp",
+      "images": [
+        "/assets/about-33-B_PGTXVg.webp",
+        "/assets/web-2-DujjTO8C.webp"
+      ],
+      "video": "",
+      "videoThumbnail": "",
+      "description": "<h2>Complete Retail POS & Supermarket Inventory ERP (ShopFlow Pro)</h2><p>ShopFlow Pro powers modern retail outlets, supermarkets, electronics stores, and fashion boutiques. Built with blazingly fast scanning, offline-resilient billing, and comprehensive accounts management.</p><h3>Features that Accelerate Retail Growth:</h3><ul><li><strong>Fast Scanning & Shortcut Keys:</strong> Process up to 10 customers per minute with lightning-fast barcode barcode scanning.</li><li><strong>Automated Stock Re-order Alert:</strong> Get notified before items run out of stock with automatic purchase order recommendations.</li><li><strong>Customer Credit Ledger & Due Collection:</strong> Complete customer ledger with SMS reminders for pending dues.</li><li><strong>Barcode Label Generator:</strong> Print customized barcode stickers with price, item code, and store name directly from the software.</li></ul>",
+      "features": [
+        "Ultra-Fast Barcode Scanning & Offline Mode",
+        "Barcode Label Generator & Sticker Printing",
+        "Supplier Purchase Orders & Payment Ledgers",
+        "Customer Credit (Due) Ledger with SMS",
+        "Multi-Unit Support (Pcs, Kg, Box, Pack)",
+        "Automated Profit, Loss & VAT Reports"
+      ],
+      "pricingPlans": [
+        {
+          "name": "Single Store Standard",
+          "price": 12000,
+          "discountPrice": 16000,
+          "period": "One-Time Setup",
+          "badge": "Standard",
+          "description": "Perfect for grocery stores, boutiques, electronics shops, and department stores.",
+          "features": [
+            "1 Billing POS Terminal",
+            "Unlimited Products & Barcodes",
+            "Barcode Sticker Generator",
+            "Customer Due & Credit Tracking",
+            "Daily & Monthly Sales Analytics",
+            "Lifetime License Included",
+            "Free Remote Installation"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Multi-Counter Pro",
+          "price": 24000,
+          "discountPrice": 30000,
+          "period": "One-Time Setup",
+          "badge": "Most Popular",
+          "description": "Tailored for high-footfall supermarkets and department stores with several cashiers.",
+          "features": [
+            "Up to 4 Billing Counters",
+            "Cashier Shift Reconciliations",
+            "Automated Low-Stock Alerts",
+            "SMS Bill Confirmation & Marketing",
+            "Supplier Ledger & Aging Reports",
+            "Cloud Backup Auto-Sync",
+            "24/7 Priority WhatsApp Support"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Chain Store Enterprise",
+          "price": 45000,
+          "discountPrice": 58000,
+          "period": "One-Time Setup",
+          "badge": "Enterprise",
+          "description": "For retail brand chains with centralized warehouse purchasing and distribution.",
+          "features": [
+            "Multi-Branch Central Inventory",
+            "Central Purchasing & Stock Transfers",
+            "Customer Global Loyalty Rewards Card",
+            "Executive Business Intelligence Dashboard",
+            "Role-Based Access Management",
+            "Dedicated Support Account Manager",
+            "On-site Setup & Staff Training"
+          ],
+          "isPopular": false
+        }
+      ],
+      "liveUrl": "https://okobiz.com/demo",
+      "whatsappNumber": "+8801973590937",
+      "popularBadge": false,
+      "featuredBadge": true,
+      "order": 3,
+      "status": "active",
+      "createdAt": "2024-03-10T10:00:00.000Z",
+      "slug": "prod-3"
+    }
+  ]
+}
