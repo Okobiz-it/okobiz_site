@@ -14,15 +14,13 @@ import {
   ArrowUpDown,
   ChevronLeft,
   ChevronRight,
-  ShieldCheck,
-  Zap,
-  Headphones,
   Check,
   ImageIcon
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import PreviewModal from "@/components/PreviewModal";
+import SectionLoader from "@/components/SectionLoader";
 import { ProductItem } from "@/data/mockData";
 import { getProducts, getProductWhatsAppUrl } from "@/lib/api";
 
@@ -120,34 +118,6 @@ export default function ProductsPage() {
         subtitle="Battle-tested, turnkey software & enterprise management systems ready for deployment. Test live demos, compare pricing plans, or request a personalized demo on WhatsApp."
       />
 
-      {/* Value Proposition Strip */}
-      <section className="bg-[#101114] border-y border-gray-800/80 py-6">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-4 sm:gap-6 text-center">
-            <div className="flex flex-col items-center p-3 rounded-[4px] bg-white/[0.02] border border-gray-800/60">
-              <Zap className="w-5 h-5 text-[#3368B2] mb-1.5" />
-              <h4 className="text-xs sm:text-sm font-bold text-white">Instant Deployment</h4>
-              <p className="text-[11px] text-gray-400">Launch on cloud within 24-48 hrs</p>
-            </div>
-            <div className="flex flex-col items-center p-3 rounded-[4px] bg-white/[0.02] border border-gray-800/60">
-              <ShieldCheck className="w-5 h-5 text-emerald-400 mb-1.5" />
-              <h4 className="text-xs sm:text-sm font-bold text-white">100% Tested & Secure</h4>
-              <p className="text-[11px] text-gray-400">Zero data loss & automated backup</p>
-            </div>
-            <div className="flex flex-col items-center p-3 rounded-[4px] bg-white/[0.02] border border-gray-800/60">
-              <Sparkles className="w-5 h-5 text-purple-400 mb-1.5" />
-              <h4 className="text-xs sm:text-sm font-bold text-white">Custom Branding</h4>
-              <p className="text-[11px] text-gray-400">Your logo, domain & color scheme</p>
-            </div>
-            <div className="flex flex-col items-center p-3 rounded-[4px] bg-white/[0.02] border border-gray-800/60">
-              <Headphones className="w-5 h-5 text-amber-400 mb-1.5" />
-              <h4 className="text-xs sm:text-sm font-bold text-white">24/7 WhatsApp Support</h4>
-              <p className="text-[11px] text-gray-400">Direct dedicated engineering assistance</p>
-            </div>
-          </div>
-        </div>
-      </section>
-
       {/* Main Catalog Section */}
       <section className="py-16 bg-[#141416]" ref={gridTopRef}>
         <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
@@ -202,9 +172,8 @@ export default function ProductsPage() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="text-center py-24 bg-[#181A1D] rounded-[4px] border border-gray-800">
-              <div className="w-10 h-10 border-2 border-[#3368B2] border-t-transparent rounded-[4px] animate-spin mx-auto mb-3" />
-              <p className="text-gray-400 text-sm">Loading finished products catalog...</p>
+            <div className="bg-[#181A1D] rounded-[4px] border border-gray-800 py-10">
+              <SectionLoader size="md" />
             </div>
           ) : filteredProducts.length === 0 ? (
             <div className="text-center py-20 bg-[#181A1D] rounded-[4px] border border-gray-800">

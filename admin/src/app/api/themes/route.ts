@@ -3,6 +3,7 @@ import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import { connectDB } from "@/lib/mongodb";
 import ThemeItem from "@/models/ThemeItem";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { createSlug } from "@/lib/slug";
 
 export async function GET() {
   try {
@@ -22,9 +23,11 @@ export async function POST(req: Request) {
   try {
     const body = await req.json();
     const store = getDataStore();
+    const targetSlug = createSlug(body.slug || body.websiteTitle || "project") || `project-${Date.now()}`;
     const newTheme = {
       _id: "thm-" + Date.now(),
       websiteTitle: body.websiteTitle || "New Project",
+      slug: targetSlug,
       category: body.category || "Web Applications",
       clientName: body.clientName || "",
       mediaType: body.mediaType || (body.video ? "video" : "image"),
@@ -72,6 +75,9 @@ export async function PUT(req: Request) {
     const { _id, ...updates } = body;
     if (!_id) return NextResponse.json({ success: false, message: "ID required" }, { status: 400 });
 
+    if (updates.slug || updates.websiteTitle) {
+      updates.slug = createSlug(updates.slug || updates.websiteTitle);
+    }
     if (updates.features && typeof updates.features === "string") {
       updates.features = updates.features.split("\n").map((f: string) => f.trim()).filter(Boolean);
     }

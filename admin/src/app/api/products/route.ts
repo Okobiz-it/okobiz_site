@@ -3,6 +3,7 @@ import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import { connectDB } from "@/lib/mongodb";
 import ProductItem from "@/models/ProductItem";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
+import { createSlug } from "@/lib/slug";
 
 export async function GET(req: Request) {
   try {
@@ -79,10 +80,10 @@ export async function POST(req: Request) {
     const body = await req.json();
     const store = getDataStore();
 
-    // Sanitize and validate slug
-    let rawSlug = (body.slug || "").trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+    // Sanitize and validate slug using slugify
+    let rawSlug = createSlug(body.slug || "");
     if (!rawSlug && body.title) {
-      rawSlug = body.title.trim().toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/^-|-$/g, "");
+      rawSlug = createSlug(body.title);
     }
     if (!rawSlug) {
       rawSlug = "prod-" + Date.now();
@@ -199,7 +200,7 @@ export async function PUT(req: Request) {
 
     // Check slug uniqueness if slug is being updated
     if (updates.slug !== undefined) {
-      const cleanSlug = updates.slug.trim().toLowerCase().replace(/[^a-z0-9-_]/g, "-").replace(/-+/g, "-").replace(/^-|-$/g, "");
+      const cleanSlug = createSlug(updates.slug);
       if (!cleanSlug) {
         return NextResponse.json({ success: false, message: "Product slug cannot be empty." }, { status: 400 });
       }

@@ -26,6 +26,7 @@ import {
 import RichTextEditor from "@/components/RichTextEditor";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { cleanSnippet } from "@/lib/richText";
+import { createSlug } from "@/lib/slug";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -40,6 +41,7 @@ export default function PortfolioThemesPage() {
   // Form State (no default data for new projects)
   const [form, setForm] = useState({
     websiteTitle: "",
+    slug: "",
     category: "Web Applications",
     clientName: "",
     mediaType: "image", // "image" | "video"
@@ -188,6 +190,7 @@ export default function PortfolioThemesPage() {
     setEditItem(null);
     setForm({
       websiteTitle: "",
+      slug: "",
       category: "Web Applications",
       clientName: "",
       mediaType: "image",
@@ -214,6 +217,7 @@ export default function PortfolioThemesPage() {
     const isYt = isYouTubeUrl(item.video);
     setForm({
       websiteTitle: item.websiteTitle || "",
+      slug: item.slug || createSlug(item.websiteTitle || ""),
       category: item.category || "Web Applications",
       clientName: item.clientName || "",
       mediaType: item.mediaType || (item.video ? "video" : "image"),
@@ -276,6 +280,16 @@ export default function PortfolioThemesPage() {
     }
   };
 
+  const handleTitleChange = (val: string) => {
+    setForm((prev) => {
+      const updates: any = { websiteTitle: val };
+      if (!editItem || !prev.slug || prev.slug === createSlug(prev.websiteTitle)) {
+        updates.slug = createSlug(val);
+      }
+      return { ...prev, ...updates };
+    });
+  };
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
 
@@ -295,8 +309,11 @@ export default function PortfolioThemesPage() {
       activeThumb = getYouTubeThumbnailUrl(activeVideo) || "";
     }
 
+    const finalSlug = createSlug(form.slug || form.websiteTitle || "project");
+
     const payload = {
       ...form,
+      slug: finalSlug,
       video: activeVideo,
       videoThumbnail: activeThumb,
       photo: form.mediaType === "video" ? (activeThumb || form.photo || "") : form.photo,
@@ -593,7 +610,12 @@ export default function PortfolioThemesPage() {
                         <h3 className="text-base font-bold text-white group-hover:text-[#3368B2] transition line-clamp-1">
                           {item.websiteTitle}
                         </h3>
-                        <p className="text-xs text-gray-400 mt-1.5 line-clamp-2 leading-relaxed">
+                        <div className="mt-1">
+                          <span className="font-mono text-[10px] text-gray-400 bg-[#0d0e11] px-2 py-0.5 rounded border border-gray-800 inline-block truncate max-w-full">
+                            /portfolio/{item.slug || createSlug(item.websiteTitle)}
+                          </span>
+                        </div>
+                        <p className="text-xs text-gray-400 mt-2 line-clamp-2 leading-relaxed">
                           {cleanSnippet(item.description) || "Completed project showcase delivered with high performance and modern UX."}
                         </p>
                       </div>
@@ -712,7 +734,7 @@ export default function PortfolioThemesPage() {
                     type="text"
                     required
                     value={form.websiteTitle}
-                    onChange={(e) => setForm({ ...form, websiteTitle: e.target.value })}
+                    onChange={(e) => handleTitleChange(e.target.value)}
                     placeholder="e.g. Agro Infusion Smart Supply Hub"
                     className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2]"
                   />
@@ -727,6 +749,24 @@ export default function PortfolioThemesPage() {
                     className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2]"
                   />
                 </div>
+              </div>
+
+              {/* URL Slug Input */}
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1 flex items-center justify-between">
+                  <span>Project URL Slug <span className="text-red-400">*</span></span>
+                  <span className="text-[10px] text-gray-400 font-mono">
+                    Live URL: <span className="text-blue-400">/portfolio/{form.slug || "project-slug"}</span>
+                  </span>
+                </label>
+                <input
+                  type="text"
+                  required
+                  value={form.slug}
+                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
+                  placeholder="e.g. agro-infusion-smart-supply-hub"
+                  className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2] font-mono"
+                />
               </div>
 
               {/* Category & Media Type */}

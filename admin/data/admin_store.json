@@ -185,7 +185,8 @@
         "Automated visa tracking and flight schedule dashboard",
         "SEO optimized architecture with fast loading speeds"
       ],
-      "createdAt": "2024-01-15T10:00:00.000Z"
+      "createdAt": "2024-01-15T10:00:00.000Z",
+      "slug": "bd-hajj-and-umrah-agency-portal"
     },
     {
       "_id": "64f1002",
@@ -211,7 +212,8 @@
         "Admin order management and invoice printing system",
         "SSL secured and 100% responsive"
       ],
-      "createdAt": "2024-02-10T10:00:00.000Z"
+      "createdAt": "2024-02-10T10:00:00.000Z",
+      "slug": "agro-infusion-fresh-agro-ecommerce"
     },
     {
       "_id": "64f1003",
@@ -236,7 +238,8 @@
         "Case studies and clients testimonials section",
         "Direct WhatsApp and email lead capture integrations"
       ],
-      "createdAt": "2024-03-01T10:00:00.000Z"
+      "createdAt": "2024-03-01T10:00:00.000Z",
+      "slug": "corporate-brand-and-business-portfolio"
     },
     {
       "_id": "64f1004",
@@ -261,7 +264,8 @@
         "Google Maps integration with neighborhood highlights",
         "Multi-currency support and customer review module"
       ],
-      "createdAt": "2024-03-20T10:00:00.000Z"
+      "createdAt": "2024-03-20T10:00:00.000Z",
+      "slug": "real-estate-and-luxury-venues-booking"
     },
     {
       "_id": "64f1005",
@@ -286,7 +290,8 @@
         "Delivery zone calculation and live order status",
         "Mobile-first app-like progressive web experience"
       ],
-      "createdAt": "2024-04-05T10:00:00.000Z"
+      "createdAt": "2024-04-05T10:00:00.000Z",
+      "slug": "food-and-restaurant-order-app-eatclub"
     },
     {
       "_id": "64f1006",
@@ -311,7 +316,8 @@
         "Modern dark UI with glowing tech badges",
         "Lead scoring and direct CRM integrations"
       ],
-      "createdAt": "2024-04-18T10:00:00.000Z"
+      "createdAt": "2024-04-18T10:00:00.000Z",
+      "slug": "tech-and-software-saas-presentation"
     },
     {
       "_id": "64f1007",
@@ -336,7 +342,8 @@
         "Tax filing and compliance reporting exports",
         "Role-based staff permissions and audit logs"
       ],
-      "createdAt": "2024-05-02T10:00:00.000Z"
+      "createdAt": "2024-05-02T10:00:00.000Z",
+      "slug": "fintech-and-global-invoicing-solution"
     },
     {
       "_id": "64f1008",
@@ -361,7 +368,8 @@
         "Preventive maintenance scheduling module",
         "High performance SVG diagram visualization"
       ],
-      "createdAt": "2024-05-14T10:00:00.000Z"
+      "createdAt": "2024-05-14T10:00:00.000Z",
+      "slug": "nexlin-industrial-automation-suite"
     },
     {
       "_id": "64f1009",
@@ -386,7 +394,8 @@
         "On-site mobile engineer reporting interface",
         "Detailed financial budgeting and variance analysis"
       ],
-      "createdAt": "2024-05-25T10:00:00.000Z"
+      "createdAt": "2024-05-25T10:00:00.000Z",
+      "slug": "korte-smart-construction-and-architectural-erp"
     },
     {
       "_id": "64f1010",
@@ -411,7 +420,8 @@
         "Automated traveler visa document upload checklist",
         "Customer reviews, trip ratings, and photo galleries"
       ],
-      "createdAt": "2024-06-05T10:00:00.000Z"
+      "createdAt": "2024-06-05T10:00:00.000Z",
+      "slug": "olanka-luxury-travel-and-tour-operator-portal"
     },
     {
       "_id": "64f1011",
@@ -436,7 +446,8 @@
         "Featured listing monetization with bKash/Cards",
         "Instant buyer-seller WhatsApp and chat messaging"
       ],
-      "createdAt": "2024-06-18T10:00:00.000Z"
+      "createdAt": "2024-06-18T10:00:00.000Z",
+      "slug": "town-community-and-local-classifieds-portal"
     },
     {
       "_id": "64f1012",
@@ -461,7 +472,8 @@
         "Integrated coupon codes, flash sales, and countdown timers",
         "Automated courier API delivery slip generation"
       ],
-      "createdAt": "2024-07-02T10:00:00.000Z"
+      "createdAt": "2024-07-02T10:00:00.000Z",
+      "slug": "rich-lifestyle-and-fashion-ecommerce-store"
     },
     {
       "_id": "64f1013",
@@ -486,7 +498,8 @@
         "Direct project scope estimator and pricing calculator",
         "High speed static page generation architecture"
       ],
-      "createdAt": "2024-07-15T10:00:00.000Z"
+      "createdAt": "2024-07-15T10:00:00.000Z",
+      "slug": "meven-creative-studio-and-digital-agency"
     },
     {
       "_id": "64f1014",
@@ -511,7 +524,8 @@
         "Encrypted client document vault and contract viewer",
         "Multilingual legal articles and knowledge repository"
       ],
-      "createdAt": "2024-08-01T10:00:00.000Z"
+      "createdAt": "2024-08-01T10:00:00.000Z",
+      "slug": "aladal-legal-and-corporate-advisory-portal"
     },
     {
       "_id": "64f1015",
@@ -536,7 +550,8 @@
         "Service center maintenance appointment booking",
         "Bulk ERP inventory synchronization"
       ],
-      "createdAt": "2024-08-18T10:00:00.000Z"
+      "createdAt": "2024-08-18T10:00:00.000Z",
+      "slug": "nitol-niloy-automotive-parts-marketplace"
     },
     {
       "_id": "64f1016",
@@ -561,7 +576,8 @@
         "Automated weekly cloud backup management",
         "24/7 technical ticket system with attachments"
       ],
-      "createdAt": "2024-09-02T10:00:00.000Z"
+      "createdAt": "2024-09-02T10:00:00.000Z",
+      "slug": "cloudserve-devops-and-cloud-hosting-dashboard"
     },
     {
       "_id": "64f1017",
@@ -586,7 +602,8 @@
         "Chef special event and seasonal degustation promo",
         "Customer reviews with Instagram feed integration"
       ],
-      "createdAt": "2024-09-15T10:00:00.000Z"
+      "createdAt": "2024-09-15T10:00:00.000Z",
+      "slug": "gourmet-bistro-and-artisanal-bakery-menu"
     },
     {
       "_id": "64f1018",
@@ -611,7 +628,8 @@
         "Patient health record PDF download dashboard",
         "Telemedicine video meeting link automation"
       ],
-      "createdAt": "2024-09-28T10:00:00.000Z"
+      "createdAt": "2024-09-28T10:00:00.000Z",
+      "slug": "doctorcare-telehealth-and-clinic-appointment"
     },
     {
       "_id": "64f1019",
@@ -636,7 +654,8 @@
         "Project deliverable breakdown and client testimonials",
         "Smooth dark mode glassmorphism layout"
       ],
-      "createdAt": "2024-10-05T10:00:00.000Z"
+      "createdAt": "2024-10-05T10:00:00.000Z",
+      "slug": "pixelcraft-motion-and-3d-design-portfolio"
     },
     {
       "_id": "proj-1",
@@ -661,7 +680,8 @@
         "Interactive delivery zone calculator with pin-drop geolocation",
         "Automated batch printing for fulfillment warehouse slips"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "agro-infusion-smart-supply-and-agro-commerce-hub"
     },
     {
       "_id": "proj-2",
@@ -688,7 +708,8 @@
       ],
       "createdAt": "2026-10-01T10:13:57.941Z",
       "youtubeUrl": "https://www.youtube.com/watch?v=LbuawsCaIz0",
-      "featuresText": "Multi-currency dynamic invoice generator with PDF exports\nAutomated Stripe & PayPal merchant ledger integration\nReal-time KYC identity verification pipeline\nCustomizable team permission roles and activity logs"
+      "featuresText": "Multi-currency dynamic invoice generator with PDF exports\nAutomated Stripe & PayPal merchant ledger integration\nReal-time KYC identity verification pipeline\nCustomizable team permission roles and activity logs",
+      "slug": "doola-us-global-entity-and-invoicing-infrastructure"
     },
     {
       "_id": "proj-3",
@@ -713,7 +734,8 @@
         "Custom catering and audio-visual package add-on calculator",
         "Automated digital contract signature workflow"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "the-venues-collection-luxury-booking-and-event-portal"
     },
     {
       "_id": "proj-4",
@@ -738,7 +760,8 @@
         "Hotel room allocation and flight seat grouping module",
         "Offline pilgrim emergency SOS button with GPS coordinate dispatch"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "bd-hajj-and-umrah-agency-erp-and-pilgrim-mobile-system"
     },
     {
       "_id": "proj-5",
@@ -763,7 +786,8 @@
         "Subcontractor requisition approval chains",
         "Automated safety hazard notification alerts"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "korte-smart-construction-erp-and-field-inspector-app"
     },
     {
       "_id": "proj-6",
@@ -788,7 +812,8 @@
         "Live rider GPS route tracking via Leaflet/Mapbox",
         "Instant push notifications on order cooking stages"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "eatclub-food-delivery-and-kitchen-ticketing-application"
     },
     {
       "_id": "proj-7",
@@ -813,7 +838,8 @@
         "Bulk CSV purchase order upload and instant quotation",
         "Automated logistics dispatch tracking"
       ],
-      "createdAt": "2026-10-01T10:13:57.941Z"
+      "createdAt": "2026-10-01T10:13:57.941Z",
+      "slug": "nitol-niloy-automotive-parts-b2b-wholesale-portal"
     },
     {
       "_id": "proj-8",
@@ -840,7 +866,8 @@
       ],
       "createdAt": "2026-10-01T10:13:57.941Z",
       "youtubeUrl": "",
-      "featuresText": "Live multi-channel telemetry gauges and time-series graphs\nMachine failure predictive alerts via statistical thresholding\nShift-by-shift energy consumption analytics report generator\nEmergency machine shutdown trigger with dual authorization"
+      "featuresText": "Live multi-channel telemetry gauges and time-series graphs\nMachine failure predictive alerts via statistical thresholding\nShift-by-shift energy consumption analytics report generator\nEmergency machine shutdown trigger with dual authorization",
+      "slug": "nexlin-iot-smart-sensor-and-factory-automation-dashboard"
     }
   ],
   "blogs": [
@@ -1176,8 +1203,51 @@
         "AWS",
         "Docker"
       ],
-      "priceRange": "$500 - $5,000",
-      "order": 1
+      "order": 1,
+      "pricingPlans": [
+        {
+          "name": "Starter",
+          "price": 15000,
+          "discountPrice": 20000,
+          "period": "One-Time Setup",
+          "badge": "",
+          "description": "",
+          "features": [
+            "Included Feature 1",
+            "Included Feature 2",
+            "Included Feature 3"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Most Advanced",
+          "price": 15000,
+          "discountPrice": 20000,
+          "period": "One-Time Setup",
+          "badge": "",
+          "description": "",
+          "features": [
+            "Included Feature 1",
+            "Included Feature 2",
+            "Included Feature 3"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Advanced",
+          "price": 15000,
+          "discountPrice": 20000,
+          "period": "One-Time Setup",
+          "badge": "",
+          "description": "",
+          "features": [
+            "Included Feature 1",
+            "Included Feature 2",
+            "Included Feature 3"
+          ],
+          "isPopular": false
+        }
+      ]
     },
     {
       "_id": "srv-2",
@@ -1218,8 +1288,60 @@
         "Screaming Frog",
         "Schema Markup"
       ],
-      "priceRange": "$300 - $2,500 / mo",
-      "order": 2
+      "order": 2,
+      "pricingPlans": [
+        {
+          "name": "Local Growth SEO",
+          "price": 10000,
+          "discountPrice": 14000,
+          "period": "/ month",
+          "badge": "Starter",
+          "description": "Rank for local search queries and establish Google visibility.",
+          "features": [
+            "Complete Technical Site Health Audit",
+            "10 High-Intent Target Keywords",
+            "Google Search Console & Analytics 4 Setup",
+            "Google Business Profile Optimization",
+            "Title, Meta & Heading Schema Fixes",
+            "Monthly Ranking & Traffic Report"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "National Authority SEO",
+          "price": 22000,
+          "discountPrice": 30000,
+          "period": "/ month",
+          "badge": "Most Popular",
+          "description": "Accelerate organic search traffic and outperform major competitors.",
+          "features": [
+            "30 High-Volume Target Keywords",
+            "Core Web Vitals & Page Speed Fixes",
+            "High-DA Quality Backlink Outreach",
+            "Competitor Keyword Gap Interception",
+            "2 Monthly SEO-Optimized Blog Articles",
+            "Bi-Weekly Progress & Keyword Movement Calls"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Enterprise Search Dominance",
+          "price": 45000,
+          "discountPrice": 60000,
+          "period": "/ month",
+          "badge": "Market Leader",
+          "description": "Full-scale corporate SEO strategy for high-volume revenue generation.",
+          "features": [
+            "60+ National & International Commercial Keywords",
+            "Advanced Structured Data (JSON-LD) Hierarchy",
+            "Aggressive Editorial Link Building & PR Distribution",
+            "Conversion Rate Optimization (CRO) Recommendations",
+            "4 Monthly Long-Form Expert Content Pieces",
+            "Dedicated Senior SEO Strategist & 24/7 Monitoring"
+          ],
+          "isPopular": false
+        }
+      ]
     },
     {
       "_id": "srv-3",
@@ -1260,8 +1382,59 @@
         "Mailchimp",
         "Klaviyo"
       ],
-      "priceRange": "$400 - $3,500 / mo",
-      "order": 3
+      "order": 3,
+      "pricingPlans": [
+        {
+          "name": "Ad Campaign Starter",
+          "price": 12000,
+          "discountPrice": 16000,
+          "period": "/ month",
+          "badge": "Lead Gen",
+          "description": "Launch targeted ads with verified tracking and lead capture.",
+          "features": [
+            "Meta Ads (Facebook & Instagram) Setup",
+            "Ad Spend Management up to $600/month",
+            "4 Custom Static Ad Creatives & Copywriting",
+            "Audience Targeting & Demographics Setup",
+            "Basic Pixel & Lead Generation Funnel"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Growth Performance Marketing",
+          "price": 25000,
+          "discountPrice": 35000,
+          "period": "/ month",
+          "badge": "High Conversion",
+          "description": "Multi-channel funnel with retargeting and automated tracking.",
+          "features": [
+            "Meta Ads + Google Search & YouTube Ads",
+            "Ad Spend Management up to $2,500/month",
+            "10 High-Converting Creatives + 2 Motion Ads",
+            "Server-Side Facebook Conversion API (CAPI)",
+            "Dynamic Retargeting & Cart Abandonment Funnels",
+            "Continuous A/B Testing & Weekly CPA Optimization"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Omnichannel Scale",
+          "price": 50000,
+          "discountPrice": 65000,
+          "period": "/ month",
+          "badge": "Aggressive Scale",
+          "description": "Full-scale advertising suite across all major digital channels.",
+          "features": [
+            "Meta, Google, TikTok, LinkedIn & Display Advertising",
+            "Unlimited Ad Spend Management",
+            "Custom Creative Sprint (Videos, Reels & Carousels)",
+            "CRM & WhatsApp Automation Integration",
+            "Full-Funnel ROAS & Attribution Modeling",
+            "Dedicated Media Buyer & Weekly Strategy Meetings"
+          ],
+          "isPopular": false
+        }
+      ]
     },
     {
       "_id": "srv-4",
@@ -1302,8 +1475,59 @@
         "Blender 3D",
         "InDesign"
       ],
-      "priceRange": "$200 - $2,500",
-      "order": 4
+      "order": 4,
+      "pricingPlans": [
+        {
+          "name": "Brand Starter Kit",
+          "price": 8000,
+          "discountPrice": 12000,
+          "period": "One-Time Setup",
+          "badge": "Identity",
+          "description": "Essential corporate identity package for launching your brand.",
+          "features": [
+            "3 Unique Logo Design Concepts",
+            "Brand Color Palette & Typography System",
+            "High-Resolution Vector Files (AI, SVG, PNG, PDF)",
+            "Social Media Profile & Cover Assets",
+            "Unlimited Conceptual Revisions"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Complete Corporate Identity",
+          "price": 18000,
+          "discountPrice": 25000,
+          "period": "One-Time Setup",
+          "badge": "Most Popular",
+          "description": "Full brand guidelines and corporate collateral suite.",
+          "features": [
+            "Comprehensive Brand Guidelines Manual (PDF)",
+            "Full Stationery Suite (Business Cards, Letterhead, Envelopes)",
+            "10 Social Media Marketing Templates (Canva & PSD)",
+            "Company Profile & Brochure Layout (up to 8 pages)",
+            "Packaging or Merchandise Mockup Designs",
+            "Full Commercial Copyright Transfer"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Master Agency Creative Suite",
+          "price": 38000,
+          "discountPrice": 50000,
+          "period": "One-Time Setup",
+          "badge": "Premium Design",
+          "description": "3D renders, UI/UX Figma design system, and motion graphics.",
+          "features": [
+            "Full Corporate Brand Identity Ecosystem",
+            "3D Product Modeling & Photorealistic Renders",
+            "Motion Graphics Logo Intro & Promo Video",
+            "Complete Web/App UI Design System in Figma",
+            "Investor Pitch Deck / Catalog Presentation",
+            "Dedicated Senior Art Director"
+          ],
+          "isPopular": false
+        }
+      ]
     },
     {
       "_id": "srv-5",
@@ -1344,8 +1568,59 @@
         "Meta Business Suite",
         "LinkedIn Campaign Mgr"
       ],
-      "priceRange": "$350 - $2,000 / mo",
-      "order": 5
+      "order": 5,
+      "pricingPlans": [
+        {
+          "name": "Essential Presence",
+          "price": 12000,
+          "discountPrice": 16000,
+          "period": "/ month",
+          "badge": "Starter",
+          "description": "Maintain a polished, regular social media voice across platforms.",
+          "features": [
+            "12 Custom Designed Graphics & Infographics",
+            "Engaging Caption Writing & Hashtag Research",
+            "Scheduled Publishing across Facebook & Instagram",
+            "Community Comment & Message Monitoring",
+            "Monthly Engagement & Reach Summary"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Engagement & Viral Reach",
+          "price": 24000,
+          "discountPrice": 32000,
+          "period": "/ month",
+          "badge": "Most Popular",
+          "description": "Video-focused social growth with daily engagement and stories.",
+          "features": [
+            "20 High-Quality Visual Posts + Carousels",
+            "4 Edited Short-Form Reels / TikTok Videos",
+            "Daily Story Highlights & Polls",
+            "Proactive Community Building & Fast DM Replies",
+            "Influencer Collaboration Outreach",
+            "Bi-Weekly Analytics & Strategy Adjustments"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Total Brand Dominance",
+          "price": 45000,
+          "discountPrice": 60000,
+          "period": "/ month",
+          "badge": "Full Production",
+          "description": "End-to-end social media handling with on-brand video production.",
+          "features": [
+            "30 Premium Custom Graphics & Carousels",
+            "10 High-Impact Reels/Shorts with Voiceover & Motion",
+            "Multi-Platform Management (FB, IG, LinkedIn, TikTok)",
+            "24/7 Community Moderation & Lead Capture",
+            "Monthly Paid Boost Budget Strategy",
+            "Dedicated Social Media Manager & Copywriter"
+          ],
+          "isPopular": false
+        }
+      ]
     },
     {
       "_id": "srv-6",
@@ -1385,8 +1660,59 @@
         "AdForm",
         "Moat Analytics"
       ],
-      "priceRange": "$600 - $6,000 / mo",
-      "order": 6
+      "order": 6,
+      "pricingPlans": [
+        {
+          "name": "DSP Programmatic Starter",
+          "price": 20000,
+          "discountPrice": 28000,
+          "period": "/ month",
+          "badge": "Display RTB",
+          "description": "Real-time bidding across top global websites and news publishers.",
+          "features": [
+            "DSP Platform Setup & Campaign Architecture",
+            "Standard IAB Display Banner Formats",
+            "Geo-Fencing & Demographic Audience Targeting",
+            "Real-Time Anti-Fraud & Brand Safety Filters",
+            "Monthly Impression & CTR Attribution Report"
+          ],
+          "isPopular": false
+        },
+        {
+          "name": "Advanced Video & CTV DSP",
+          "price": 40000,
+          "discountPrice": 55000,
+          "period": "/ month",
+          "badge": "Most Popular",
+          "description": "Connected TV, digital audio, and high-impact rich media.",
+          "features": [
+            "Connected TV (CTV) & OTT Video Ad Placement",
+            "Digital Audio Advertising (Spotify, Podcasts)",
+            "First-Party CRM Data Audience Matching",
+            "Cross-Device Frequency Capping & Sequential Retargeting",
+            "Viewability Verification (Moat / IAS Integration)",
+            "Bi-Weekly Optimization & Inventory Refinement"
+          ],
+          "isPopular": true
+        },
+        {
+          "name": "Global Enterprise Omnichannel DSP",
+          "price": 80000,
+          "discountPrice": 110000,
+          "period": "/ month",
+          "badge": "Global Scale",
+          "description": "Multi-DSP orchestration with customized algorithmic bidding.",
+          "features": [
+            "Multi-DSP Orchestration (Google DV360 & The Trade Desk)",
+            "Custom Algorithmic Bidding Models",
+            "Global Publisher PMP (Private Marketplace) Deals",
+            "Omnichannel Dynamic Creative Optimization (DCO)",
+            "Advanced Multi-Touch Attribution Modeling",
+            "Dedicated Certified Programmatic Trader"
+          ],
+          "isPopular": false
+        }
+      ]
     }
   ],
   "faqs": [
@@ -1909,7 +2235,7 @@
       "status": "active",
       "createdAt": "2024-03-01T10:00:00.000Z",
       "updatedAt": "2026-10-10T12:25:15.972Z",
-      "slug": "prod-1",
+      "slug": "pharmacare-pro-pharmacy-management-system",
       "reviews": [
         {
           "name": "Dr. Rafiqul Islam",
@@ -2017,7 +2343,7 @@
       "order": 2,
       "status": "active",
       "createdAt": "2024-03-05T10:00:00.000Z",
-      "slug": "prod-2"
+      "slug": "restomaster-restaurant-pos-and-cloud-kitchen-erp"
     },
     {
       "_id": "prod-3",
@@ -2104,7 +2430,7 @@
       "order": 3,
       "status": "active",
       "createdAt": "2024-03-10T10:00:00.000Z",
-      "slug": "prod-3"
+      "slug": "shopflow-pro-supermarket-and-retail-pos-erp"
     }
   ]
 }

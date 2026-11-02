@@ -10,6 +10,7 @@ import {
 } from "@/components/products/types";
 import ProductModal from "@/components/products/ProductModal";
 import ProductTable from "@/components/products/ProductTable";
+import { createSlug } from "@/lib/slug";
 
 const ITEMS_PER_PAGE = 10;
 
@@ -221,19 +222,8 @@ export default function AdminProductsPage() {
   const handleTitleChange = (newTitle: string) => {
     setForm((prev) => {
       const updates: Partial<ProductFormState> = { title: newTitle };
-      if (
-        !editItem &&
-        (!prev.slug ||
-          prev.slug ===
-            prev.title
-              .toLowerCase()
-              .replace(/[^a-z0-9]+/g, "-")
-              .replace(/^-|-$/g, ""))
-      ) {
-        const autoSlug = newTitle
-          .toLowerCase()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-|-$/g, "");
+      if (!editItem || !prev.slug || prev.slug === createSlug(prev.title)) {
+        const autoSlug = createSlug(newTitle);
         updates.slug = autoSlug;
         validateSlug(autoSlug, undefined);
       }
@@ -392,12 +382,7 @@ export default function AdminProductsPage() {
       return;
     }
 
-    const cleanSlug = (form.slug || "")
-      .trim()
-      .toLowerCase()
-      .replace(/[^a-z0-9-_]/g, "-")
-      .replace(/-+/g, "-")
-      .replace(/^-|-$/g, "");
+    const cleanSlug = createSlug(form.slug || form.title || "");
     if (!cleanSlug) {
       setSlugError("Please enter a valid page slug.");
       alert("Please enter a valid page slug.");

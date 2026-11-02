@@ -1,6 +1,8 @@
 import { redirect, notFound } from "next/navigation";
 import { getServiceBySlug } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 interface DynamicSlugPageProps {
   params: Promise<{ slug: string }>;
 }

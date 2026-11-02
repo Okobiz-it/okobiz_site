@@ -8,12 +8,18 @@ import {
   CheckCircle2,
   Cpu,
   Sparkles,
-  MessageSquare,
-  Tag
+  MessageSquare
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
-import { ServiceClientItem, getServices, getServiceBySlug, DEFAULT_SERVICES } from "@/lib/api";
+import UniversalLoader from "@/components/UniversalLoader";
+import {
+  ServiceClientItem,
+  getServices,
+  getServiceBySlug,
+  DEFAULT_SERVICES,
+  getServiceWhatsAppUrl
+} from "@/lib/api";
 
 interface ServiceDetailViewProps {
   slug: string;
@@ -63,6 +69,10 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
       isMounted = false;
     };
   }, [slug, initialService]);
+
+  if (loading) {
+    return <UniversalLoader fullScreen size="lg" />;
+  }
 
   const activeService = service || DEFAULT_SERVICES[0];
 
@@ -156,7 +166,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
 
                   {/* Sidebar Hire Us Button */}
                   <a
-                    href={`https://wa.me/8801973590937?text=${encodeURIComponent(`Query for ${activeService.title}`)}`}
+                    href={getServiceWhatsAppUrl(activeService.title)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center justify-center gap-2 w-full py-2.5 px-4 bg-[#0167D6] hover:bg-[#0055b8] text-white font-bold text-xs uppercase tracking-wider rounded-[4px] transition shadow-lg"
@@ -211,12 +221,6 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
                     <span className="text-[10px] font-bold text-[#0167D6] uppercase tracking-wider">
                       Ready to Start Your Project?
                     </span>
-                    {activeService.priceRange?.trim() && (
-                      <span className="inline-flex items-center gap-1.5 px-2.5 py-0.5 rounded-[4px] bg-[#0167D6]/20 border border-[#0167D6]/40 text-[#60a5fa] text-[11px] font-semibold">
-                        <Tag className="w-3 h-3 text-[#0167D6]" />
-                        <span>Price Range: <strong className="text-white font-bold">{activeService.priceRange.trim()}</strong></span>
-                      </span>
-                    )}
                   </div>
                   <h4 className="text-base sm:text-lg font-bold text-white">
                     Hire Us for {activeService.title}
@@ -227,7 +231,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
                 </div>
                 <div className="flex items-center gap-2.5 shrink-0 w-full sm:w-auto">
                   <a
-                    href={`https://wa.me/8801973590937?text=${encodeURIComponent(`Query for ${activeService.title}`)}`}
+                    href={getServiceWhatsAppUrl(activeService.title)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-6 py-2.5 bg-[#0167D6] hover:bg-[#0055b8] text-white font-bold text-xs uppercase tracking-wider rounded-[4px] transition shadow-lg shadow-blue-900/40"
@@ -292,6 +296,127 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
           </div>
         </div>
       </section>
+
+      {/* FULL SECTION: EDITABLE PRICING PACKAGES LIKE PRODUCTS PAGE */}
+      {activeService.pricingPlans && activeService.pricingPlans.length > 0 && (
+        <section className="py-16 sm:py-20 bg-[#0E0F12] border-t border-gray-800/80">
+          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
+              <span className="text-xs font-bold uppercase tracking-widest text-[#0167D6] px-3.5 py-1 bg-[#0167D6]/20 rounded-[4px] inline-block mb-3 border border-[#0167D6]/30">
+                Transparent & Predictable Pricing
+              </span>
+              <h2 className="text-2xl sm:text-4xl font-extrabold text-white">
+                Choose the Ideal Plan for {activeService.title}
+              </h2>
+              <p className="mt-3 text-sm text-gray-400 leading-relaxed">
+                All plans include dedicated senior engineer oversight, milestone reviews, and post-delivery support. Select a package below to order or chat with our team on WhatsApp.
+              </p>
+            </div>
+
+            {/* Pricing Cards Grid */}
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8 items-stretch">
+              {activeService.pricingPlans.map((plan, idx) => {
+                const planWhatsappUrl = getServiceWhatsAppUrl(activeService.title, undefined, plan.name);
+                const hasDiscount = plan.discountPrice && plan.discountPrice > plan.price;
+                const savingsPct = hasDiscount
+                  ? Math.round(((plan.discountPrice - plan.price) / plan.discountPrice) * 100)
+                  : 0;
+
+                return (
+                  <div
+                    key={idx}
+                    className={`relative rounded-[4px] p-7 flex flex-col justify-between transition-all duration-300 ${
+                      plan.isPopular
+                        ? "bg-[#181A1E] border-2 border-[#0167D6] shadow-2xl shadow-blue-900/30 scale-[1.02] z-10"
+                        : "bg-[#111215] border border-gray-800 hover:border-gray-700 shadow-xl"
+                    }`}
+                  >
+                    {/* Popular Ribbon */}
+                    {plan.isPopular && (
+                      <div className="absolute -top-3 left-1/2 -translate-x-1/2 bg-[#0167D6] text-white text-[11px] font-extrabold px-3 py-0.5 rounded-[4px] uppercase tracking-wider shadow-lg">
+                        ⭐ Most Popular Choice
+                      </div>
+                    )}
+
+                    <div>
+                      {/* Plan Header */}
+                      <div className="flex items-center justify-between mb-3">
+                        <h3 className="text-lg font-extrabold text-white">
+                          {plan.name}
+                        </h3>
+                        {plan.badge && (
+                          <span className="text-[10px] font-bold px-2.5 py-0.5 rounded-[4px] bg-gray-800 text-gray-300 border border-gray-700">
+                            {plan.badge}
+                          </span>
+                        )}
+                      </div>
+
+                      <p className="text-xs text-gray-400 min-h-[36px] mb-6">
+                        {plan.description || "Comprehensive service scope designed for maximum ROI and delivery excellence."}
+                      </p>
+
+                      {/* Pricing block */}
+                      <div className="pb-6 mb-6 border-b border-gray-800/80">
+                        <div className="flex items-baseline gap-2">
+                          <span className="text-3xl sm:text-4xl font-extrabold text-white">
+                            ৳{plan.price?.toLocaleString()}
+                          </span>
+                          {hasDiscount && (
+                            <span className="text-sm text-gray-500 line-through">
+                              ৳{plan.discountPrice?.toLocaleString()}
+                            </span>
+                          )}
+                        </div>
+
+                        <div className="flex items-center justify-between mt-1">
+                          <span className="text-xs text-gray-400">
+                            {plan.period || "One-Time Setup"}
+                          </span>
+                          {savingsPct > 0 && (
+                            <span className="text-[10px] font-bold text-emerald-400 bg-emerald-950/60 px-2 py-0.5 rounded-[4px]">
+                              Save {savingsPct}%
+                            </span>
+                          )}
+                        </div>
+                      </div>
+
+                      {/* Features List */}
+                      <div className="space-y-3 mb-8">
+                        <p className="text-[11px] font-bold text-gray-400 uppercase tracking-wider">
+                          Included Deliverables:
+                        </p>
+                        <ul className="space-y-2.5">
+                          {plan.features.map((feat, fIdx) => (
+                            <li key={fIdx} className="flex items-start gap-2.5 text-xs text-gray-300">
+                              <CheckCircle2 className="w-4 h-4 text-emerald-400 shrink-0 mt-0.5" />
+                              <span className="leading-snug">{feat}</span>
+                            </li>
+                          ))}
+                        </ul>
+                      </div>
+                    </div>
+
+                    {/* Order on WhatsApp CTA */}
+                    <a
+                      href={planWhatsappUrl}
+                      target="_blank"
+                      rel="noopener noreferrer"
+                      className={`w-full py-3 px-4 rounded-[4px] text-xs font-bold transition flex items-center justify-center gap-2 text-center shadow-md ${
+                        plan.isPopular
+                          ? "bg-[#0167D6] hover:bg-[#0055b8] text-white shadow-blue-900/40"
+                          : "bg-gray-800 hover:bg-gray-700 text-white"
+                      }`}
+                    >
+                      <MessageSquare className="w-4 h-4" />
+                      <span>Select {plan.name} Package</span>
+                    </a>
+                  </div>
+                );
+              })}
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Talk With Us CTA */}
       <TalkCta />

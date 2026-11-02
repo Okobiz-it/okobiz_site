@@ -6,6 +6,8 @@ import TalkCta from "@/components/TalkCta";
 import { getServices, ServiceClientItem } from "@/lib/api";
 import { cleanSnippet } from "@/lib/richText";
 
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   title: "Services - okobiz",
   description:

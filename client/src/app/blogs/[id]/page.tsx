@@ -16,6 +16,7 @@ import {
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
+import UniversalLoader from "@/components/UniversalLoader";
 import { getBlogs } from "@/lib/api";
 import { BlogItem } from "@/data/mockData";
 import { renderRichText } from "@/lib/richText";
@@ -45,11 +46,7 @@ export default function BlogDetailPage() {
   }, [blogId]);
 
   if (!blog) {
-    return (
-      <div className="bg-black text-white min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#3368B2] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <UniversalLoader fullScreen size="lg" />;
   }
 
   const currentShareUrl =

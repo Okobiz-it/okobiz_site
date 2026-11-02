@@ -3,6 +3,8 @@ import type { Metadata } from "next";
 import ServiceDetailView from "@/components/ServiceDetailView";
 import { getServiceBySlug, getServices } from "@/lib/api";
 
+export const dynamic = "force-dynamic";
+
 interface ServiceSlugPageProps {
   params: Promise<{ slug: string }>;
 }

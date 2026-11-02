@@ -17,9 +17,11 @@ import {
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
+import UniversalLoader from "@/components/UniversalLoader";
 import { PortfolioProject } from "@/data/mockData";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { renderRichText } from "@/lib/richText";
+import { createSlug } from "@/lib/slug";
 
 export default function PortfolioDetailPage() {
   const params = useParams();
@@ -36,10 +38,17 @@ export default function PortfolioDetailPage() {
         const res = await fetch(`${adminUrl}/api/themes`);
         const json = await res.json();
         if (json.success && Array.isArray(json.data)) {
-          const match = json.data.find((p: any) => p._id === id);
+          const cleanId = id.toLowerCase();
+          const match = json.data.find(
+            (p: any) =>
+              p._id === id ||
+              (p.slug && p.slug.toLowerCase() === cleanId) ||
+              createSlug(p.websiteTitle || p.title || "") === cleanId
+          );
           if (match) {
             setProject({
               _id: match._id,
+              slug: match.slug || createSlug(match.websiteTitle || match.title || ""),
               title: match.websiteTitle || match.title,
               category: match.category || "Web Applications",
               clientName: match.clientName || "Enterprise Client",
@@ -65,11 +74,7 @@ export default function PortfolioDetailPage() {
   }, [id]);
 
   if (!project) {
-    return (
-      <div className="bg-black text-white min-h-screen flex items-center justify-center">
-        <div className="w-8 h-8 border-2 border-[#3368B2] border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
+    return <UniversalLoader fullScreen size="lg" />;
   }
 
   const isVideo = project.mediaType === "video" || !!project.videoUrl;

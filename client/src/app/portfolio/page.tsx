@@ -21,6 +21,7 @@ import { PortfolioProject } from "@/data/mockData";
 import { getThemes, getPortfolioPdf, PortfolioPdfData } from "@/lib/api";
 import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { stripMarkdown } from "@/lib/richText";
+import { createSlug } from "@/lib/slug";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -43,6 +44,7 @@ export default function PortfolioPage() {
         if (Array.isArray(themes) && themes.length > 0) {
           const formatted: PortfolioProject[] = themes.map((t: any) => ({
             _id: t._id,
+            slug: t.slug || createSlug(t.websiteTitle || t.title || "Project"),
             title: t.websiteTitle || t.title || "Project",
             category: t.category || "Web Applications",
             clientName: t.clientName || "Enterprise Client",
@@ -244,7 +246,7 @@ export default function PortfolioPage() {
                         {/* Video Center Play Button Overlay */}
                         {isVideo && (
                           <Link
-                            href={`/portfolio/${project._id}`}
+                            href={`/portfolio/${project.slug || project._id}`}
                             className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
                           >
                             <div className="w-14 h-14 rounded-full bg-rose-600/90 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.8)] backdrop-blur-sm border border-rose-400">
@@ -264,7 +266,7 @@ export default function PortfolioPage() {
 
                       {/* Card Content */}
                       <div className="p-6">
-                        <Link href={`/portfolio/${project._id}`}>
+                        <Link href={`/portfolio/${project.slug || project._id}`}>
                           <h3 className="text-lg font-bold text-white group-hover:text-[#3368B2] transition-colors mb-2.5 line-clamp-1">
                             {project.title}
                           </h3>
@@ -296,7 +298,7 @@ export default function PortfolioPage() {
                     {/* Card Bottom Actions */}
                     <div className="p-6 pt-0 border-t border-gray-800/80 mt-2 flex items-center justify-between">
                       <Link
-                        href={`/portfolio/${project._id}`}
+                        href={`/portfolio/${project.slug || project._id}`}
                         className="text-xs font-bold text-[#3368B2] group-hover:text-blue-400 flex items-center gap-1.5 transition-colors"
                       >
                         <span>Explore Details</span>

@@ -1,5 +1,6 @@
 import fs from "fs";
 import path from "path";
+import { createSlug } from "./slug";
 
 const DATA_FILE = path.join(process.cwd(), "data", "admin_store.json");
 
@@ -24,6 +25,7 @@ export interface DataStoreSchema {
   themes: Array<{
     _id: string;
     websiteTitle: string;
+    slug?: string;
     category: string;
     clientName?: string;
     mediaType?: "image" | "video";
@@ -123,7 +125,16 @@ export interface DataStoreSchema {
     features: string[];
     whyChooseUs?: Array<{ title: string; desc: string }>;
     techStack?: string[];
-    priceRange?: string;
+    pricingPlans: Array<{
+      name: string;
+      price: number;
+      discountPrice?: number;
+      period?: string;
+      badge?: string;
+      description?: string;
+      features: string[];
+      isPopular?: boolean;
+    }>;
     order?: number;
   }>;
   faqs: Array<{
@@ -203,6 +214,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-1",
       websiteTitle: "BD Hajj & Umrah Agency Portal",
+      slug: "bd-hajj-umrah-agency-portal",
       category: "Agency",
       price: 15000,
       discountPrice: 12000,
@@ -223,6 +235,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-2",
       websiteTitle: "Agro Infusion - Fresh Agro eCommerce",
+      slug: "agro-infusion-fresh-agro-ecommerce",
       category: "E-Commerce",
       price: 18000,
       discountPrice: 14500,
@@ -243,6 +256,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-3",
       websiteTitle: "Corporate Brand & Business Portfolio",
+      slug: "corporate-brand-business-portfolio",
       category: "Business",
       price: 12000,
       discountPrice: 9500,
@@ -262,6 +276,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-4",
       websiteTitle: "Real Estate & Luxury Venues Booking",
+      slug: "real-estate-luxury-venues-booking",
       category: "Booking",
       price: 22000,
       discountPrice: 18000,
@@ -281,6 +296,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-5",
       websiteTitle: "Food & Restaurant Order App - EatClub",
+      slug: "food-restaurant-order-app-eatclub",
       category: "Food",
       price: 16000,
       discountPrice: 13000,
@@ -300,6 +316,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "thm-6",
       websiteTitle: "Tech & Software SaaS Presentation",
+      slug: "tech-software-saas-presentation",
       category: "Technology",
       price: 14000,
       discountPrice: 11000,
@@ -392,7 +409,61 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Post-Development Support", desc: "Comprehensive 24/7 maintenance, server monitoring, and feature upgrades." }
       ],
       techStack: ["React", "Next.js", "TypeScript", "Node.js", "Express", "Tailwind CSS", "MongoDB", "PostgreSQL", "Flutter", "AWS", "Docker"],
-      priceRange: "$500 - $5,000",
+      pricingPlans: [
+        {
+          name: "Starter Web",
+          price: 15000,
+          discountPrice: 20000,
+          period: "One-Time Setup",
+          badge: "Startup Tier",
+          description: "Ideal for small businesses needing a high-speed corporate presence.",
+          features: [
+            "Custom UI/UX Design & Branding",
+            "5 Core High-Converting Pages",
+            "100% Mobile & Tablet Responsive",
+            "Contact Form & Direct WhatsApp Integration",
+            "Speed Optimization & Basic SEO",
+            "1 Month Free Technical Support"
+          ],
+          isPopular: false
+        },
+        {
+          name: "Business Full-Stack",
+          price: 35000,
+          discountPrice: 45000,
+          period: "One-Time Setup",
+          badge: "Most Popular",
+          description: "Full-stack web application with dynamic dashboard and database.",
+          features: [
+            "Next.js 14 & Node.js Custom Architecture",
+            "Interactive Admin Dashboard & CMS",
+            "MongoDB / PostgreSQL Database Integration",
+            "Secure User Authentication & RBAC",
+            "Online Payment Gateway (bKash/Nagad/SSL)",
+            "95+ Google PageSpeed Score",
+            "3 Months Dedicated Support & Backups"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Enterprise Ecosystem",
+          price: 75000,
+          discountPrice: 95000,
+          period: "One-Time Setup",
+          badge: "Scalable SaaS",
+          description: "High-concurrency web & mobile app ecosystem with cloud infrastructure.",
+          features: [
+            "Complete Web App + Cross-Platform Mobile App (Flutter)",
+            "Microservices Backend & Scalable REST/GraphQL APIs",
+            "Real-Time WebSockets & Push Notifications",
+            "Automated CI/CD Deployment Pipeline on AWS/Docker",
+            "Enterprise Grade Data Encryption & Auditing",
+            "Dedicated Senior Project Manager",
+            "6 Months Priority SLA Maintenance"
+          ],
+          isPopular: false
+        }
+      ],
       order: 1
     },
     {
@@ -418,7 +489,59 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Transparent Monthly Reports", desc: "Detailed keyword movement and traffic attribution reports every 30 days." }
       ],
       techStack: ["Google Search Console", "Google Analytics", "Ahrefs", "SEMrush", "Screaming Frog", "Schema Markup"],
-      priceRange: "$300 - $2,500 / mo",
+      pricingPlans: [
+        {
+          name: "Local Growth SEO",
+          price: 10000,
+          discountPrice: 14000,
+          period: "/ month",
+          badge: "Starter",
+          description: "Rank for local search queries and establish Google visibility.",
+          features: [
+            "Complete Technical Site Health Audit",
+            "10 High-Intent Target Keywords",
+            "Google Search Console & Analytics 4 Setup",
+            "Google Business Profile Optimization",
+            "Title, Meta & Heading Schema Fixes",
+            "Monthly Ranking & Traffic Report"
+          ],
+          isPopular: false
+        },
+        {
+          name: "National Authority SEO",
+          price: 22000,
+          discountPrice: 30000,
+          period: "/ month",
+          badge: "Most Popular",
+          description: "Accelerate organic search traffic and outperform major competitors.",
+          features: [
+            "30 High-Volume Target Keywords",
+            "Core Web Vitals & Page Speed Fixes",
+            "High-DA Quality Backlink Outreach",
+            "Competitor Keyword Gap Interception",
+            "2 Monthly SEO-Optimized Blog Articles",
+            "Bi-Weekly Progress & Keyword Movement Calls"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Enterprise Search Dominance",
+          price: 45000,
+          discountPrice: 60000,
+          period: "/ month",
+          badge: "Market Leader",
+          description: "Full-scale corporate SEO strategy for high-volume revenue generation.",
+          features: [
+            "60+ National & International Commercial Keywords",
+            "Advanced Structured Data (JSON-LD) Hierarchy",
+            "Aggressive Editorial Link Building & PR Distribution",
+            "Conversion Rate Optimization (CRO) Recommendations",
+            "4 Monthly Long-Form Expert Content Pieces",
+            "Dedicated Senior SEO Strategist & 24/7 Monitoring"
+          ],
+          isPopular: false
+        }
+      ],
       order: 2
     },
     {
@@ -444,7 +567,58 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Full-Funnel Tracking", desc: "End-to-end analytics from first impression to verified purchase." }
       ],
       techStack: ["Meta Ads Manager", "Google Ads", "TikTok Ads", "Google Tag Manager", "Mailchimp", "Klaviyo"],
-      priceRange: "$400 - $3,500 / mo",
+      pricingPlans: [
+        {
+          name: "Ad Campaign Starter",
+          price: 12000,
+          discountPrice: 16000,
+          period: "/ month",
+          badge: "Lead Gen",
+          description: "Launch targeted ads with verified tracking and lead capture.",
+          features: [
+            "Meta Ads (Facebook & Instagram) Setup",
+            "Ad Spend Management up to $600/month",
+            "4 Custom Static Ad Creatives & Copywriting",
+            "Audience Targeting & Demographics Setup",
+            "Basic Pixel & Lead Generation Funnel"
+          ],
+          isPopular: false
+        },
+        {
+          name: "Growth Performance Marketing",
+          price: 25000,
+          discountPrice: 35000,
+          period: "/ month",
+          badge: "High Conversion",
+          description: "Multi-channel funnel with retargeting and automated tracking.",
+          features: [
+            "Meta Ads + Google Search & YouTube Ads",
+            "Ad Spend Management up to $2,500/month",
+            "10 High-Converting Creatives + 2 Motion Ads",
+            "Server-Side Facebook Conversion API (CAPI)",
+            "Dynamic Retargeting & Cart Abandonment Funnels",
+            "Continuous A/B Testing & Weekly CPA Optimization"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Omnichannel Scale",
+          price: 50000,
+          discountPrice: 65000,
+          period: "/ month",
+          badge: "Aggressive Scale",
+          description: "Full-scale advertising suite across all major digital channels.",
+          features: [
+            "Meta, Google, TikTok, LinkedIn & Display Advertising",
+            "Unlimited Ad Spend Management",
+            "Custom Creative Sprint (Videos, Reels & Carousels)",
+            "CRM & WhatsApp Automation Integration",
+            "Full-Funnel ROAS & Attribution Modeling",
+            "Dedicated Media Buyer & Weekly Strategy Meetings"
+          ],
+          isPopular: false
+        }
+      ],
       order: 3
     },
     {
@@ -470,7 +644,58 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Rapid Turnaround", desc: "Quick conceptualization sprints with unlimited collaborative revisions." }
       ],
       techStack: ["Figma", "Adobe Photoshop", "Adobe Illustrator", "After Effects", "Blender 3D", "InDesign"],
-      priceRange: "$200 - $2,500",
+      pricingPlans: [
+        {
+          name: "Brand Starter Kit",
+          price: 8000,
+          discountPrice: 12000,
+          period: "One-Time Setup",
+          badge: "Identity",
+          description: "Essential corporate identity package for launching your brand.",
+          features: [
+            "3 Unique Logo Design Concepts",
+            "Brand Color Palette & Typography System",
+            "High-Resolution Vector Files (AI, SVG, PNG, PDF)",
+            "Social Media Profile & Cover Assets",
+            "Unlimited Conceptual Revisions"
+          ],
+          isPopular: false
+        },
+        {
+          name: "Complete Corporate Identity",
+          price: 18000,
+          discountPrice: 25000,
+          period: "One-Time Setup",
+          badge: "Most Popular",
+          description: "Full brand guidelines and corporate collateral suite.",
+          features: [
+            "Comprehensive Brand Guidelines Manual (PDF)",
+            "Full Stationery Suite (Business Cards, Letterhead, Envelopes)",
+            "10 Social Media Marketing Templates (Canva & PSD)",
+            "Company Profile & Brochure Layout (up to 8 pages)",
+            "Packaging or Merchandise Mockup Designs",
+            "Full Commercial Copyright Transfer"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Master Agency Creative Suite",
+          price: 38000,
+          discountPrice: 50000,
+          period: "One-Time Setup",
+          badge: "Premium Design",
+          description: "3D renders, UI/UX Figma design system, and motion graphics.",
+          features: [
+            "Full Corporate Brand Identity Ecosystem",
+            "3D Product Modeling & Photorealistic Renders",
+            "Motion Graphics Logo Intro & Promo Video",
+            "Complete Web/App UI Design System in Figma",
+            "Investor Pitch Deck / Catalog Presentation",
+            "Dedicated Senior Art Director"
+          ],
+          isPopular: false
+        }
+      ],
       order: 4
     },
     {
@@ -496,7 +721,58 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Trend Jacking", desc: "Capitalizing on viral cultural trends to boost organic reach." }
       ],
       techStack: ["Canva", "CapCut", "Buffer", "Hootsuite", "Meta Business Suite", "LinkedIn Campaign Mgr"],
-      priceRange: "$350 - $2,000 / mo",
+      pricingPlans: [
+        {
+          name: "Essential Presence",
+          price: 12000,
+          discountPrice: 16000,
+          period: "/ month",
+          badge: "Starter",
+          description: "Maintain a polished, regular social media voice across platforms.",
+          features: [
+            "12 Custom Designed Graphics & Infographics",
+            "Engaging Caption Writing & Hashtag Research",
+            "Scheduled Publishing across Facebook & Instagram",
+            "Community Comment & Message Monitoring",
+            "Monthly Engagement & Reach Summary"
+          ],
+          isPopular: false
+        },
+        {
+          name: "Engagement & Viral Reach",
+          price: 24000,
+          discountPrice: 32000,
+          period: "/ month",
+          badge: "Most Popular",
+          description: "Video-focused social growth with daily engagement and stories.",
+          features: [
+            "20 High-Quality Visual Posts + Carousels",
+            "4 Edited Short-Form Reels / TikTok Videos",
+            "Daily Story Highlights & Polls",
+            "Proactive Community Building & Fast DM Replies",
+            "Influencer Collaboration Outreach",
+            "Bi-Weekly Analytics & Strategy Adjustments"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Total Brand Dominance",
+          price: 45000,
+          discountPrice: 60000,
+          period: "/ month",
+          badge: "Full Production",
+          description: "End-to-end social media handling with on-brand video production.",
+          features: [
+            "30 Premium Custom Graphics & Carousels",
+            "10 High-Impact Reels/Shorts with Voiceover & Motion",
+            "Multi-Platform Management (FB, IG, LinkedIn, TikTok)",
+            "24/7 Community Moderation & Lead Capture",
+            "Monthly Paid Boost Budget Strategy",
+            "Dedicated Social Media Manager & Copywriter"
+          ],
+          isPopular: false
+        }
+      ],
       order: 5
     },
     {
@@ -522,7 +798,58 @@ const DEFAULT_STORE: DataStoreSchema = {
         { title: "Cost-Efficient CPMs", desc: "Algorithmic bidding ensures you never overpay for ad impressions." }
       ],
       techStack: ["Google Display & Video 360", "The Trade Desk", "Amazon DSP", "AdForm", "Moat Analytics"],
-      priceRange: "$600 - $6,000 / mo",
+      pricingPlans: [
+        {
+          name: "DSP Programmatic Starter",
+          price: 20000,
+          discountPrice: 28000,
+          period: "/ month",
+          badge: "Display RTB",
+          description: "Real-time bidding across top global websites and news publishers.",
+          features: [
+            "DSP Platform Setup & Campaign Architecture",
+            "Standard IAB Display Banner Formats",
+            "Geo-Fencing & Demographic Audience Targeting",
+            "Real-Time Anti-Fraud & Brand Safety Filters",
+            "Monthly Impression & CTR Attribution Report"
+          ],
+          isPopular: false
+        },
+        {
+          name: "Advanced Video & CTV DSP",
+          price: 40000,
+          discountPrice: 55000,
+          period: "/ month",
+          badge: "Most Popular",
+          description: "Connected TV, digital audio, and high-impact rich media.",
+          features: [
+            "Connected TV (CTV) & OTT Video Ad Placement",
+            "Digital Audio Advertising (Spotify, Podcasts)",
+            "First-Party CRM Data Audience Matching",
+            "Cross-Device Frequency Capping & Sequential Retargeting",
+            "Viewability Verification (Moat / IAS Integration)",
+            "Bi-Weekly Optimization & Inventory Refinement"
+          ],
+          isPopular: true
+        },
+        {
+          name: "Global Enterprise Omnichannel DSP",
+          price: 80000,
+          discountPrice: 110000,
+          period: "/ month",
+          badge: "Global Scale",
+          description: "Multi-DSP orchestration with customized algorithmic bidding.",
+          features: [
+            "Multi-DSP Orchestration (Google DV360 & The Trade Desk)",
+            "Custom Algorithmic Bidding Models",
+            "Global Publisher PMP (Private Marketplace) Deals",
+            "Omnichannel Dynamic Creative Optimization (DCO)",
+            "Advanced Multi-Touch Attribution Modeling",
+            "Dedicated Certified Programmatic Trader"
+          ],
+          isPopular: false
+        }
+      ],
       order: 6
     }
   ],
@@ -917,6 +1244,30 @@ export function getDataStore(): DataStoreSchema {
       try {
         fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf8");
       } catch (e) {}
+    }
+    // Ensure services have pricingPlans and no priceRange
+    if (store.services && Array.isArray(store.services)) {
+      store.services.forEach((srv: any) => {
+        delete srv.priceRange;
+        if (!srv.slug) srv.slug = createSlug(srv.title);
+        if (!srv.pricingPlans || !Array.isArray(srv.pricingPlans)) {
+          srv.pricingPlans = [];
+        }
+      });
+    }
+    // Ensure themes have slugs
+    if (store.themes && Array.isArray(store.themes)) {
+      store.themes.forEach((thm: any) => {
+        if (!thm.slug) thm.slug = createSlug(thm.websiteTitle || "project");
+      });
+    }
+    // Ensure products have clean slugs
+    if (store.products && Array.isArray(store.products)) {
+      store.products.forEach((prod: any) => {
+        if (!prod.slug || prod.slug.startsWith("prod-")) {
+          prod.slug = createSlug(prod.title || "product");
+        }
+      });
     }
     return store;
   } catch (err) {

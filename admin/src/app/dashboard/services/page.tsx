@@ -17,14 +17,27 @@ import {
   HelpCircle,
   FileText,
   ListPlus,
-  ArrowRight
+  ArrowRight,
+  Tag
 } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
 import { cleanSnippet } from "@/lib/richText";
+import { createSlug } from "@/lib/slug";
 
 interface WhyChooseItem {
   title: string;
   desc: string;
+}
+
+export interface PricingPlanForm {
+  name: string;
+  price: number;
+  discountPrice?: number;
+  period?: string;
+  badge?: string;
+  description?: string;
+  featuresText: string;
+  isPopular?: boolean;
 }
 
 interface ServiceFormState {
@@ -38,7 +51,7 @@ interface ServiceFormState {
   featuresText: string;
   whyChooseUs: WhyChooseItem[];
   techStackText: string;
-  priceRange: string;
+  pricingPlans: PricingPlanForm[];
   order: number;
 }
 
@@ -56,7 +69,7 @@ const INITIAL_FORM: ServiceFormState = {
     { title: "Customized Solutions", desc: "Tailored directly to your target audience and conversion goals." }
   ],
   techStackText: "",
-  priceRange: "",
+  pricingPlans: [],
   order: 1
 };
 
@@ -66,7 +79,7 @@ export default function ServicesPage() {
   const [modalOpen, setModalOpen] = useState(false);
   const [editItem, setEditItem] = useState<any>(null);
   const [form, setForm] = useState<ServiceFormState>(INITIAL_FORM);
-  const [activeTab, setActiveTab] = useState<"card" | "details">("card");
+  const [activeTab, setActiveTab] = useState<"card" | "details" | "pricing">("card");
 
   // Image Upload states
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -75,7 +88,7 @@ export default function ServicesPage() {
   const imageInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
 
-  const normalizedFormSlug = form.slug.toLowerCase().trim().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
+  const normalizedFormSlug = createSlug(form.slug);
   const isDuplicateSlug = Boolean(
     normalizedFormSlug &&
     services.some(s => s.slug?.toLowerCase().trim() === normalizedFormSlug && s._id !== editItem?._id)
@@ -103,6 +116,18 @@ export default function ServicesPage() {
     setEditItem(null);
     setForm({
       ...INITIAL_FORM,
+      pricingPlans: [
+        {
+          name: "Standard Plan",
+          price: 15000,
+          discountPrice: 20000,
+          period: "One-Time Setup",
+          badge: "Most Popular",
+          description: "Comprehensive solution designed for business growth.",
+          featuresText: "Full Service Implementation\nDedicated Support\nFast Turnaround",
+          isPopular: true
+        }
+      ],
       order: services.length + 1
     });
     setActiveTab("card");
@@ -128,7 +153,18 @@ export default function ServicesPage() {
             { title: "Customized Solutions", desc: "Tailored directly to your target audience." }
           ],
       techStackText: Array.isArray(srv.techStack) ? srv.techStack.join(", ") : (srv.techStack || ""),
-      priceRange: srv.priceRange || "",
+      pricingPlans: Array.isArray(srv.pricingPlans)
+        ? srv.pricingPlans.map((p: any) => ({
+            name: p.name || "",
+            price: Number(p.price) || 0,
+            discountPrice: Number(p.discountPrice) || 0,
+            period: p.period || "One-Time Setup",
+            badge: p.badge || "",
+            description: p.description || "",
+            featuresText: Array.isArray(p.features) ? p.features.join("\n") : (p.featuresText || ""),
+            isPopular: Boolean(p.isPopular)
+          }))
+        : [],
       order: srv.order || 1
     });
     setActiveTab("card");
@@ -139,20 +175,45 @@ export default function ServicesPage() {
   const handleTitleChange = (val: string) => {
     setForm(prev => {
       const updated = { ...prev, title: val };
-      // Auto-generate slug if creating or if slug was empty
-      if (!editItem) {
-        let slugCandidate = val
-          .toLowerCase()
-          .trim()
-          .replace(/[^a-z0-9]+/g, "-")
-          .replace(/^-+|-+$/g, "");
-        if (slugCandidate && !slugCandidate.endsWith("-service")) {
-          slugCandidate = `${slugCandidate}-service`;
-        }
-        updated.slug = slugCandidate;
+      if (!editItem || !prev.slug || prev.slug === createSlug(prev.title)) {
+        updated.slug = createSlug(val);
       }
       return updated;
     });
+  };
+
+  const addPricingPlan = () => {
+    setForm(prev => ({
+      ...prev,
+      pricingPlans: [
+        ...prev.pricingPlans,
+        {
+          name: `Package #${prev.pricingPlans.length + 1}`,
+          price: 15000,
+          discountPrice: 20000,
+          period: "One-Time Setup",
+          badge: "",
+          description: "",
+          featuresText: "Included Feature 1\nIncluded Feature 2\nIncluded Feature 3",
+          isPopular: false
+        }
+      ]
+    }));
+  };
+
+  const updatePricingPlan = (index: number, field: keyof PricingPlanForm, value: any) => {
+    setForm(prev => {
+      const nextPlans = [...prev.pricingPlans];
+      nextPlans[index] = { ...nextPlans[index], [field]: value };
+      return { ...prev, pricingPlans: nextPlans };
+    });
+  };
+
+  const removePricingPlan = (index: number) => {
+    setForm(prev => ({
+      ...prev,
+      pricingPlans: prev.pricingPlans.filter((_, i) => i !== index)
+    }));
   };
 
   const handleFileUpload = async (file: File, type: "image" | "banner") => {
@@ -214,11 +275,7 @@ export default function ServicesPage() {
       return;
     }
 
-    let finalSlug = form.slug.trim().toLowerCase().replace(/[^a-z0-9-]+/g, "-").replace(/^-+|-+$/g, "");
-    if (!finalSlug) {
-      finalSlug = form.title.toLowerCase().trim().replace(/[^a-z0-9]+/g, "-").replace(/^-+|-+$/g, "");
-      if (!finalSlug.endsWith("-service")) finalSlug += "-service";
-    }
+    let finalSlug = createSlug(form.slug || form.title);
 
     const duplicate = services.find(
       s => s.slug?.toLowerCase().trim() === finalSlug && s._id !== editItem?._id
@@ -239,7 +296,16 @@ export default function ServicesPage() {
       features: form.featuresText.split("\n").map(f => f.trim()).filter(Boolean),
       whyChooseUs: form.whyChooseUs.filter(w => w.title.trim() || w.desc.trim()),
       techStack: form.techStackText.split(",").map(t => t.trim()).filter(Boolean),
-      priceRange: form.priceRange.trim(),
+      pricingPlans: form.pricingPlans.map(p => ({
+        name: p.name.trim() || "Standard Plan",
+        price: Number(p.price) || 0,
+        discountPrice: Number(p.discountPrice) || 0,
+        period: p.period?.trim() || "One-Time Setup",
+        badge: p.badge?.trim() || "",
+        description: p.description?.trim() || "",
+        features: p.featuresText.split("\n").map(f => f.trim()).filter(Boolean),
+        isPopular: Boolean(p.isPopular)
+      })),
       order: Number(form.order) || 1
     };
 
@@ -352,9 +418,9 @@ export default function ServicesPage() {
                       </h3>
                     </div>
                   </div>
-                  {srv.priceRange && (
-                    <span className="text-[11px] font-semibold text-gray-400 bg-white/5 px-2 py-0.5 rounded-[4px] border border-gray-800 shrink-0">
-                      {srv.priceRange}
+                  {srv.pricingPlans && srv.pricingPlans.length > 0 && (
+                    <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-[4px] border border-emerald-800/40 shrink-0">
+                      {srv.pricingPlans.length} {srv.pricingPlans.length === 1 ? "Plan" : "Plans"}
                     </span>
                   )}
                 </div>
@@ -489,6 +555,19 @@ export default function ServicesPage() {
               >
                 <Sparkles size={14} />
                 <span>2. Details Page Customization</span>
+              </button>
+
+              <button
+                type="button"
+                onClick={() => setActiveTab("pricing")}
+                className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold border-b-2 transition ${
+                  activeTab === "pricing"
+                    ? "border-[#3368B2] text-white bg-blue-900/10"
+                    : "border-transparent text-gray-400 hover:text-white"
+                }`}
+              >
+                <Tag size={14} />
+                <span>3. Pricing Packages</span>
               </button>
             </div>
 
@@ -642,36 +721,18 @@ export default function ServicesPage() {
               {/* TAB 2: DETAILS PAGE CUSTOMIZATION */}
               {activeTab === "details" && (
                 <div className="space-y-6">
-                  {/* Hero Subtitle & Price Range */}
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                        Details Page Hero Subtitle
-                      </label>
-                      <input
-                        type="text"
-                        value={form.bannerSubtitle}
-                        onChange={e => setForm({ ...form, bannerSubtitle: e.target.value })}
-                        placeholder="e.g. Custom, scalable, and high-performance digital platforms"
-                        className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                        Price Range / Tag (Optional)
-                      </label>
-                      <input
-                        type="text"
-                        value={form.priceRange}
-                        onChange={e => setForm({ ...form, priceRange: e.target.value })}
-                        placeholder="e.g. $500 - $5,000 or $300 / mo"
-                        className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
-                      />
-                      <p className="text-[10px] text-gray-500 mt-1">
-                        Displayed on the service details page if provided. Leave blank to hide.
-                      </p>
-                    </div>
+                  {/* Hero Subtitle */}
+                  <div>
+                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      Details Page Hero Subtitle
+                    </label>
+                    <input
+                      type="text"
+                      value={form.bannerSubtitle}
+                      onChange={e => setForm({ ...form, bannerSubtitle: e.target.value })}
+                      placeholder="e.g. Custom, scalable, and high-performance digital platforms"
+                      className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                    />
                   </div>
 
                   {/* Details Page Hero Cover Image */}
@@ -844,10 +905,183 @@ export default function ServicesPage() {
                 </div>
               )}
 
+              {/* TAB 3: PRICING PACKAGES */}
+              {activeTab === "pricing" && (
+                <div className="space-y-6">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-800">
+                    <div>
+                      <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                        Editable Pricing Packages & Feature Comparison
+                      </h3>
+                      <p className="text-xs text-gray-400 mt-0.5">
+                        Build tiered pricing packages (Starter, Business, Enterprise) with customizable features for this service.
+                      </p>
+                    </div>
+
+                    <button
+                      type="button"
+                      onClick={addPricingPlan}
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow shrink-0"
+                    >
+                      <Plus size={14} />
+                      <span>Add Another Pricing Plan</span>
+                    </button>
+                  </div>
+
+                  {form.pricingPlans.length === 0 ? (
+                    <div className="p-8 text-center border border-gray-800 rounded-lg bg-[#0E0F12]">
+                      <p className="text-xs text-gray-400">No pricing plans defined for this service yet.</p>
+                      <button
+                        type="button"
+                        onClick={addPricingPlan}
+                        className="mt-3 px-4 py-2 bg-[#3368B2] text-white text-xs font-bold rounded"
+                      >
+                        Add Starter Pricing Plan
+                      </button>
+                    </div>
+                  ) : (
+                    <div className="space-y-6">
+                      {form.pricingPlans.map((plan, idx) => (
+                        <div
+                          key={idx}
+                          className={`p-5 rounded-xl border bg-[#0E0F12] space-y-4 relative ${
+                            plan.isPopular ? "border-[#3368B2] ring-1 ring-blue-500/30" : "border-gray-800"
+                          }`}
+                        >
+                          <div className="flex items-center justify-between pb-3 border-b border-gray-800/80">
+                            <div className="flex items-center gap-2">
+                              <span className="w-6 h-6 rounded-full bg-blue-900/40 text-[#3368B2] font-bold text-xs flex items-center justify-center">
+                                {idx + 1}
+                              </span>
+                              <h4 className="text-xs font-bold text-white uppercase tracking-wide">
+                                {plan.name || `Plan #${idx + 1}`}
+                              </h4>
+                              {plan.isPopular && (
+                                <span className="text-[10px] bg-blue-900/40 text-blue-300 font-bold px-2 py-0.5 rounded">
+                                  Most Popular
+                                </span>
+                              )}
+                            </div>
+
+                            <button
+                              type="button"
+                              onClick={() => removePricingPlan(idx)}
+                              className="text-gray-400 hover:text-red-400 p-1 rounded transition"
+                              title="Delete this plan"
+                            >
+                              <Trash2 size={15} />
+                            </button>
+                          </div>
+
+                          <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-gray-400">Plan Name</label>
+                              <input
+                                type="text"
+                                value={plan.name}
+                                placeholder="e.g. Starter Package"
+                                onChange={(e) => updatePricingPlan(idx, "name", e.target.value)}
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-gray-400">Price (৳ BDT)</label>
+                              <input
+                                type="number"
+                                value={plan.price}
+                                placeholder="15000"
+                                onChange={(e) => updatePricingPlan(idx, "price", Number(e.target.value) || 0)}
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-gray-400">Regular / Discount Price</label>
+                              <input
+                                type="number"
+                                value={plan.discountPrice}
+                                placeholder="20000"
+                                onChange={(e) =>
+                                  updatePricingPlan(idx, "discountPrice", Number(e.target.value) || 0)
+                                }
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+
+                            <div className="space-y-1">
+                              <label className="text-[11px] font-bold text-gray-400">Billing Cycle / Duration</label>
+                              <input
+                                type="text"
+                                value={plan.period}
+                                placeholder="e.g. One-Time Setup, / month"
+                                onChange={(e) => updatePricingPlan(idx, "period", e.target.value)}
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+
+                            <div className="space-y-1 sm:col-span-2">
+                              <label className="text-[11px] font-bold text-gray-400">Badge Text (Optional)</label>
+                              <input
+                                type="text"
+                                value={plan.badge}
+                                placeholder="e.g. Most Popular, Best Value"
+                                onChange={(e) => updatePricingPlan(idx, "badge", e.target.value)}
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+
+                            <div className="space-y-1 sm:col-span-2">
+                              <label className="text-[11px] font-bold text-gray-400">Short Description</label>
+                              <input
+                                type="text"
+                                value={plan.description}
+                                placeholder="e.g. Essential features tailored for startup tier."
+                                onChange={(e) => updatePricingPlan(idx, "description", e.target.value)}
+                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                              />
+                            </div>
+                          </div>
+
+                          {/* Features textarea */}
+                          <div className="space-y-1">
+                            <label className="text-[11px] font-bold text-gray-400 flex items-center justify-between">
+                              <span>Included Features (1 feature per line)</span>
+                              <span className="text-[10px] text-gray-500">Will display as checkmarked items</span>
+                            </label>
+                            <textarea
+                              rows={3}
+                              value={plan.featuresText}
+                              placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
+                              onChange={(e) => updatePricingPlan(idx, "featuresText", e.target.value)}
+                              className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+                            />
+                          </div>
+
+                          <div className="flex items-center gap-2 pt-1">
+                            <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
+                              <input
+                                type="checkbox"
+                                checked={plan.isPopular}
+                                onChange={(e) => updatePricingPlan(idx, "isPopular", e.target.checked)}
+                                className="rounded border-gray-700 text-[#3368B2] focus:ring-0"
+                              />
+                              <span className="text-xs font-semibold">
+                                Highlight this plan as "Most Popular" on sales cards
+                              </span>
+                            </label>
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  )}
+                </div>
+              )}
+
               {/* Modal Footer Controls */}
               <div className="flex items-center justify-between pt-5 border-t border-gray-800">
                 <div className="flex items-center gap-2">
-                  {activeTab === "card" ? (
+                  {activeTab === "card" && (
                     <button
                       type="button"
                       onClick={() => setActiveTab("details")}
@@ -856,13 +1090,33 @@ export default function ServicesPage() {
                       <span>Next: Details Page</span>
                       <ArrowRight size={14} />
                     </button>
-                  ) : (
+                  )}
+                  {activeTab === "details" && (
+                    <>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("card")}
+                        className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                      >
+                        Back to Card
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => setActiveTab("pricing")}
+                        className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold flex items-center gap-1.5"
+                      >
+                        <span>Next: Pricing Packages</span>
+                        <ArrowRight size={14} />
+                      </button>
+                    </>
+                  )}
+                  {activeTab === "pricing" && (
                     <button
                       type="button"
-                      onClick={() => setActiveTab("card")}
+                      onClick={() => setActiveTab("details")}
                       className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
                     >
-                      Back to Card Settings
+                      Back to Details Page
                     </button>
                   )}
                 </div>

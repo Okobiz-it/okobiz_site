@@ -224,3 +224,23 @@ html {
 .reviews-marquee-track:hover {
   animation-play-state: paused !important;
 }
+
+/* Universal Loader: <okobiz/> Smooth Horizontal Expand and Squeeze Animation */
+@keyframes okobizTagExpandSqueeze {
+  0%, 100% {
+    transform: scaleX(0.78);
+  }
+  50% {
+    transform: scaleX(1.22);
+  }
+}
+
+.animate-okobiz-tag {
+  display: inline-block;
+  animation: okobizTagExpandSqueeze 1.8s ease-in-out infinite;
+  transform-origin: center center;
+  will-change: transform;
+  backface-visibility: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+

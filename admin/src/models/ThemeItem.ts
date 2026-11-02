@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IThemeItem {
   _id: string;
   websiteTitle: string;
+  slug?: string;
   category: string;
   clientName?: string;
   mediaType?: "image" | "video";
@@ -24,6 +25,7 @@ export interface IThemeItem {
 const ThemeItemSchema = new Schema<IThemeItem>({
   _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
   websiteTitle: { type: String, required: true },
+  slug: { type: String, default: "" },
   category: { type: String, default: "Business" },
   clientName: { type: String, default: "" },
   mediaType: { type: String, enum: ["image", "video"], default: "image" },

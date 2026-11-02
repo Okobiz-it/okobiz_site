@@ -2,6 +2,7 @@ import { NextResponse } from "next/server";
 import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import { connectDB } from "@/lib/mongodb";
 import ServiceItem from "@/models/ServiceItem";
+import { createSlug } from "@/lib/slug";
 
 export async function GET(req: Request) {
   const { searchParams } = new URL(req.url);
@@ -31,7 +32,7 @@ export async function GET(req: Request) {
           if (!exists) {
             const toInsert = { ...defaultSrv, _id: "srv-" + defaultSrv.slug };
             await ServiceItem.create(toInsert).catch(() => {});
-          } else if (!exists.image || !exists.bannerImage || !exists.whyChooseUs?.length) {
+          } else if (!exists.image || !exists.bannerImage || !exists.whyChooseUs?.length || !exists.pricingPlans?.length) {
             await ServiceItem.findByIdAndUpdate(exists._id, {
               title: exists.title || defaultSrv.title,
               image: exists.image || defaultSrv.image,
@@ -41,6 +42,7 @@ export async function GET(req: Request) {
               fullDesc: exists.fullDesc || defaultSrv.fullDesc,
               whyChooseUs: (exists.whyChooseUs && exists.whyChooseUs.length > 0) ? exists.whyChooseUs : defaultSrv.whyChooseUs,
               techStack: (exists.techStack && exists.techStack.length > 0) ? exists.techStack : defaultSrv.techStack,
+              pricingPlans: (exists.pricingPlans && exists.pricingPlans.length > 0) ? exists.pricingPlans : defaultSrv.pricingPlans,
               order: exists.order || defaultSrv.order,
             }).catch(() => {});
           }
@@ -76,13 +78,7 @@ export async function POST(req: Request) {
     const store = getDataStore();
     if (!store.services) store.services = [];
 
-    const rawSlug = (body.slug || body.title || "service")
-      .toLowerCase()
-      .trim()
-      .replace(/[^a-z0-9]+/g, "-")
-      .replace(/^-+|-+$/g, "");
-
-    const targetSlug = rawSlug || `service-${Date.now()}`;
+    const targetSlug = createSlug(body.slug || body.title || "service") || `service-${Date.now()}`;
 
     // Duplicate slug check in datastore
     const storeExists = (store.services || []).some(
@@ -111,6 +107,21 @@ export async function POST(req: Request) {
       );
     }
 
+    const formattedPricingPlans = Array.isArray(body.pricingPlans)
+      ? body.pricingPlans.map((p: any) => ({
+          name: p.name || "Standard Plan",
+          price: Number(p.price) || 0,
+          discountPrice: Number(p.discountPrice) || 0,
+          period: p.period || "One-Time Setup",
+          badge: p.badge || "",
+          description: p.description || "",
+          features: Array.isArray(p.features)
+            ? p.features
+            : (p.featuresText ? p.featuresText.split("\n").map((f: string) => f.trim()).filter(Boolean) : []),
+          isPopular: Boolean(p.isPopular)
+        }))
+      : [];
+
     const newService = {
       _id: "srv-" + Date.now(),
       title: body.title || "New Service",
@@ -128,7 +139,7 @@ export async function POST(req: Request) {
       techStack: Array.isArray(body.techStack)
         ? body.techStack
         : (body.techStack ? body.techStack.split(",").map((t: string) => t.trim()).filter(Boolean) : []),
-      priceRange: body.priceRange || "",
+      pricingPlans: formattedPricingPlans,
       order: Number(body.order) || store.services.length + 1
     };
 
@@ -163,12 +174,25 @@ export async function PUT(req: Request) {
     if (updates.techStack && typeof updates.techStack === "string") {
       updates.techStack = updates.techStack.split(",").map((t: string) => t.trim()).filter(Boolean);
     }
+    delete updates.priceRange;
+
+    if (updates.pricingPlans && Array.isArray(updates.pricingPlans)) {
+      updates.pricingPlans = updates.pricingPlans.map((p: any) => ({
+        name: p.name || "Standard Plan",
+        price: Number(p.price) || 0,
+        discountPrice: Number(p.discountPrice) || 0,
+        period: p.period || "One-Time Setup",
+        badge: p.badge || "",
+        description: p.description || "",
+        features: Array.isArray(p.features)
+          ? p.features
+          : (p.featuresText ? p.featuresText.split("\n").map((f: string) => f.trim()).filter(Boolean) : []),
+        isPopular: Boolean(p.isPopular)
+      }));
+    }
+
     if (updates.slug) {
-      updates.slug = updates.slug
-        .toLowerCase()
-        .trim()
-        .replace(/[^a-z0-9-]+/g, "-")
-        .replace(/^-+|-+$/g, "");
+      updates.slug = createSlug(updates.slug);
 
       // Check duplicate slug in datastore
       const store = getDataStore();

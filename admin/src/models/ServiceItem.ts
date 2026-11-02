@@ -5,6 +5,17 @@ export interface IWhyChooseUsItem {
   desc: string;
 }
 
+export interface IPricingPlan {
+  name: string;
+  price: number;
+  discountPrice?: number;
+  period?: string; // e.g. "One-time Setup", "/ month", "/ year"
+  badge?: string; // e.g. "Most Popular", "Best Value"
+  description?: string;
+  features: string[];
+  isPopular?: boolean;
+}
+
 export interface IServiceItem {
   _id: string;
   title: string;
@@ -18,9 +29,23 @@ export interface IServiceItem {
   features: string[];
   whyChooseUs?: IWhyChooseUsItem[];
   techStack?: string[];
-  priceRange?: string;
+  pricingPlans: IPricingPlan[];
   order?: number;
 }
+
+const PricingPlanSchema = new Schema<IPricingPlan>(
+  {
+    name: { type: String, required: true },
+    price: { type: Number, default: 0 },
+    discountPrice: { type: Number, default: 0 },
+    period: { type: String, default: "One-Time Setup" },
+    badge: { type: String, default: "" },
+    description: { type: String, default: "" },
+    features: [{ type: String }],
+    isPopular: { type: Boolean, default: false }
+  },
+  { _id: false }
+);
 
 const ServiceItemSchema = new Schema<IServiceItem>({
   _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
@@ -40,7 +65,7 @@ const ServiceItemSchema = new Schema<IServiceItem>({
     }
   ],
   techStack: [{ type: String }],
-  priceRange: { type: String, default: "" },
+  pricingPlans: [PricingPlanSchema],
   order: { type: Number, default: 0 }
 });
 

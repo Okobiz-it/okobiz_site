@@ -19,6 +19,7 @@ export interface ClientPartner {
 export interface ThemeItem {
   _id: string;
   websiteTitle: string;
+  slug?: string;
   category: string;
   price: number;
   discountPrice: number;
@@ -96,6 +97,7 @@ export interface BlogItem {
 export interface PortfolioProject {
   _id: string;
   title: string;
+  slug?: string;
   category: string;
   clientName: string;
   completionYear: string;
