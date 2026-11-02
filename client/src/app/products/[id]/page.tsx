@@ -1,18 +1,15 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ExternalLink,
   MessageCircle,
   Play,
   CheckCircle2,
-  ShieldCheck,
-  Zap,
   Sparkles,
-  Headphones,
   Check,
   ChevronLeft,
   ChevronRight,
@@ -21,7 +18,6 @@ import {
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
-import PreviewModal from "@/components/PreviewModal";
 import UniversalLoader from "@/components/UniversalLoader";
 import { ProductItem } from "@/data/mockData";
 import { getProductById, getProductWhatsAppUrl } from "@/lib/api";
@@ -85,16 +81,25 @@ const REVIEWS = [
   }
 ];
 
-export default function ProductDetailPage() {
+function ProductDetailContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const id = params?.id as string;
+  const autoPlayFromUrl = searchParams?.get("autoplay") === "true";
 
   const [product, setProduct] = useState<ProductItem | null>(null);
   const [loading, setLoading] = useState(true);
   const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("image");
+  const [isVideoPlaying, setIsVideoPlaying] = useState(autoPlayFromUrl);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
-  const [isPreviewOpen, setIsPreviewOpen] = useState(false);
+
+  useEffect(() => {
+    if (searchParams?.get("autoplay") === "true") {
+      setActiveMediaType("video");
+      setIsVideoPlaying(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProduct = async () => {
@@ -104,11 +109,25 @@ export default function ProductDetailPage() {
           const data = await getProductById(id);
           if (data) {
             setProduct(data);
-            // If video attached, video will always show first!
-            if (data.video && data.video.trim()) {
+            const hasVid = Boolean(data.video && data.video.trim());
+            const isVideoFirst = data.mediaType === "video" && hasVid;
+
+            // If "Show Video First" is configured in admin or user clicked play button (?autoplay=true)
+            if (isVideoFirst) {
               setActiveMediaType("video");
+              setIsVideoPlaying(autoPlayFromUrl);
+            } else if (hasVid && autoPlayFromUrl) {
+              setActiveMediaType("video");
+              setIsVideoPlaying(true);
+            } else if (data.images && data.images.length > 0) {
+              setActiveMediaType("image");
+              setIsVideoPlaying(false);
+            } else if (hasVid) {
+              setActiveMediaType("video");
+              setIsVideoPlaying(false);
             } else {
               setActiveMediaType("image");
+              setIsVideoPlaying(false);
             }
           }
         }
@@ -119,7 +138,7 @@ export default function ProductDetailPage() {
       }
     };
     fetchProduct();
-  }, [id]);
+  }, [id, autoPlayFromUrl]);
 
   if (loading) {
     return <UniversalLoader fullScreen size="lg" />;
@@ -147,7 +166,16 @@ export default function ProductDetailPage() {
   const hasVideo = Boolean(product.video && product.video.trim());
   const isYt = isYouTubeUrl(product.video);
   const ytEmbedUrl = isYt ? getYouTubeEmbedUrl(product.video) : null;
-  const videoPosterThumb = product.videoThumbnail || (isYt ? getYouTubeThumbnailUrl(product.video) : null) || product.thumbnail || allImages[0];
+  const ytThumb = isYt ? getYouTubeThumbnailUrl(product.video) : null;
+  const isCustomVideoThumb = Boolean(
+    product.videoThumbnail &&
+    !product.videoThumbnail.startsWith("/assets/") &&
+    product.videoThumbnail !== product.thumbnail &&
+    !product.videoThumbnail.includes("web-2-DujjTO8C")
+  );
+  const videoPosterThumb = isCustomVideoThumb
+    ? product.videoThumbnail
+    : (ytThumb || product.videoThumbnail || product.thumbnail || allImages[0]);
 
   const lowestPrice = product.pricingPlans?.length > 0
     ? Math.min(...product.pricingPlans.map((p) => p.price))
@@ -195,24 +223,51 @@ export default function ProductDetailPage() {
               {/* Main Media Player / Image Viewer Container */}
               <div className="relative rounded-[4px] overflow-hidden bg-black border border-gray-800 shadow-2xl">
                 {activeMediaType === "video" && hasVideo ? (
-                  <div className="aspect-video w-full bg-black">
-                    {isYt && ytEmbedUrl ? (
-                      <iframe
-                        src={`${ytEmbedUrl}?autoplay=1&rel=0`}
-                        title={product.title}
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
+                  !isVideoPlaying ? (
+                    /* Paused state when user clicked outside video play frame */
+                    <div className="relative aspect-video w-full bg-black flex items-center justify-center group overflow-hidden">
+                      <img
+                        src={videoPosterThumb}
+                        alt={`${product.title} video preview`}
+                        className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                       />
-                    ) : (
-                      <video
-                        src={product.video}
-                        controls
-                        autoPlay
-                        className="w-full h-full object-contain"
-                      />
-                    )}
-                  </div>
+                      <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+                      <button
+                        type="button"
+                        onClick={() => setIsVideoPlaying(true)}
+                        className="absolute z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-rose-600/95 hover:bg-rose-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.8)] backdrop-blur-sm border-2 border-rose-400 hover:scale-110 transition-transform cursor-pointer animate-play-blink"
+                        aria-label="Click to play video"
+                      >
+                        <Play size={28} fill="white" className="ml-1" />
+                      </button>
+                      <div className="absolute bottom-4 left-4 z-10 text-xs font-semibold text-white/90 bg-black/60 px-3 py-1 rounded-[2px] border border-gray-700">
+                        Click to play video
+                      </div>
+                    </div>
+                  ) : (
+                    /* Autoplaying state when user clicked video play frame */
+                    <div className="aspect-video w-full bg-black">
+                      {isYt && ytEmbedUrl ? (
+                        <iframe
+                          src={getYouTubeEmbedUrl(product.video, true) || `${ytEmbedUrl}?autoplay=1&rel=0`}
+                          title={product.title}
+                          className="w-full h-full border-0"
+                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                          allowFullScreen
+                        />
+                      ) : (
+                        <video
+                          src={product.video}
+                          poster={videoPosterThumb}
+                          controls
+                          autoPlay
+                          className="w-full h-full object-contain"
+                          onPlay={() => setIsVideoPlaying(true)}
+                          onPause={() => setIsVideoPlaying(false)}
+                        />
+                      )}
+                    </div>
+                  )
                 ) : (
                   <div className="relative aspect-video w-full overflow-hidden bg-gray-950">
                     <img
@@ -262,7 +317,10 @@ export default function ProductDetailPage() {
                 {/* 1. Video Thumbnail if attached (always first alongside photos) */}
                 {hasVideo && (
                   <button
-                    onClick={() => setActiveMediaType("video")}
+                    onClick={() => {
+                      setActiveMediaType("video");
+                      setIsVideoPlaying(true);
+                    }}
                     className={`relative w-28 h-18 rounded-[4px] overflow-hidden border shrink-0 transition-all group ${
                       activeMediaType === "video"
                         ? "border-[#3368B2] ring-2 ring-[#3368B2] scale-105"
@@ -374,28 +432,16 @@ export default function ProductDetailPage() {
                 </a>
 
                 {product.liveUrl && (
-                  <button
-                    onClick={() => setIsPreviewOpen(true)}
+                  <a
+                    href={product.liveUrl}
+                    target="_blank"
+                    rel="noopener noreferrer"
                     className="w-full py-3 px-6 bg-[#3368B2] hover:bg-[#0167D6] text-white font-bold text-xs uppercase tracking-wider rounded-[4px] transition flex items-center justify-center gap-2 shadow-md shadow-blue-950/50"
                   >
                     <ExternalLink size={15} />
                     <span>View Live Demo</span>
-                  </button>
+                  </a>
                 )}
-
-                <div className="flex items-center justify-between text-[11px] text-gray-400 pt-1 px-1">
-                  <span className="flex items-center gap-1">
-                    <Zap size={12} className="text-emerald-400" /> Immediate reply
-                  </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <ShieldCheck size={12} className="text-emerald-400" /> Free onboarding
-                  </span>
-                  <span>•</span>
-                  <span className="flex items-center gap-1">
-                    <CheckCircle2 size={12} className="text-emerald-400" /> 100% Tested
-                  </span>
-                </div>
               </div>
             </div>
           </div>
@@ -614,16 +660,14 @@ export default function ProductDetailPage() {
 
       {/* Talk CTA */}
       <TalkCta />
-
-      {/* Live Preview Modal */}
-      {isPreviewOpen && product.liveUrl && (
-        <PreviewModal
-          isOpen={isPreviewOpen}
-          onClose={() => setIsPreviewOpen(false)}
-          url={product.liveUrl}
-          title={product.title}
-        />
-      )}
     </div>
+  );
+}
+
+export default function ProductDetailPage() {
+  return (
+    <Suspense fallback={<UniversalLoader fullScreen size="lg" />}>
+      <ProductDetailContent />
+    </Suspense>
   );
 }

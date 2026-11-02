@@ -16,10 +16,11 @@ export function isYouTubeUrl(url?: string | null): boolean {
   return !!getYouTubeId(url);
 }
 
-export function getYouTubeEmbedUrl(url?: string | null): string | null {
+export function getYouTubeEmbedUrl(url?: string | null, autoplay = false): string | null {
   const videoId = getYouTubeId(url);
   if (!videoId) return null;
-  return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1`;
+  const autoplayParam = autoplay ? "autoplay=1" : "autoplay=0";
+  return `https://www.youtube.com/embed/${videoId}?rel=0&modestbranding=1&playsinline=1&${autoplayParam}`;
 }
 
 export function getYouTubeThumbnailUrl(url?: string | null): string | null {

@@ -243,17 +243,22 @@ export default function PortfolioPage() {
                           )}
                         </div>
 
-                        {/* Video Center Play Button Overlay */}
-                        {isVideo && (
-                          <Link
-                            href={`/portfolio/${project.slug || project._id}`}
-                            className="absolute inset-0 flex items-center justify-center group-hover:scale-110 transition-transform duration-300"
-                          >
-                            <div className="w-14 h-14 rounded-full bg-rose-600/90 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.8)] backdrop-blur-sm border border-rose-400">
-                              <Play size={22} fill="white" className="ml-1" />
+                        {/* Media Cover Link - if video, clicking frame triggers autoplay */}
+                        <Link
+                          href={
+                            isVideo
+                              ? `/portfolio/${project.slug || project._id}?autoplay=true`
+                              : `/portfolio/${project.slug || project._id}`
+                          }
+                          className="absolute inset-0 z-10 flex items-center justify-center group-hover:scale-105 transition-transform duration-300"
+                          title={isVideo ? "Watch Video Case Study" : project.title}
+                        >
+                          {isVideo && (
+                            <div className="w-14 h-14 rounded-full bg-rose-600/95 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.85)] backdrop-blur-sm border-2 border-rose-400 group-hover:scale-110 transition-transform animate-play-blink">
+                              <Play size={24} fill="white" className="ml-1" />
                             </div>
-                          </Link>
-                        )}
+                          )}
+                        </Link>
 
                         {/* Bottom Client Tag */}
                         <div className="absolute bottom-3 left-3.5 text-xs text-gray-300 flex items-center gap-2">

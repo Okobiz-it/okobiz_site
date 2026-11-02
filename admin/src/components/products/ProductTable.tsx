@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import {
   Play,
   ExternalLink,
@@ -68,6 +69,12 @@ export default function ProductTable({
           <tbody className="divide-y divide-gray-800/60">
             {paginated.map((product) => {
               const hasVideo = Boolean(product.video);
+              const isYt = isYouTubeUrl(product.video);
+              const ytThumb = isYt ? getYouTubeThumbnailUrl(product.video) : null;
+              const isVideoFirst = product.mediaType === "video" && hasVideo;
+              const displayThumb = isVideoFirst
+                ? (product.videoThumbnail || ytThumb || product.thumbnail || "/assets/web-2-DujjTO8C.webp")
+                : (product.thumbnail || product.videoThumbnail || ytThumb || "/assets/web-2-DujjTO8C.webp");
               const imageCount = product.images?.length || 1;
               const lowestPrice =
                 product.pricingPlans?.length > 0
@@ -86,7 +93,7 @@ export default function ProductTable({
                     <div className="flex items-center gap-3">
                       <div className="relative w-16 h-12 rounded-[4px] overflow-hidden bg-black border border-gray-800 shrink-0">
                         <img
-                          src={product.thumbnail || "/assets/web-2-DujjTO8C.webp"}
+                          src={displayThumb}
                           alt={product.title}
                           className="w-full h-full object-cover"
                         />

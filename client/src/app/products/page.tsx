@@ -19,10 +19,10 @@ import {
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
-import PreviewModal from "@/components/PreviewModal";
 import SectionLoader from "@/components/SectionLoader";
 import { ProductItem } from "@/data/mockData";
 import { getProducts, getProductWhatsAppUrl } from "@/lib/api";
+import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 const ITEMS_PER_PAGE = 9;
 
@@ -32,7 +32,6 @@ export default function ProductsPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [sortBy, setSortBy] = useState("Recommended");
-  const [previewItem, setPreviewItem] = useState<{ url: string; title: string } | null>(null);
   const [currentPage, setCurrentPage] = useState(1);
   const gridTopRef = useRef<HTMLDivElement>(null);
 
@@ -205,7 +204,24 @@ export default function ProductsPage() {
                     ? Math.round(((regularPrice - lowestPrice) / regularPrice) * 100)
                     : 0;
 
-                  const displayThumb = product.thumbnail || product.images?.[0] || "/assets/web-2-DujjTO8C.webp";
+                  const hasVideo = Boolean(product.video && product.video.trim());
+                  const isYt = isYouTubeUrl(product.video);
+                  const ytThumb = isYt ? getYouTubeThumbnailUrl(product.video) : null;
+                  const isCustomVideoThumb = Boolean(
+                    product.videoThumbnail &&
+                    !product.videoThumbnail.startsWith("/assets/") &&
+                    product.videoThumbnail !== product.thumbnail &&
+                    !product.videoThumbnail.includes("web-2-DujjTO8C")
+                  );
+                  const videoThumbnail = isCustomVideoThumb
+                    ? product.videoThumbnail
+                    : (ytThumb || product.videoThumbnail || null);
+
+                  // If video is selected ("Show Video First" / mediaType === "video") and has video, display video thumbnail on card
+                  const isVideoFirst = (product.mediaType === "video" || !product.mediaType) && hasVideo;
+                  const displayThumb = isVideoFirst
+                    ? (videoThumbnail || product.thumbnail || product.images?.[0] || "/assets/web-2-DujjTO8C.webp")
+                    : (product.thumbnail || videoThumbnail || product.images?.[0] || "/assets/web-2-DujjTO8C.webp");
                   const whatsappDemoUrl = getProductWhatsAppUrl(product.title, product.whatsappNumber);
 
                   return (
@@ -214,15 +230,20 @@ export default function ProductsPage() {
                       className="bg-[#181A1D] border border-gray-800 rounded-[4px] overflow-hidden hover:border-[#3368B2] transition-all duration-300 group flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-blue-900/10"
                     >
                       <div>
-                        {/* Media Cover */}
+                        {/* Media Cover - clicking video frame opens detail page and autoplays */}
                         <Link
-                          href={`/products/${product.slug || product._id}`}
-                          className="relative h-60 overflow-hidden bg-gray-900 block"
+                          href={
+                            hasVideo
+                              ? `/products/${product.slug || product._id}?autoplay=true`
+                              : `/products/${product.slug || product._id}`
+                          }
+                          className="relative h-60 overflow-hidden bg-gray-900 block group/cover"
+                          title={hasVideo ? "Watch Video Demo" : product.title}
                         >
                           <img
                             src={displayThumb}
                             alt={product.title}
-                            className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
                           />
 
                           {/* Gradient Overlay */}
@@ -241,12 +262,16 @@ export default function ProductsPage() {
                                 <Sparkles size={11} className="fill-black" /> Popular
                               </span>
                             )}
-                            {product.featuredBadge && (
-                              <span className="bg-purple-600 text-white text-[10px] font-extrabold px-2.5 py-0.5 rounded-[4px] shadow-lg">
-                                Ready SaaS
-                              </span>
-                            )}
                           </div>
+
+                          {/* Video Play Button Overlay if product contains video */}
+                          {hasVideo && (
+                            <div className="absolute inset-0 flex items-center justify-center group-hover/cover:scale-110 transition-transform duration-300">
+                              <div className="w-14 h-14 rounded-full bg-rose-600/95 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.85)] backdrop-blur-sm border-2 border-rose-400 animate-play-blink">
+                                <Play size={24} fill="white" className="ml-1" />
+                              </div>
+                            </div>
+                          )}
                         </Link>
 
                         {/* Card Details */}
@@ -317,14 +342,16 @@ export default function ProductsPage() {
 
                           {/* View Live Button */}
                           {product.liveUrl && (
-                            <button
-                              onClick={() => setPreviewItem({ url: product.liveUrl || "", title: product.title })}
+                            <a
+                              href={product.liveUrl}
+                              target="_blank"
+                              rel="noopener noreferrer"
                               className="text-xs font-semibold text-gray-300 hover:text-white flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-[4px] bg-gray-800 hover:bg-gray-700 transition-colors"
                               title="Test Live Demo"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
                               <span>View Live</span>
-                            </button>
+                            </a>
                           )}
                         </div>
                       </div>
@@ -382,16 +409,6 @@ export default function ProductsPage() {
 
       {/* Conversion Talk CTA */}
       <TalkCta />
-
-      {/* Live Preview Modal */}
-      {previewItem && (
-        <PreviewModal
-          isOpen={!!previewItem}
-          onClose={() => setPreviewItem(null)}
-          url={previewItem.url}
-          title={previewItem.title}
-        />
-      )}
     </div>
   );
 }

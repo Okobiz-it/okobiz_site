@@ -409,13 +409,17 @@ export default function AdminProductsPage() {
       }
 
       let activeVideoThumb = form.videoThumbnail;
-      if (
-        form.mediaType === "video" &&
-        !activeVideoThumb &&
-        isYouTubeUrl(activeVideo)
-      ) {
-        activeVideoThumb = getYouTubeThumbnailUrl(activeVideo) || "";
+      if (form.mediaType === "video" && isYouTubeUrl(activeVideo)) {
+        const ytThumb = getYouTubeThumbnailUrl(activeVideo);
+        if (ytThumb && (!activeVideoThumb || activeVideoThumb.startsWith("/assets/") || activeVideoThumb === form.thumbnail)) {
+          activeVideoThumb = ytThumb;
+        }
       }
+
+      const primaryThumb =
+        form.mediaType === "video" && activeVideoThumb
+          ? activeVideoThumb
+          : (form.thumbnail || form.images[0] || "/assets/web-2-DujjTO8C.webp");
 
       const finalCategory =
         form.category === "Custom" && form.customCategory.trim()
@@ -428,8 +432,7 @@ export default function AdminProductsPage() {
         tagline: form.tagline.trim(),
         category: finalCategory,
         mediaType: form.mediaType,
-        thumbnail:
-          form.thumbnail || form.images[0] || "/assets/web-2-DujjTO8C.webp",
+        thumbnail: primaryThumb,
         images:
           form.images.length > 0
             ? form.images

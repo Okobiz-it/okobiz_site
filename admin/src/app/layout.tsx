@@ -2,8 +2,13 @@ import type { Metadata } from "next";
 import "./globals.css";
 
 export const metadata: Metadata = {
-  title: "okobiz Admin | Content & Media Management",
+  title: "Okobiz Admin",
   description: "Enterprise Admin Control Panel for okobiz - Manage contents, client partners, portfolio projects, blogs, team members, and media assets.",
+  icons: {
+    icon: "/okobiz-icon.png",
+    shortcut: "/okobiz-icon.png",
+    apple: "/okobiz-icon.png",
+  },
 };
 
 export default function RootLayout({

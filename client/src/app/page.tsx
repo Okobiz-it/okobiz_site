@@ -232,9 +232,9 @@ export default function HomePage() {
       </section>
 
       {/* 5. Feature Showcase + Discount Banner */}
-      <section className="py-20 bg-[#18191D] relative">
-        <div className="max-w-7xl mx-auto px-4">
-          <div className="bg-white rounded-lg p-12 md:w-1/2 relative z-10 shadow-xl">
+      <section className="py-20 bg-[#18191D] relative overflow-hidden">
+        <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-between">
+          <div className="bg-white rounded-lg p-10 md:p-12 md:w-1/2 relative z-10 shadow-xl">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Website & Apps<br/>Development</h2>
             <p className="text-gray-600 mb-8 leading-relaxed">
               To provide a consistent user experience, our team of skilled developers guarantees that your website works perfectly across all devices and platforms. Whether it's an online store, an app page, or a business website, we use the newest technology.
@@ -243,13 +243,12 @@ export default function HomePage() {
               Explore Services
             </Link>
           </div>
-          <div className="hidden md:block absolute right-[10%] top-1/2 -translate-y-1/2 z-0 opacity-50">
-            {/* Placeholder for the vector graphic on the right */}
-            <div className="w-[400px] h-[400px] border-[1px] border-[#3368B2]/30 rounded-full flex items-center justify-center">
-              <div className="w-[300px] h-[300px] border-[1px] border-[#3368B2]/50 rounded-full flex items-center justify-center">
-                 <div className="w-[200px] h-[200px] border-[1px] border-[#3368B2] rounded-full"></div>
-              </div>
-            </div>
+          <div className="hidden md:flex absolute -right-6 lg:right-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none items-center justify-end">
+            <img
+              src="/assets/tech-hud-vector.png"
+              alt="Tech Vector Graphic"
+              className="w-[420px] lg:w-[480px] xl:w-[530px] h-auto object-contain opacity-80"
+            />
           </div>
         </div>
       </section>

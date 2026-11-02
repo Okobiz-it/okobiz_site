@@ -244,3 +244,23 @@ html {
   -webkit-font-smoothing: antialiased;
 }
 
+/* Video Play Button: Smooth Blinking & Glowing Pulse Animation */
+@keyframes playButtonBlink {
+  0%, 100% {
+    opacity: 1;
+    transform: scale(1);
+    box-shadow: 0 0 20px 2px rgba(225, 29, 72, 0.7);
+  }
+  50% {
+    opacity: 0.45;
+    transform: scale(1.08);
+    box-shadow: 0 0 35px 8px rgba(225, 29, 72, 0.95);
+  }
+}
+
+.animate-play-blink {
+  animation: playButtonBlink 1.8s ease-in-out infinite;
+  will-change: transform, opacity, box-shadow;
+  backface-visibility: hidden;
+}
+

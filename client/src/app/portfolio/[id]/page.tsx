@@ -1,8 +1,8 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, Suspense } from "react";
 import Link from "next/link";
-import { useParams, useRouter } from "next/navigation";
+import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
   ArrowLeft,
   ExternalLink,
@@ -23,13 +23,21 @@ import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/
 import { renderRichText } from "@/lib/richText";
 import { createSlug } from "@/lib/slug";
 
-export default function PortfolioDetailPage() {
+function PortfolioDetailContent() {
   const params = useParams();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const id = params?.id as string;
+  const autoPlayFromUrl = searchParams?.get("autoplay") === "true";
 
   const [project, setProject] = useState<any>(null);
-  const [isPlaying, setIsPlaying] = useState(false);
+  const [isPlaying, setIsPlaying] = useState(autoPlayFromUrl);
+
+  useEffect(() => {
+    if (searchParams?.get("autoplay") === "true") {
+      setIsPlaying(true);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     const fetchProject = async () => {
@@ -79,7 +87,7 @@ export default function PortfolioDetailPage() {
 
   const isVideo = project.mediaType === "video" || !!project.videoUrl;
   const isYt = isYouTubeUrl(project.videoUrl);
-  const ytEmbedUrl = isYt ? getYouTubeEmbedUrl(project.videoUrl) : null;
+  const ytEmbedUrl = isYt ? getYouTubeEmbedUrl(project.videoUrl, isPlaying) : null;
   const displayPoster =
     project.videoThumbnail ||
     (isYt ? getYouTubeThumbnailUrl(project.videoUrl) : null) ||
@@ -148,27 +156,52 @@ export default function PortfolioDetailPage() {
           {/* Media Showcase: YouTube Iframe, HTML5 Video, or Image */}
           <div className="mb-14 rounded-[2px] overflow-hidden border border-gray-800 bg-black shadow-2xl relative">
             {isVideo && project.videoUrl ? (
-              isYt && ytEmbedUrl ? (
-                <div className="relative aspect-video w-full bg-black">
-                  <iframe
-                    src={ytEmbedUrl}
-                    title={project.title}
-                    allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                    allowFullScreen
-                    className="w-full h-full border-0"
+              !isPlaying ? (
+                /* Paused state when user clicked outside video play frame */
+                <div className="relative aspect-video w-full bg-black flex items-center justify-center group overflow-hidden">
+                  <img
+                    src={displayPoster}
+                    alt={project.title}
+                    className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+                  <button
+                    type="button"
+                    onClick={() => setIsPlaying(true)}
+                    className="absolute z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-rose-600/95 hover:bg-rose-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.8)] backdrop-blur-sm border-2 border-rose-400 hover:scale-110 transition-transform cursor-pointer animate-play-blink"
+                    aria-label="Click to play video"
+                  >
+                    <Play size={28} fill="white" className="ml-1" />
+                  </button>
+                  <div className="absolute bottom-4 left-4 z-10 text-xs font-semibold text-white/90 bg-black/60 px-3 py-1 rounded-[2px] border border-gray-700">
+                    Click to play video
+                  </div>
                 </div>
               ) : (
-                <div className="relative aspect-video w-full bg-black flex items-center justify-center">
-                  <video
-                    src={project.videoUrl}
-                    poster={displayPoster}
-                    controls
-                    className="w-full h-full object-contain"
-                    onPlay={() => setIsPlaying(true)}
-                    onPause={() => setIsPlaying(false)}
-                  />
-                </div>
+                /* Autoplaying state when user clicked video play button */
+                isYt && ytEmbedUrl ? (
+                  <div className="relative aspect-video w-full bg-black">
+                    <iframe
+                      src={ytEmbedUrl}
+                      title={project.title}
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                      allowFullScreen
+                      className="w-full h-full border-0"
+                    />
+                  </div>
+                ) : (
+                  <div className="relative aspect-video w-full bg-black flex items-center justify-center">
+                    <video
+                      src={project.videoUrl}
+                      poster={displayPoster}
+                      controls
+                      autoPlay
+                      className="w-full h-full object-contain"
+                      onPlay={() => setIsPlaying(true)}
+                      onPause={() => setIsPlaying(false)}
+                    />
+                  </div>
+                )
               )
             ) : (
               <div className="relative aspect-video w-full overflow-hidden bg-gray-950">
@@ -188,136 +221,101 @@ export default function PortfolioDetailPage() {
               <span className="text-[#0077FF] text-xs font-bold uppercase tracking-widest block mb-2">
                 - Overview -
               </span>
-              <h2 className="text-2xl sm:text-3xl font-extrabold text-white mb-4">
-                Project Overview & Impact
+              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
+                Executive Summary
               </h2>
-              <div
-                className="text-gray-300 text-sm sm:text-base leading-relaxed rich-text-content"
-                dangerouslySetInnerHTML={{
-                  __html: renderRichText(project.fullDescription || project.shortDescription)
-                }}
-              />
+              <div className="text-gray-300 text-sm sm:text-base leading-relaxed text-justify space-y-4">
+                {project.fullDescription ? (
+                  <div dangerouslySetInnerHTML={{ __html: renderRichText(project.fullDescription) }} />
+                ) : (
+                  <p>{project.shortDescription}</p>
+                )}
+              </div>
             </div>
 
             {/* Challenge & Solution Grid */}
             {(project.challenge || project.solution) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-800">
                 {project.challenge && (
-                  <div className="p-6 rounded-[2px] bg-[#16171B] border border-gray-800/90 shadow-xl">
+                  <div className="bg-[#16171B] p-6 rounded-[2px] border border-gray-800/80">
                     <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-amber-500" />
-                      The Engineering Challenge
+                      <span className="w-2 h-2 rounded-full bg-red-500"></span>
+                      The Architectural Challenge
                     </h3>
-                    <div
-                      className="text-xs sm:text-sm text-gray-400 leading-relaxed rich-text-content"
-                      dangerouslySetInnerHTML={{
-                        __html: renderRichText(project.challenge)
-                      }}
-                    />
+                    <div className="text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
+                      <div dangerouslySetInnerHTML={{ __html: renderRichText(project.challenge) }} />
+                    </div>
                   </div>
                 )}
 
                 {project.solution && (
-                  <div className="p-6 rounded-[2px] bg-[#16171B] border border-gray-800/90 shadow-xl">
+                  <div className="bg-[#16171B] p-6 rounded-[2px] border border-gray-800/80">
                     <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-                      <span className="w-2.5 h-2.5 rounded-full bg-[#0077FF]" />
-                      Our Custom Solution
+                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                      Our Engineered Solution
                     </h3>
-                    <div
-                      className="text-xs sm:text-sm text-gray-400 leading-relaxed rich-text-content"
-                      dangerouslySetInnerHTML={{
-                        __html: renderRichText(project.solution)
-                      }}
-                    />
+                    <div className="text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
+                      <div dangerouslySetInnerHTML={{ __html: renderRichText(project.solution) }} />
+                    </div>
                   </div>
                 )}
               </div>
             )}
 
-            {/* Key Deliverables & Features */}
+            {/* Key Features List */}
             {project.features && project.features.length > 0 && (
-              <div>
-                <h3 className="text-xl font-bold text-white mb-6 flex items-center gap-2">
-                  <CheckCircle size={20} className="text-[#3368B2]" />
-                  Key Features & Deliverables
+              <div className="pt-6 border-t border-gray-800">
+                <h3 className="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
+                  <CheckCircle size={18} className="text-[#3368B2]" />
+                  Delivered Features & Technical Milestones
                 </h3>
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3.5">
-                  {project.features.map((feat, i) => (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
+                  {project.features.map((feat: string, idx: number) => (
                     <div
-                      key={i}
-                      className="p-4 rounded-[2px] bg-[#16171B] border border-gray-800 flex items-start gap-3"
+                      key={idx}
+                      className="flex items-start gap-2.5 p-3 rounded-[2px] bg-[#16171B] border border-gray-800/60 text-xs sm:text-sm text-gray-300"
                     >
-                      <CheckCircle size={16} className="text-[#3368B2] mt-0.5 shrink-0" />
-                      <span className="text-xs sm:text-sm text-gray-300 font-medium">{feat}</span>
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#3368B2] mt-1.5 shrink-0" />
+                      <span>{feat}</span>
                     </div>
                   ))}
                 </div>
               </div>
             )}
 
-            {/* Tech Stack */}
-            <div>
-              <h3 className="text-xl font-bold text-white mb-4 flex items-center gap-2">
-                <Layers size={20} className="text-[#3368B2]" />
-                Technology Stack Used
-              </h3>
-              <div className="flex flex-wrap gap-2">
-                {project.techStack.map((tech, idx) => (
-                  <span
-                    key={idx}
-                    className="px-4 py-2 rounded-[2px] bg-[#16171B] border border-gray-800 text-xs font-semibold text-gray-200"
-                  >
-                    {tech}
-                  </span>
-                ))}
-              </div>
-            </div>
-
-            {/* Business Impact / Key Results */}
-            {project.results && project.results.length > 0 && (
-              <div className="p-8 rounded-[2px] bg-gradient-to-r from-blue-950/30 to-[#16171B] border border-[#3368B2]/30 shadow-xl">
-                <h3 className="text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <TrendingUp size={20} className="text-green-400" />
-                  Key Results & Business Metrics
+            {/* Technology Stack Grid */}
+            {project.techStack && project.techStack.length > 0 && (
+              <div className="pt-6 border-t border-gray-800">
+                <h3 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
+                  <Layers size={18} className="text-[#3368B2]" />
+                  Technology Frameworks & Infrastructure
                 </h3>
-                <ul className="space-y-2.5">
-                  {project.results.map((res, i) => (
-                    <li key={i} className="text-xs sm:text-sm text-gray-300 flex items-center gap-2.5">
-                      <span className="w-1.5 h-1.5 rounded-full bg-green-400" />
-                      <span>{res}</span>
-                    </li>
+                <div className="flex flex-wrap gap-2 pt-1">
+                  {project.techStack.map((tech: string, idx: number) => (
+                    <span
+                      key={idx}
+                      className="px-3 py-1.5 rounded-[2px] bg-[#16171B] border border-gray-700 text-xs font-semibold text-gray-200"
+                    >
+                      {tech}
+                    </span>
                   ))}
-                </ul>
+                </div>
               </div>
-            )}
-          </div>
-
-          {/* More Projects Navigation */}
-          <div className="mt-20 pt-10 border-t border-gray-800 flex items-center justify-between">
-            <Link
-              href="/portfolio"
-              className="text-xs sm:text-sm font-bold text-[#3368B2] hover:text-blue-400 flex items-center gap-2"
-            >
-              <ArrowLeft size={16} />
-              <span>Explore All Projects</span>
-            </Link>
-
-            {project.liveUrl && (
-              <a
-                href={project.liveUrl}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="text-xs sm:text-sm font-bold text-white hover:text-[#3368B2] flex items-center gap-1.5"
-              >
-                <span>Visit Live Application</span>
-                <ExternalLink size={14} />
-              </a>
             )}
           </div>
         </div>
       </article>
 
+      {/* Talk CTA */}
       <TalkCta />
     </div>
+  );
+}
+
+export default function PortfolioDetailPage() {
+  return (
+    <Suspense fallback={<UniversalLoader fullScreen size="lg" />}>
+      <PortfolioDetailContent />
+    </Suspense>
   );
 }
