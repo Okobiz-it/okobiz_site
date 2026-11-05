@@ -197,7 +197,7 @@ function ProductDetailContent() {
 
       {/* Breadcrumbs & Navigation Bar */}
       <div className="bg-[#111215] border-b border-gray-800/80 py-3.5">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 flex items-center justify-between">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 flex items-center justify-between">
           <Link
             href="/products"
             className="inline-flex items-center gap-1.5 text-xs font-bold text-gray-400 hover:text-white transition"
@@ -216,7 +216,7 @@ function ProductDetailContent() {
 
       {/* Main Product Showcase Hero Section */}
       <section className="py-12 lg:py-16 bg-[#141416]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-10 items-start">
             {/* LEFT COLUMN: Media (Video & Multi-Image Gallery alongside) - 7 cols */}
             <div className="lg:col-span-7 space-y-4">
@@ -451,12 +451,9 @@ function ProductDetailContent() {
       {/* FULL SCREEN SECTION 1: DETAILED SYSTEM SPECIFICATIONS & OVERVIEW */}
       {product.description && (
         <section className="py-16 bg-[#0E0F12] border-t border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
             <div className="bg-[#141518] border border-gray-800 rounded-[4px] p-6 sm:p-10 shadow-2xl">
               <div className="border-b border-gray-800 pb-4 mb-8">
-                <span className="text-xs font-bold uppercase tracking-widest text-[#3368B2] px-3 py-1 bg-blue-900/30 rounded-[4px] inline-block mb-2 border border-blue-800/40">
-                  Comprehensive Architecture
-                </span>
                 <h2 className="text-2xl sm:text-3xl font-extrabold text-white">
                   Detailed System Specifications & Overview
                 </h2>
@@ -475,7 +472,7 @@ function ProductDetailContent() {
       {/* FULL SCREEN SECTION 2: EDITABLE PRICING CHART WITH FEATURES */}
       {product.pricingPlans && product.pricingPlans.length > 0 && (
         <section className="py-20 bg-[#141416] border-t border-gray-800">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
             <div className="text-center max-w-3xl mx-auto mb-16">
               <span className="text-xs font-bold uppercase tracking-widest text-[#3368B2] px-3.5 py-1 bg-blue-900/30 rounded-[4px] inline-block mb-3 border border-blue-800/40">
                 Transparent & Predictable Pricing
@@ -595,7 +592,7 @@ function ProductDetailContent() {
 
       {/* FULL SCREEN SECTION 3: REVIEWS SLIDING LEFT TO RIGHT & PAUSE ON HOVER */}
       <section className="py-20 bg-[#0E0F12] border-t border-gray-800 overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 mb-12 text-center">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 mb-12 text-center">
           <span className="text-xs font-bold uppercase tracking-widest text-emerald-400 px-3.5 py-1 bg-emerald-950/40 rounded-[4px] inline-block mb-3 border border-emerald-800/40">
             Client Success Stories
           </span>

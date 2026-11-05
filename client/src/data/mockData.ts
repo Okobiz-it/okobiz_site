@@ -86,6 +86,7 @@ export interface ProductItem {
 export interface BlogItem {
   _id: string;
   title: string;
+  slug?: string;
   content: string;
   category: string;
   author: string;

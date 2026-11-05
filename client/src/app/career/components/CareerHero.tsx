@@ -1,0 +1,59 @@
+"use client";
+
+import React from "react";
+import { ArrowRight } from "lucide-react";
+
+interface CareerHeroProps {
+  jobCount: number;
+  onScrollToOpenings: () => void;
+  onScrollToLife: () => void;
+}
+
+export default function CareerHero({
+  jobCount,
+  onScrollToOpenings,
+  onScrollToLife
+}: CareerHeroProps) {
+  return (
+    <section className="relative pt-24 sm:pt-32 pb-20 sm:pb-28 overflow-hidden bg-gradient-to-b from-black via-[#06080c] to-black border-b border-gray-800/80">
+      {/* Subtle Ambient Radial Lighting */}
+      <div className="absolute top-1/4 left-1/2 -translate-x-1/2 w-[700px] h-[400px] bg-gradient-to-r from-blue-600/15 via-[#3368B2]/20 to-indigo-600/15 blur-[120px] pointer-events-none rounded-full" />
+      <div className="absolute -top-12 -left-12 w-72 h-72 bg-blue-500/10 blur-[100px] pointer-events-none rounded-full" />
+      <div className="absolute top-1/2 -right-12 w-80 h-80 bg-indigo-500/10 blur-[100px] pointer-events-none rounded-full" />
+
+      {/* Hero Content */}
+      <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 text-center">
+        <h1 className="text-3xl sm:text-5xl md:text-6xl lg:text-7xl font-black text-white tracking-tight uppercase leading-[1.08]">
+          Join Our Crew, <br />
+          <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 via-sky-300 to-[#3368B2]">
+            Excellence Starts
+          </span>{" "}
+          With You!
+        </h1>
+
+        <p className="mt-6 text-sm sm:text-base md:text-lg text-gray-300 max-w-2xl mx-auto leading-relaxed">
+          Are you ready to make your mark? At okobiz, we build scalable web applications, enterprise SaaS architectures, and transformative digital experiences for global clients. Step into an environment where your craft is respected, your voice matters, and your career has no ceiling.
+        </p>
+
+        {/* Dual CTAs */}
+        <div className="mt-8 flex flex-col sm:flex-row items-center justify-center gap-4">
+          <button
+            onClick={onScrollToOpenings}
+            className="w-full sm:w-auto px-8 py-3.5 bg-[#3368B2] hover:bg-blue-600 text-white text-xs sm:text-sm font-black uppercase tracking-wider rounded-[4px] shadow-xl shadow-[#3368B2]/30 transition-all flex items-center justify-center gap-2 group cursor-pointer"
+          >
+            <span>Explore Current Openings ({jobCount})</span>
+            <ArrowRight className="w-4 h-4 group-hover:translate-x-1 transition-transform" />
+          </button>
+
+          <button
+            onClick={onScrollToLife}
+            className="w-full sm:w-auto px-7 py-3.5 bg-black/60 hover:bg-white/5 border border-gray-700 hover:border-gray-500 text-gray-200 hover:text-white text-xs sm:text-sm font-bold uppercase tracking-wider rounded-[4px] transition-all flex items-center justify-center cursor-pointer"
+          >
+            <span>Life at okobiz</span>
+          </button>
+        </div>
+      </div>
+    </section>
+  );
+}
+

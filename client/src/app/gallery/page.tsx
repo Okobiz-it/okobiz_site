@@ -111,7 +111,7 @@ export default function GalleryPage() {
       />
 
       <section className="py-16 md:py-24 bg-[#111215]" ref={gridTopRef}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           {/* Section Heading */}
           <div className="text-center max-w-2xl mx-auto mb-14">
             <span className="font-bold text-[#0077FF] text-xs sm:text-sm uppercase tracking-widest inline-block mb-3">

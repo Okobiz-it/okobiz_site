@@ -855,7 +855,7 @@
       "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
       "popularBadge": true,
       "featuredBadge": true,
-      "description": "<b style=\"font-size: 0.875rem;\">Visualizing</b><span style=\"font-size: 0.875rem;\"> </span><i style=\"font-size: 0.875rem;\">high </i><u style=\"font-size: 0.875rem;\">frequency&nbsp;</u><div bis_skin_checked=\"1\"><ul><li><span style=\"font-size: 0.875rem;\">telemetry</span></li></ul></div><div bis_skin_checked=\"1\"><ol><li><span style=\"font-size: 0.875rem;\">&nbsp;data</span></li></ol></div><blockquote><span style=\"font-size: 0.875rem;\">&nbsp;from&nbsp;</span></blockquote><div bis_skin_checked=\"1\"><span style=\"font-size: 0.875rem;\"><code>over&nbsp;</code></span></div><div bis_skin_checked=\"1\"><span style=\"font-size: 0.875rem;\">400 factory sensors without browser memory leaks or sluggish charts.</span></div>",
+      "description": "<p>Visualizing high frequency telemetry data from over 400 factory sensors without browser memory leaks or sluggish charts.</p>",
       "challenge": "Visualizing high frequency telemetry data from over 400 factory sensors without browser memory leaks or sluggish charts.",
       "solution": "Leveraged Web Workers and Canvas-based charting to render real-time telemetry at a steady 60 frames per second.",
       "features": [
@@ -880,7 +880,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852865/okobiz/assets/website-app-DOXr3sR7.png",
       "createdAt": "2024-03-12T08:30:00.000Z",
       "commentsCount": 4,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "why-modern-businesses-need-custom-website-and-mobile-app-development"
     },
     {
       "_id": "b102",
@@ -891,7 +892,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852889/okobiz/assets/seo-C2Lrhrz-.png",
       "createdAt": "2024-03-22T14:15:00.000Z",
       "commentsCount": 2,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "maximizing-roi-with-targeted-digital-marketing-and-pixel-tracking"
     },
     {
       "_id": "b103",
@@ -902,7 +904,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852891/okobiz/assets/graphic-CV7N5QQ5.png",
       "createdAt": "2024-04-02T11:00:00.000Z",
       "commentsCount": 6,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "the-art-of-visual-storytelling-motion-graphics-and-brand-identity"
     },
     {
       "_id": "b104",
@@ -913,7 +916,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852892/okobiz/assets/next-pbmXyU91.png",
       "createdAt": "2024-04-15T09:20:00.000Z",
       "commentsCount": 3,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "architecting-ultra-fast-web-applications-with-nextjs-14-and-server-components"
     },
     {
       "_id": "b105",
@@ -924,7 +928,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852893/okobiz/assets/digital-advertising-BPpRew5e.png",
       "createdAt": "2024-04-28T16:00:00.000Z",
       "commentsCount": 5,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "how-to-build-a-high-converting-b2b-lead-generation-funnel-in-2024"
     },
     {
       "_id": "b106",
@@ -935,7 +940,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852880/okobiz/assets/motion-1q7Q6TgM.jpg",
       "createdAt": "2024-05-10T12:00:00.000Z",
       "commentsCount": 8,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "3d-animation-in-modern-ui-enhancing-customer-engagement-without-sacrificing-speed"
     },
     {
       "_id": "b107",
@@ -946,7 +952,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852894/okobiz/assets/fluter-B6Xx9c-F.png",
       "createdAt": "2024-05-22T10:45:00.000Z",
       "commentsCount": 2,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "cross-platform-mobile-app-development-flutter-vs-react-native-in-enterprise"
     },
     {
       "_id": "b108",
@@ -957,7 +964,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852895/okobiz/assets/seo-2-Chqa_ILp.png",
       "createdAt": "2024-06-04T13:30:00.000Z",
       "commentsCount": 7,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "search-engine-optimization-for-single-page-applications-common-pitfalls-and-fixes"
     },
     {
       "_id": "b109",
@@ -968,7 +976,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852896/okobiz/assets/branding-01-C63SjeXF.png",
       "createdAt": "2024-06-18T15:20:00.000Z",
       "commentsCount": 1,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "creating-high-impact-brand-style-guides-for-fast-scaling-startups"
     },
     {
       "_id": "b110",
@@ -979,7 +988,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852897/okobiz/assets/mongodb-BhSBY_rK.png",
       "createdAt": "2024-07-01T11:10:00.000Z",
       "commentsCount": 9,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "database-optimization-at-scale-indexing-strategies-in-mongodb-and-postgresql"
     },
     {
       "_id": "b111",
@@ -990,7 +1000,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852898/okobiz/assets/social-BBufWNV2.png",
       "createdAt": "2024-07-16T14:40:00.000Z",
       "commentsCount": 4,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "mastering-facebook-and-google-ads-attribution-in-a-privacy-first-world"
     },
     {
       "_id": "b112",
@@ -1001,7 +1012,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852899/okobiz/assets/graphic-2-C80LdtU9.jpg",
       "createdAt": "2024-08-03T10:00:00.000Z",
       "commentsCount": 3,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "the-psychology-of-color-in-uiux-design-driving-high-conversion-decisions"
     },
     {
       "_id": "b113",
@@ -1012,7 +1024,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852900/okobiz/assets/bikash-C84onyK_.png",
       "createdAt": "2024-08-19T09:00:00.000Z",
       "commentsCount": 6,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "secure-payment-gateway-integration-bkash-nagad-stripe-and-sslcommerz"
     },
     {
       "_id": "b114",
@@ -1023,7 +1036,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852901/okobiz/assets/email-marketing-DXvvNc4U.png",
       "createdAt": "2024-09-05T12:30:00.000Z",
       "commentsCount": 2,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "automating-email-marketing-workflows-to-boost-customer-lifetime-value"
     },
     {
       "_id": "b115",
@@ -1034,7 +1048,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852902/okobiz/assets/StockFootage-bNm9m1vC.jpg",
       "createdAt": "2024-09-20T16:15:00.000Z",
       "commentsCount": 5,
-      "isPublished": false
+      "isPublished": false,
+      "slug": "responsive-typography-and-micro-interactions-elevating-frontend-polish"
     },
     {
       "_id": "b116",
@@ -1045,7 +1060,8 @@
       "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852903/okobiz/assets/docker-BRV4pgF-.png",
       "createdAt": "2024-10-01T10:00:00.000Z",
       "commentsCount": 8,
-      "isPublished": true
+      "isPublished": true,
+      "slug": "containerizing-nodejs-and-nextjs-microservices-with-docker-and-aws"
     }
   ],
   "team": [
@@ -2431,6 +2447,237 @@
       "status": "active",
       "createdAt": "2024-03-10T10:00:00.000Z",
       "slug": "shopflow-pro-supermarket-and-retail-pos-erp"
+    }
+  ],
+  "jobs": [
+    {
+      "_id": "job-1793781165875",
+      "title": "Demo Job",
+      "slug": "demo-job",
+      "department": "Sales",
+      "employmentType": "Contract",
+      "workplaceType": "On-site",
+      "location": "Mirpur, Dhaka 1216",
+      "experience": "2-4 Years",
+      "salary": "৳80,000 - ৳120,000 / month",
+      "vacancies": 5,
+      "deadline": "2026-11-27",
+      "description": "<h2>Role Overview</h2>\n<p>We are seeking a talented and passionate professional to join our fast-growing engineering team at okobiz. You will collaborate with cross-functional product teams to deliver transformative digital experiences for global clients.</p>\n\n<h2>Key Responsibilities</h2>\n<ul>\n  <li>Architect, design, and deliver performant software solutions.</li>\n  <li>Collaborate closely with designers, product managers, and fellow engineers.</li>\n  <li>Ensure high code craftsmanship, documentation, and automated testing.</li>\n</ul>\n\n<h2>Required Qualifications &amp; Skills</h2>\n<ul>\n  <li>2+ years of production experience in modern software engineering.</li>\n  <li>Strong proficiency in JavaScript/TypeScript, React/Next.js, Node.js, and databases.</li>\n  <li>Passionate about clean architecture, problem-solving, and continuous learning.</li>\n</ul>\n\n<h2>What We Offer (Perks &amp; Culture)</h2>\n<ul>\n  <li>Competitive compensation package with transparent performance reviews.</li>\n  <li>2 Festival Bonuses per year (Eid-ul-Fitr &amp; Eid-ul-Adha).</li>\n  <li>Subsidized nutritious daily lunch, unlimited artisan coffee, and team gaming lounge.</li>\n  <li>Modern high-spec engineering workstations at our Mirpur hub.</li>\n</ul>",
+      "responsibilities": [],
+      "requirements": [],
+      "benefits": [],
+      "status": "active",
+      "order": 1,
+      "createdAt": "2026-11-04T08:32:45.875Z",
+      "updatedAt": "2026-11-04T08:33:20.615Z"
+    },
+    {
+      "_id": "job-1",
+      "title": "Senior Full-Stack Engineer (Next.js & Node.js)",
+      "slug": "senior-full-stack-engineer",
+      "department": "Engineering",
+      "employmentType": "Full-time",
+      "workplaceType": "Hybrid",
+      "location": "Mirpur, Dhaka 1216",
+      "experience": "3-5+ Years",
+      "salary": "৳90,000 - ৳150,000 / month",
+      "vacancies": 2,
+      "deadline": "2026-12-31",
+      "description": "<p>We are seeking a seasoned Senior Full-Stack Engineer to architect, build, and scale high-performance web applications and enterprise SaaS solutions. You will collaborate closely with UI/UX designers and product managers to deliver seamless digital experiences.</p><h2><span style=\"color: rgb(183, 87, 87);\">Key </span><span style=\"color: rgb(248, 113, 113);\">Responsibilities</span></h2><ul><li><span style=\"color: rgb(51, 104, 178);\">Architect and implement robust</span>,<span style=\"color: rgb(6, 182, 212);\"> scalable frontend</span> <span style=\"color: rgb(8, 189, 221);\">architectures with</span> Next.js 14/15, React, and TypeScript.</li><li><span style=\"background-color: rgb(249, 203, 21); color: rgb(30, 41, 59);\">Design and maintain microservices</span>, RESTful APIs, and MongoDB schemas with optimal query performance.</li><li>Ensure <span style=\"color: rgb(249, 113, 113);\">high</span> code quality, security, and automated testing across CI/CD pipelines.</li><li>Mentor mid-level and junior developers, conducting rigorous code reviews and architecture planning.</li></ul><h2>Required Qualifications &amp; Skills</h2><ul><li>3+ years of professional full-stack software development experience.</li><li>Deep expertise in React, Next.js (App Router), TypeScript, Tailwind CSS, and Node.js.</li><li>Solid hands-on experience with MongoDB, PostgreSQL, and cloud deployments (AWS, Vercel, Docker).</li><li>Strong understanding of web security, API optimization, state management, and Git workflows.</li></ul><h2>What We Offer (Perks &amp; Culture)</h2><ul><li>Competitive salary with bi-annual performance evaluations and increments.</li><li>2 Festival Bonuses per year (Eid-ul-Fitr &amp; Eid-ul-Adha).</li><li>Subsidized gourmet lunch, unlimited coffee, tea, and healthy snacks.</li><li>Flexible working hours with 2 days hybrid work per week.</li><li>Annual company pleasure retreat &amp; recreation budget.</li></ul>",
+      "responsibilities": [],
+      "requirements": [],
+      "benefits": [],
+      "status": "active",
+      "order": 1,
+      "createdAt": "2026-11-02T12:36:38.900Z",
+      "updatedAt": "2026-11-04T06:52:04.391Z"
+    },
+    {
+      "_id": "job-2",
+      "title": "Frontend React / Next.js Developer",
+      "slug": "frontend-react-nextjs-developer",
+      "department": "Engineering",
+      "employmentType": "Full-time",
+      "workplaceType": "On-site",
+      "location": "Mirpur, Dhaka 1216",
+      "experience": "2-3 Years",
+      "salary": "৳60,000 - ৳95,000 / month",
+      "vacancies": 3,
+      "deadline": "2026-12-15",
+      "description": "Join our frontend engineering guild to build pixel-perfect, lightning-fast user interfaces. You will translate sophisticated Figma prototypes into responsive, accessible web applications.",
+      "responsibilities": [
+        "Build responsive, pixel-perfect frontend pages using React, Next.js, and Tailwind CSS.",
+        "Integrate RESTful and GraphQL backend endpoints with optimistic UI updates.",
+        "Optimize Core Web Vitals (LCP, FID/INP, CLS) and browser rendering speed.",
+        "Collaborate actively with UI/UX designers to implement interactive motion and micro-interactions."
+      ],
+      "requirements": [
+        "Strong proficiency in JavaScript (ES6+), TypeScript, React, and HTML5/CSS3.",
+        "Hands-on experience with Tailwind CSS, Next.js App Router, and responsive design systems.",
+        "Familiarity with Git version control, component-driven development, and Figma-to-code translation.",
+        "Enthusiasm for writing clean, self-documenting code and learning modern web standards."
+      ],
+      "benefits": [
+        "2 Festival Bonuses per year.",
+        "Subsidized lunch & infinite coffee/snacks.",
+        "Friendly, collaborative, ego-free work environment.",
+        "Annual performance bonuses and sponsorship for online technical courses."
+      ],
+      "status": "active",
+      "order": 2,
+      "createdAt": "2026-11-02T12:36:38.901Z",
+      "updatedAt": "2026-11-02T12:50:25.033Z"
+    },
+    {
+      "_id": "job-3",
+      "title": "UI/UX Product Designer",
+      "slug": "ui-ux-product-designer",
+      "department": "UI/UX Design",
+      "employmentType": "Full-time",
+      "workplaceType": "Hybrid",
+      "location": "Mirpur, Dhaka 1216",
+      "experience": "2+ Years",
+      "salary": "৳55,000 - ৳85,000 / month",
+      "vacancies": 1,
+      "deadline": "2026-12-20",
+      "description": "We are looking for a creative UI/UX Product Designer who loves shaping delightful user journeys and modern SaaS interfaces. You will be the creative champion of our products and client brands.",
+      "responsibilities": [
+        "Design wireframes, user journeys, high-fidelity prototypes, and design systems in Figma.",
+        "Conduct usability research, competitive benchmarking, and customer empathy mapping.",
+        "Work hand-in-hand with frontend engineers to guarantee design integrity during development.",
+        "Contribute to brand collateral, presentation decks, and product showcases."
+      ],
+      "requirements": [
+        "Demonstrated portfolio showcasing modern SaaS, mobile apps, or web platform designs.",
+        "Mastery of Figma (auto-layout, components, variables, tokens) and modern prototyping tools.",
+        "Deep appreciation for typography, visual hierarchy, micro-interactions, and accessibility.",
+        "Excellent communication skills to articulate design rationales clearly."
+      ],
+      "benefits": [
+        "Top-tier hardware and Figma Organization license.",
+        "2 Festival Bonuses + Annual retreat.",
+        "Flexible working hours and creative autonomy.",
+        "Weekly design critiques and professional growth budget."
+      ],
+      "status": "active",
+      "order": 3,
+      "createdAt": "2026-11-02T12:36:38.901Z"
+    },
+    {
+      "_id": "job-4",
+      "title": "Software Quality Assurance (SQA) Engineer",
+      "slug": "sqa-engineer",
+      "department": "SQA & Testing",
+      "employmentType": "Full-time",
+      "workplaceType": "On-site",
+      "location": "Mirpur, Dhaka 1216",
+      "experience": "2-4 Years",
+      "salary": "৳50,000 - ৳80,000 / month",
+      "vacancies": 1,
+      "deadline": "2026-12-30",
+      "description": "Ensure the uncompromising stability, reliability, and security of okobiz systems. You will lead functional, regression, API, and automation testing for all our mission-critical SaaS products.",
+      "responsibilities": [
+        "Develop test plans, comprehensive test matrices, and automated test suites (Cypress / Playwright).",
+        "Perform manual and automated API testing using Postman and Newman.",
+        "Identify, document, and track software defects with thorough root-cause reports.",
+        "Collaborate with developers during sprint planning to establish rigorous acceptance criteria."
+      ],
+      "requirements": [
+        "2+ years of hands-on experience in manual and automated software testing.",
+        "Strong understanding of SDLC, STLC, Agile/Scrum, and API testing methodologies.",
+        "Experience with Playwright, Cypress, or Selenium is a strong advantage.",
+        "Sharp attention to detail and analytical mindset."
+      ],
+      "benefits": [
+        "2 Festival Bonuses + Annual increments.",
+        "Subsidized lunch & recreation area.",
+        "Continuous training in test automation and security audit."
+      ],
+      "status": "active",
+      "order": 4,
+      "createdAt": "2026-11-02T12:36:38.901Z"
+    }
+  ],
+  "jobApplications": [
+    {
+      "_id": "app-101",
+      "jobId": "job-1",
+      "jobTitle": "Senior Full-Stack Engineer (Next.js & Node.js)",
+      "name": "Tanvir Ahmed",
+      "email": "tanvir.engr.dhaka@gmail.com",
+      "phone": "+8801712345678",
+      "portfolioUrl": "https://tanvir-portfolio.dev",
+      "githubUrl": "https://github.com/tanvir-ahmed-dev",
+      "linkedinUrl": "https://linkedin.com/in/tanvir-ahmed-fullstack",
+      "resumeUrl": "https://drive.google.com/file/d/1exampleResumeTanvir/view",
+      "coverNote": "Hi okobiz team, I have 4 years of hands-on experience developing enterprise SaaS platforms with Next.js and Node.js. I have previously built high-concurrency payment gateways and POS dashboards. I would love to bring my technical depth to okobiz.",
+      "experienceYears": "4 Years",
+      "currentCompany": "BrainTech Solutions Ltd",
+      "expectedSalary": "৳120,000",
+      "noticePeriod": "1 Month",
+      "status": "shortlisted",
+      "notes": "Strong GitHub profile with several production Next.js apps. Ready for tech interview.",
+      "emailsSent": [],
+      "createdAt": "2026-10-31T12:36:38.901Z"
+    },
+    {
+      "_id": "app-102",
+      "jobId": "job-2",
+      "jobTitle": "Frontend React / Next.js Developer",
+      "name": "Farzana Yasmin",
+      "email": "farzana.uxdev@gmail.com",
+      "phone": "+8801898765432",
+      "portfolioUrl": "https://farzana-ui.vercel.app",
+      "githubUrl": "https://github.com/farzana-frontend",
+      "linkedinUrl": "https://linkedin.com/in/farzana-yasmin",
+      "resumeUrl": "https://drive.google.com/file/d/1exampleResumeFarzana/view",
+      "coverNote": "Passionate frontend engineer with 2.5 years of experience crafting accessible, responsive user interfaces with Tailwind CSS and Next.js. I specialize in micro-interactions and Core Web Vitals optimization.",
+      "experienceYears": "2.5 Years",
+      "currentCompany": "Orbit Digital",
+      "expectedSalary": "৳75,000",
+      "noticePeriod": "Immediate",
+      "status": "new",
+      "notes": "",
+      "emailsSent": [],
+      "createdAt": "2026-11-01T12:36:38.901Z"
+    }
+  ],
+  "emailTemplates": [
+    {
+      "_id": "tmpl-1",
+      "name": "Technical Interview Invitation",
+      "subject": "Interview Invitation: {jobTitle} at okobiz",
+      "body": "<p>Dear {name},</p><p>Thank you for applying for the <strong>{jobTitle}</strong> position at <strong>okobiz</strong>.</p><p>We were very impressed by your qualifications and would like to invite you for a <strong>Technical &amp; Architecture Interview</strong>. This session will last approximately 45–60 minutes, where we will discuss your technical background, previous projects, and how we build software at okobiz.</p><p><strong>Proposed Timing:</strong> Please let us know your availability between 11:00 AM – 6:00 PM (BST) over the next two days for a Google Meet or in-person session at our Mirpur, Dhaka office.</p><p>Looking forward to speaking with you!</p><p>Best regards,<br/><strong>Recruitment Team</strong><br/>okobiz Software &amp; Digital Solutions<br/>Mirpur, Dhaka 1216 | <a href=\"https://okobiz.com\">okobiz.com</a></p>",
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "_id": "tmpl-2",
+      "name": "Shortlisted for Assessment",
+      "subject": "Application Update: {jobTitle} at okobiz",
+      "body": "<p>Dear {name},</p><p>We are pleased to inform you that your profile has been <strong>shortlisted</strong> for the <strong>{jobTitle}</strong> role at okobiz!</p><p>As the next step in our evaluation process, our engineering lead will review your code repositories and recent portfolio. You will receive a brief take-home scenario or interview schedule shortly.</p><p>Thank you for your enthusiasm to join the okobiz family!</p><p>Warm regards,<br/><strong>Talent Acquisition</strong><br/>okobiz</p>",
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "_id": "tmpl-3",
+      "name": "Offer Letter Discussion",
+      "subject": "Job Offer: {jobTitle} at okobiz",
+      "body": "<p>Dear {name},</p><p>Congratulations! Following your interviews and assessments, the leadership team at okobiz is thrilled to extend a formal offer of employment for the position of <strong>{jobTitle}</strong>.</p><p>We were thoroughly impressed by your domain expertise, problem-solving mindset, and alignment with our company culture.</p><p>Attached to this email, please find the formal Offer Letter detailing your proposed compensation package, festival bonuses, benefits, and joining date.</p><p>Please review the details and let us know your feedback within 3 business days.</p><p>Welcome aboard!<br/><strong>Human Resources</strong><br/>okobiz</p>",
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
+    },
+    {
+      "_id": "tmpl-4",
+      "name": "Polite Rejection & Talent Pool",
+      "subject": "Update regarding your application for {jobTitle} at okobiz",
+      "body": "<p>Dear {name},</p><p>Thank you for taking the time to consider okobiz as your next career step and for applying for the <strong>{jobTitle}</strong> position.</p><p>We received an exceptionally large number of strong applications for this opening. After careful review, we have decided to move forward with candidates whose experience more closely matches our immediate requirements.</p><p>We have retained your profile in our active talent database and will reach out promptly should an opportunity arise that suits your strengths.</p><p>We wish you every success in your professional endeavors.</p><p>Sincerely,<br/><strong>okobiz Recruitment Team</strong></p>",
+      "isDefault": true,
+      "createdAt": "2024-01-01T00:00:00.000Z",
+      "updatedAt": "2024-01-01T00:00:00.000Z"
     }
   ]
 }

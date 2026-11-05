@@ -3,6 +3,7 @@ import mongoose, { Schema } from "mongoose";
 export interface IBlogItem {
   _id: string;
   title: string;
+  slug?: string;
   content: string;
   category: string;
   author: string;
@@ -15,6 +16,7 @@ export interface IBlogItem {
 const BlogItemSchema = new Schema<IBlogItem>({
   _id: { type: String, default: () => new mongoose.Types.ObjectId().toString() },
   title: { type: String, required: true },
+  slug: { type: String, default: "" },
   content: { type: String, required: true },
   category: { type: String, default: "General" },
   author: { type: String, default: "okobiz Team" },

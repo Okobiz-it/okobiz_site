@@ -83,7 +83,7 @@ export default function WebThemeDetailPage() {
       />
 
       <section className="py-16 bg-[#141416]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <Link
             href="/products"
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-8 transition-colors"

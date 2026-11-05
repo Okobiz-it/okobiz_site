@@ -10,14 +10,13 @@ import {
   Package,
   BookOpen,
   UserCheck,
+  GraduationCap,
   Server,
   FolderOpen,
   HelpCircle,
   MessageSquare,
   Settings,
-  LogOut,
-  ExternalLink,
-  ChevronRight
+  LogOut
 } from "lucide-react";
 
 interface SidebarProps {
@@ -34,6 +33,7 @@ const MENU_ITEMS = [
   { name: "Blog Posts", href: "/dashboard/blogs", icon: BookOpen },
   { name: "Gallery", href: "/dashboard/gallery", icon: FolderOpen },
   { name: "Team & Advisors", href: "/dashboard/team", icon: UserCheck },
+  { name: "Career", href: "/dashboard/career", icon: GraduationCap },
   { name: "Media Library", href: "/dashboard/media", icon: FolderOpen },
   { name: "FAQs", href: "/dashboard/faqs", icon: HelpCircle },
   { name: "Inquiries", href: "/dashboard/inquiries", icon: MessageSquare },
@@ -85,7 +85,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
               key={item.href}
               href={item.href}
               onClick={onClose}
-              className={`flex items-center justify-between px-3.5 py-2.5 rounded-[4px] text-sm font-medium transition duration-150 ${
+              className={`flex items-center px-3.5 py-2.5 rounded-[4px] text-sm font-medium transition duration-150 ${
                 isActive
                   ? "bg-[#3368B2] text-white shadow-md shadow-blue-900/20 font-semibold"
                   : "text-gray-400 hover:text-white hover:bg-white/5"
@@ -95,26 +95,9 @@ export default function Sidebar({ onClose }: SidebarProps) {
                 <Icon size={18} className={isActive ? "text-white" : "text-gray-400"} />
                 <span>{item.name}</span>
               </div>
-              {isActive && <ChevronRight size={14} className="text-white/70" />}
             </Link>
           );
         })}
-
-        <div className="pt-4 px-3 py-2 text-[10px] font-bold text-gray-500 uppercase tracking-wider">
-          Quick Links
-        </div>
-        <a
-          href="http://localhost:3000"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="flex items-center justify-between px-3.5 py-2 rounded-[4px] text-xs font-medium text-gray-400 hover:text-white hover:bg-white/5 transition"
-        >
-          <div className="flex items-center gap-3">
-            <ExternalLink size={16} className="text-[#3368B2]" />
-            <span>View Client Site</span>
-          </div>
-          <span className="text-[10px] text-gray-500">:3000</span>
-        </a>
       </nav>
 
       {/* User profile footer */}

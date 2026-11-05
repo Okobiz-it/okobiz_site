@@ -14,7 +14,7 @@ export default function Footer() {
       >
         <div className="absolute inset-0 bg-black/80" />
 
-        <div className="relative z-10 max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-16 lg:py-20">
+        <div className="relative z-10 max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 py-16 lg:py-20">
           <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 lg:gap-12">
             {/* Column 1: Brand & Contact Info */}
             <div className="space-y-6">
@@ -133,6 +133,11 @@ export default function Footer() {
                   </Link>
                 </li>
                 <li>
+                  <Link href="/career" className="hover:text-[#3368B2] transition-colors">
+                    Career
+                  </Link>
+                </li>
+                <li>
                   <a
                     href="https://wa.me/8801973590937"
                     target="_blank"
@@ -215,7 +220,7 @@ export default function Footer() {
 
       {/* Blue Footer Copyright Bar - Completely outside any blur overlay, crystal clear, vibrant */}
       <div className="relative z-20 bg-[#3368B2] py-4 border-t border-blue-400/30">
-        <div className="max-w-7xl mx-auto px-4 text-center">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 text-center">
           <p className="text-sm sm:text-base text-white font-semibold tracking-wide drop-shadow-sm">
             © Copyright 2026, All Rights Reserved by okobiz
           </p>

@@ -161,7 +161,7 @@ export default function HomePage() {
 
       {/* 2. Stats Section */}
       <section className="bg-[#181A1D] py-16 border-b border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-2 md:grid-cols-4 gap-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 grid grid-cols-2 md:grid-cols-4 gap-8">
           <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417]">
             <span className="text-4xl font-bold text-white mb-2">2018</span>
             <span className="text-gray-400 text-sm font-medium">Journey Started</span>
@@ -183,7 +183,7 @@ export default function HomePage() {
 
       {/* 3. Our Clients */}
       <section className="py-16 md:py-24 relative bg-[#131417] bg-cover bg-no-repeat bg-center overflow-hidden" style={{ backgroundImage: "url('https://res.cloudinary.com/dccui8s58/image/upload/v1790853389/okobiz/assets/background-Bw2fnejs.png')" }}>
-        <div className="max-w-6xl mx-auto px-4 sm:px-6 relative z-10">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10">
           <div className="text-center mb-8 md:mb-12">
             <span className="text-[#3368B2] font-semibold text-xs sm:text-sm tracking-widest uppercase mb-2 block">
               TRUSTED CLIENTS
@@ -211,7 +211,7 @@ export default function HomePage() {
 
       {/* 4. Three Core Services Cards */}
       <section className="py-16 bg-[#131417]">
-        <div className="max-w-7xl mx-auto px-4 grid grid-cols-1 md:grid-cols-3 gap-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
             { title: 'Website & App Development', desc: 'We offer professional website and app development services that are suited to your business requirements.', icon: Monitor, link: '/website-app-development-service' },
             { title: 'Creative Solution', desc: 'Our visual and motion design solutions will help to elevate your brand. We bring your ideas to life.', icon: PenTool, link: '/graphics-solution-service' },
@@ -233,7 +233,7 @@ export default function HomePage() {
 
       {/* 5. Feature Showcase + Discount Banner */}
       <section className="py-20 bg-[#18191D] relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 relative flex items-center justify-between">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative flex items-center justify-between">
           <div className="bg-white rounded-lg p-10 md:p-12 md:w-1/2 relative z-10 shadow-xl">
             <h2 className="text-3xl font-bold text-gray-900 mb-4">Website & Apps<br/>Development</h2>
             <p className="text-gray-600 mb-8 leading-relaxed">
@@ -255,7 +255,7 @@ export default function HomePage() {
 
       {/* Special Discount */}
       <section className="bg-gradient-to-r from-[#0d1829] to-[#18191D] py-16 border-y border-[#3368B2]/20 relative overflow-hidden">
-        <div className="max-w-7xl mx-auto px-4 relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
           <div>
             <div className="flex items-center gap-3 mb-4">
               <div className="w-10 h-10 bg-[#3368B2] rounded flex items-center justify-center">
@@ -279,7 +279,7 @@ export default function HomePage() {
 
       {/* 6. Creative Graphics Solution */}
       <section className="py-20 bg-[#131417]">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="mb-12">
             <h2 className="text-3xl font-bold text-white border-b-2 border-white inline-block pb-2">Creative Graphics Solution</h2>
           </div>
@@ -323,7 +323,7 @@ export default function HomePage() {
 
       {/* 7. Digital Marketing & FAQ */}
       <section className="py-20 bg-[#18191D]">
-        <div className="max-w-7xl mx-auto px-4">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="text-center mb-16">
             <h2 className="text-3xl font-bold text-white border-b-2 border-white inline-block pb-2">Digital Marketing</h2>
           </div>

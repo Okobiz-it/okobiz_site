@@ -2,28 +2,44 @@ import { NextResponse } from "next/server";
 import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import { connectDB } from "@/lib/mongodb";
 import BlogItem from "@/models/BlogItem";
+import { createSlug } from "@/lib/slug";
 
 export async function GET() {
   try {
     const db = await connectDB();
     if (db) {
       const blogs = await BlogItem.find().sort({ createdAt: -1 });
-      return NextResponse.json({ success: true, data: blogs });
+      const mapped = blogs.map((b: any) => {
+        const obj = b.toObject ? b.toObject() : b;
+        return {
+          ...obj,
+          slug: obj.slug || createSlug(obj.title)
+        };
+      });
+      return NextResponse.json({ success: true, data: mapped });
     }
   } catch (err: any) {
     console.warn("MongoDB GET blogs error:", err.message);
   }
   const store = getDataStore();
-  return NextResponse.json({ success: true, data: store.blogs || [] });
+  const blogs = (store.blogs || []).map((b: any) => ({
+    ...b,
+    slug: b.slug || createSlug(b.title)
+  }));
+  return NextResponse.json({ success: true, data: blogs });
 }
 
 export async function POST(req: Request) {
   try {
     const body = await req.json();
     const store = getDataStore();
+    const title = body.title || "Untitled Blog Post";
+    const generatedSlug = createSlug(body.slug || title);
+
     const newBlog = {
       _id: "blg-" + Date.now(),
-      title: body.title || "Untitled Blog Post",
+      title,
+      slug: generatedSlug,
       content: body.content || "",
       category: body.category || "Technology",
       author: body.author || "okobiz Editorial",
@@ -62,6 +78,12 @@ export async function PUT(req: Request) {
 
     const store = getDataStore();
     const idx = store.blogs.findIndex(b => b._id === _id);
+    const current = idx !== -1 ? store.blogs[idx] : null;
+
+    if (updates.title || updates.slug) {
+      updates.slug = createSlug(updates.slug || updates.title || current?.title || "blog");
+    }
+
     if (idx !== -1) {
       store.blogs[idx] = { ...store.blogs[idx], ...updates };
       saveDatastore(store);

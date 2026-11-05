@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, BookOpen, Search, ImageIcon, X, Calendar, User } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
+import { createSlug } from "@/lib/slug";
 
 export default function BlogsPage() {
   const [blogs, setBlogs] = useState<any[]>([]);
@@ -11,6 +12,7 @@ export default function BlogsPage() {
   const [editItem, setEditItem] = useState<any>(null);
   const [form, setForm] = useState({
     title: "",
+    slug: "",
     category: "Web Development",
     author: "Md. Sorower Jahan",
     photo: "/assets/website-app-DOXr3sR7.webp",
@@ -37,6 +39,7 @@ export default function BlogsPage() {
     setEditItem(null);
     setForm({
       title: "",
+      slug: "",
       category: "Web Development",
       author: "Md. Sorower Jahan",
       photo: "/assets/website-app-DOXr3sR7.webp",
@@ -50,6 +53,7 @@ export default function BlogsPage() {
     setEditItem(b);
     setForm({
       title: b.title,
+      slug: b.slug || createSlug(b.title),
       category: b.category,
       author: b.author,
       photo: b.photo,
@@ -224,14 +228,34 @@ export default function BlogsPage() {
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Article Title</label>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Article Title *</label>
                 <input
                   type="text"
                   required
                   value={form.title}
-                  onChange={e => setForm({ ...form, title: e.target.value })}
+                  onChange={e => {
+                    const newTitle = e.target.value;
+                    setForm(f => ({
+                      ...f,
+                      title: newTitle,
+                      slug: createSlug(newTitle)
+                    }));
+                  }}
                   placeholder="e.g. Modern UI/UX Trends for Web Applications"
                   className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                />
+              </div>
+
+              <div>
+                <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center justify-between">
+                  <span className="text-[11px] text-[#3368B2] font-mono">/blogs/{form.slug || "..."}</span>
+                </label>
+                <input
+                  type="text"
+                  value={form.slug}
+                  onChange={e => setForm({ ...form, slug: createSlug(e.target.value) })}
+                  placeholder="modern-ui-ux-trends-for-web-applications"
+                  className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white font-mono placeholder-gray-600 focus:outline-none focus:border-[#3368B2]"
                 />
               </div>
 

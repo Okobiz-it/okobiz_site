@@ -71,7 +71,7 @@ export default function BlogPage() {
       />
 
       <section className="py-20 bg-[#0E100F]" ref={gridTopRef}>
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span
               className="font-bold px-5 py-2 mb-3 inline-block text-[#0167D6] rounded-[4px] text-xs uppercase tracking-wider"
@@ -112,7 +112,7 @@ export default function BlogPage() {
                 className="bg-[#181A1D] border border-gray-800 rounded-[4px] overflow-hidden hover:border-[#3368B2] transition-all duration-300 flex flex-col justify-between group shadow-xl"
               >
                 <div>
-                  <Link href={`/blogs/${blog._id}`} className="block h-52 overflow-hidden bg-gray-900">
+                  <Link href={`/blogs/${blog.slug || blog._id}`} className="block h-52 overflow-hidden bg-gray-900">
                     <img
                       src={blog.photo}
                       alt={blog.title}
@@ -131,7 +131,7 @@ export default function BlogPage() {
                       </span>
                     </div>
 
-                    <Link href={`/blogs/${blog._id}`}>
+                    <Link href={`/blogs/${blog.slug || blog._id}`}>
                       <h3 className="text-lg font-bold text-white group-hover:text-[#0167D6] transition-colors line-clamp-2 mb-3 min-h-[3.25rem]">
                         {blog.title}
                       </h3>
@@ -150,7 +150,7 @@ export default function BlogPage() {
                   </span>
 
                   <Link
-                    href={`/blogs/${blog._id}`}
+                    href={`/blogs/${blog.slug || blog._id}`}
                     className="text-xs font-bold text-[#0167D6] hover:text-white flex items-center gap-1 transition-colors"
                   >
                     <span>Read Article</span>

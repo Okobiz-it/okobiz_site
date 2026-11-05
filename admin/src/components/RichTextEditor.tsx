@@ -14,7 +14,11 @@ import {
   Link as LinkIcon,
   RotateCcw,
   RotateCw,
-  RemoveFormatting
+  RemoveFormatting,
+  Palette,
+  Highlighter,
+  ChevronDown,
+  X
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -108,6 +112,36 @@ function convertMarkdownToHtml(text: string): string {
   return result.join("");
 }
 
+// Preset color options for rich text editor
+const TEXT_COLORS = [
+  { value: "#FFFFFF", label: "Pure White" },
+  { value: "#E2E8F0", label: "Light Slate" },
+  { value: "#94A3B8", label: "Muted Slate" },
+  { value: "#3368B2", label: "Okobiz Blue" },
+  { value: "#38BDF8", label: "Sky Blue" },
+  { value: "#06B6D4", label: "Cyan" },
+  { value: "#34D399", label: "Emerald Green" },
+  { value: "#10B981", label: "Forest Green" },
+  { value: "#FBBF24", label: "Amber Gold" },
+  { value: "#FB923C", label: "Warm Orange" },
+  { value: "#F87171", label: "Coral Red" },
+  { value: "#EF4444", label: "Crimson Red" },
+  { value: "#C084FC", label: "Purple" },
+  { value: "#F472B6", label: "Rose Pink" },
+  { value: "#1E293B", label: "Dark Navy" }
+];
+
+const HIGHLIGHT_COLORS = [
+  { value: "rgba(250, 204, 21, 0.45)", preview: "#facc15", label: "Yellow Highlighter", text: "#000" },
+  { value: "rgba(52, 211, 153, 0.45)", preview: "#34d399", label: "Green Highlighter", text: "#000" },
+  { value: "rgba(51, 104, 178, 0.55)", preview: "#3368b2", label: "Blue Highlighter", text: "#fff" },
+  { value: "rgba(56, 189, 248, 0.45)", preview: "#38bdf8", label: "Sky Highlighter", text: "#000" },
+  { value: "rgba(168, 85, 247, 0.45)", preview: "#c084fc", label: "Purple Highlighter", text: "#fff" },
+  { value: "rgba(244, 63, 94, 0.45)", preview: "#fb7185", label: "Rose Highlighter", text: "#fff" },
+  { value: "rgba(249, 115, 22, 0.45)", preview: "#fb923c", label: "Orange Highlighter", text: "#000" },
+  { value: "rgba(100, 116, 139, 0.55)", preview: "#64748b", label: "Slate Highlighter", text: "#fff" }
+];
+
 export default function RichTextEditor({
   value,
   onChange,
@@ -117,6 +151,29 @@ export default function RichTextEditor({
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const isInternalChangeRef = useRef(false);
+  const savedRangeRef = useRef<Range | null>(null);
+
+  const isColorPickerOpenRef = useRef(false);
+
+  const [showTextColorPicker, setShowTextColorPicker] = useState(false);
+  const [showHighlightPicker, setShowHighlightPicker] = useState(false);
+  const [customTextHex, setCustomTextHex] = useState("#38BDF8");
+  const [customHighlightHex, setCustomHighlightHex] = useState("#facc15");
+
+  const customTextHexRef = useRef(customTextHex);
+  customTextHexRef.current = customTextHex;
+
+  const customHighlightHexRef = useRef(customHighlightHex);
+  customHighlightHexRef.current = customHighlightHex;
+
+  const showTextColorPickerRef = useRef(showTextColorPicker);
+  showTextColorPickerRef.current = showTextColorPicker;
+
+  const showHighlightPickerRef = useRef(showHighlightPicker);
+  showHighlightPickerRef.current = showHighlightPicker;
+
+  const textColorRef = useRef<HTMLDivElement | null>(null);
+  const highlightColorRef = useRef<HTMLDivElement | null>(null);
 
   // Active state indicator for toolbar buttons (like MS Word ribbon)
   const [activeStates, setActiveStates] = useState({
@@ -131,6 +188,159 @@ export default function RichTextEditor({
     code: false,
     link: false
   });
+
+  const saveSelection = () => {
+    if (typeof window === "undefined") return;
+    const selection = window.getSelection();
+    if (selection && selection.rangeCount > 0 && editorRef.current) {
+      const node = selection.anchorNode;
+      if (node && (editorRef.current === node || editorRef.current.contains(node))) {
+        savedRangeRef.current = selection.getRangeAt(0).cloneRange();
+      }
+    }
+  };
+
+  const restoreSelection = () => {
+    if (typeof window === "undefined" || !savedRangeRef.current) return;
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      selection.addRange(savedRangeRef.current);
+    }
+  };
+
+  const applyTextColor = (color: string, closeDropdown: boolean = false, skipFocus: boolean = false) => {
+    if (!editorRef.current) return;
+
+    let targetRange = savedRangeRef.current ? savedRangeRef.current.cloneRange() : null;
+
+    if (!skipFocus) {
+      editorRef.current.focus();
+    }
+
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      if (targetRange) {
+        // If selection was collapsed at a word, expand to the whole word so color is immediately visible!
+        if (targetRange.collapsed && targetRange.startContainer.nodeType === Node.TEXT_NODE) {
+          const textNode = targetRange.startContainer as Text;
+          const text = textNode.textContent || "";
+          let start = targetRange.startOffset;
+          let end = targetRange.startOffset;
+          while (start > 0 && /\S/.test(text[start - 1])) start--;
+          while (end < text.length && /\S/.test(text[end])) end++;
+          if (end > start) {
+            const wordRange = document.createRange();
+            wordRange.setStart(textNode, start);
+            wordRange.setEnd(textNode, end);
+            targetRange = wordRange;
+          }
+        }
+        selection.addRange(targetRange);
+      }
+    }
+
+    try {
+      document.execCommand("styleWithCSS", false, "true");
+    } catch (e) {}
+
+    document.execCommand("foreColor", false, color);
+
+    if (selection && selection.rangeCount > 0) {
+      savedRangeRef.current = selection.getRangeAt(0).cloneRange();
+    }
+
+    if (color.startsWith("#")) {
+      setCustomTextHex(color);
+    }
+    triggerChange();
+    if (closeDropdown) {
+      setShowTextColorPicker(false);
+    }
+  };
+
+  const applyHighlightColor = (color: string, closeDropdown: boolean = false, skipFocus: boolean = false) => {
+    if (!editorRef.current) return;
+
+    let targetRange = savedRangeRef.current ? savedRangeRef.current.cloneRange() : null;
+
+    if (!skipFocus) {
+      editorRef.current.focus();
+    }
+
+    const selection = window.getSelection();
+    if (selection) {
+      selection.removeAllRanges();
+      if (targetRange) {
+        // If selection was collapsed at a word, expand to the whole word so highlight is immediately visible!
+        if (targetRange.collapsed && targetRange.startContainer.nodeType === Node.TEXT_NODE) {
+          const textNode = targetRange.startContainer as Text;
+          const text = textNode.textContent || "";
+          let start = targetRange.startOffset;
+          let end = targetRange.startOffset;
+          while (start > 0 && /\S/.test(text[start - 1])) start--;
+          while (end < text.length && /\S/.test(text[end])) end++;
+          if (end > start) {
+            const wordRange = document.createRange();
+            wordRange.setStart(textNode, start);
+            wordRange.setEnd(textNode, end);
+            targetRange = wordRange;
+          }
+        }
+        selection.addRange(targetRange);
+      }
+    }
+
+    try {
+      document.execCommand("styleWithCSS", false, "true");
+    } catch (e) {}
+
+    if (!color || color === "transparent") {
+      const ok = document.execCommand("hiliteColor", false, "transparent");
+      if (!ok) document.execCommand("backColor", false, "transparent");
+    } else {
+      const ok = document.execCommand("hiliteColor", false, color);
+      if (!ok) document.execCommand("backColor", false, color);
+    }
+
+    if (selection && selection.rangeCount > 0) {
+      savedRangeRef.current = selection.getRangeAt(0).cloneRange();
+    }
+
+    if (color.startsWith("#")) {
+      setCustomHighlightHex(color);
+    }
+    triggerChange();
+    if (closeDropdown) {
+      setShowHighlightPicker(false);
+    }
+  };
+
+  // Close color popovers when clicking outside
+  useEffect(() => {
+    const handleClickOutside = (e: MouseEvent) => {
+      if (isColorPickerOpenRef.current) return;
+      const target = e.target as Node;
+
+      // If clicked inside the text color popover or highlight color popover, don't close
+      if (textColorRef.current?.contains(target) || highlightColorRef.current?.contains(target)) {
+        return;
+      }
+
+      if (showTextColorPickerRef.current) {
+        setShowTextColorPicker(false);
+      }
+
+      if (showHighlightPickerRef.current) {
+        setShowHighlightPicker(false);
+      }
+    };
+    document.addEventListener("mousedown", handleClickOutside);
+    return () => {
+      document.removeEventListener("mousedown", handleClickOutside);
+    };
+  }, []);
 
   const checkInsideTag = (tagName: string): boolean => {
     if (typeof window === "undefined") return false;
@@ -150,6 +360,7 @@ export default function RichTextEditor({
   const updateActiveStates = useCallback(() => {
     if (typeof document === "undefined") return;
     try {
+      saveSelection();
       setActiveStates({
         bold: document.queryCommandState("bold"),
         italic: document.queryCommandState("italic"),
@@ -339,9 +550,9 @@ export default function RichTextEditor({
         </div>
       )}
 
-      <div className="border border-gray-800 rounded-[4px] bg-[#181A1F] overflow-hidden focus-within:border-[#3368B2] transition shadow-inner">
+      <div className="border border-gray-800 rounded-[4px] bg-[#181A1F] relative focus-within:border-[#3368B2] transition shadow-inner">
         {/* Formatting Toolbar */}
-        <div className="flex flex-wrap items-center gap-1 p-1.5 bg-[#141518] border-b border-gray-800 select-none">
+        <div className="flex flex-wrap items-center gap-1 p-1.5 bg-[#141518] border-b border-gray-800 select-none rounded-t-[4px]">
           {/* Undo / Redo */}
           <button
             type="button"
@@ -403,6 +614,359 @@ export default function RichTextEditor({
           >
             <Underline size={13} />
           </button>
+
+          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+
+          {/* Text Color Picker */}
+          <div className="relative" ref={textColorRef}>
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+                setShowTextColorPicker(prev => !prev);
+                setShowHighlightPicker(false);
+              }}
+              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
+                showTextColorPicker
+                  ? "bg-[#3368B2] text-white shadow-sm"
+                  : "text-gray-400 hover:text-white hover:bg-white/10"
+              }`}
+              title="Change Text Color"
+            >
+              <div className="flex flex-col items-center">
+                <span className="font-bold text-xs leading-none">A</span>
+                <span className="w-3.5 h-[2px] mt-0.5 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
+              </div>
+              <ChevronDown size={10} className="text-gray-400" />
+            </button>
+
+            {showTextColorPicker && (
+              <div
+                onMouseDown={(e) => {
+                  if ((e.target as HTMLElement).tagName !== "INPUT") {
+                    e.preventDefault();
+                  }
+                }}
+                className="absolute top-full left-0 mt-1 z-50 p-3 bg-[#141518] border border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
+              >
+                <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold border-b border-gray-800 pb-1.5">
+                  <span className="flex items-center gap-1.5 text-white">
+                    <Palette size={12} className="text-[#3368B2]" />
+                    <span>Text Color</span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyTextColor("#ffffff", false);
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        applyTextColor("#ffffff", false);
+                      }}
+                      className="text-[10px] text-blue-400 hover:underline"
+                    >
+                      Reset (White)
+                    </button>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setShowTextColorPicker(false);
+                        editorRef.current?.focus();
+                      }}
+                      className="text-gray-400 hover:text-white p-0.5 rounded-[4px]"
+                      title="Close"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-5 gap-1.5">
+                  {TEXT_COLORS.map(c => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyTextColor(c.value, false);
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        applyTextColor(c.value, false);
+                      }}
+                      className="w-8 h-7 rounded-[4px] border border-gray-700/80 hover:scale-110 hover:border-white transition flex items-center justify-center relative group"
+                      style={{ backgroundColor: c.value }}
+                      title={c.label}
+                    />
+                  ))}
+                </div>
+
+                {/* Custom Color Selector & Hex Input */}
+                <div className="pt-2 border-t border-gray-800 space-y-1.5">
+                  <div className="text-[10px] uppercase font-bold text-gray-400 flex items-center justify-between">
+                    <span>Custom Text Color</span>
+                    <span className="font-mono text-gray-500 text-[10px]">{customTextHex}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label
+                      className="relative w-8 h-8 rounded-[4px] border border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
+                      style={{ backgroundColor: customTextHex }}
+                      title="Click to open color picker"
+                    >
+                      <input
+                        type="color"
+                        value={customTextHex.startsWith("#") ? customTextHex : "#38bdf8"}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          saveSelection();
+                          isColorPickerOpenRef.current = true;
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          saveSelection();
+                          isColorPickerOpenRef.current = true;
+                        }}
+                        onInput={(e) => {
+                          isColorPickerOpenRef.current = true;
+                          const hex = (e.target as HTMLInputElement).value;
+                          setCustomTextHex(hex);
+                          applyTextColor(hex, false, true);
+                        }}
+                        onChange={(e) => {
+                          const hex = (e.target as HTMLInputElement).value;
+                          setCustomTextHex(hex);
+                          applyTextColor(hex, false, true);
+                          setTimeout(() => {
+                            isColorPickerOpenRef.current = false;
+                          }, 1000);
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => {
+                            isColorPickerOpenRef.current = false;
+                          }, 1000);
+                        }}
+                        className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                      />
+                    </label>
+                    <input
+                      type="text"
+                      value={customTextHex}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        saveSelection();
+                      }}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setCustomTextHex(val);
+                        if (/^#[0-9A-Fa-f]{6}$/.test(val) || /^#[0-9A-Fa-f]{3}$/.test(val)) {
+                          applyTextColor(val, false);
+                        }
+                      }}
+                      placeholder="#38BDF8"
+                      className="w-full px-2 py-1 bg-[#181A1D] border border-gray-700 rounded-[4px] text-xs font-mono text-white uppercase focus:outline-none focus:border-[#3368B2]"
+                    />
+                  </div>
+                </div>
+
+                {/* Done Button */}
+                <div className="pt-1 border-t border-gray-800/80">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      applyTextColor(customTextHex, true);
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      applyTextColor(customTextHex, true);
+                    }}
+                    className="w-full py-1.5 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[4px] text-xs font-semibold transition"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
+
+          {/* Highlight Color Picker */}
+          <div className="relative" ref={highlightColorRef}>
+            <button
+              type="button"
+              onMouseDown={(e) => {
+                e.preventDefault();
+                saveSelection();
+                setShowHighlightPicker(prev => !prev);
+                setShowTextColorPicker(false);
+              }}
+              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
+                showHighlightPicker
+                  ? "bg-[#3368B2] text-white shadow-sm"
+                  : "text-gray-400 hover:text-white hover:bg-white/10"
+              }`}
+              title="Text Highlight Marker"
+            >
+              <Highlighter size={13} />
+              <ChevronDown size={10} className="text-gray-400" />
+            </button>
+
+            {showHighlightPicker && (
+              <div
+                onMouseDown={(e) => {
+                  if ((e.target as HTMLElement).tagName !== "INPUT") {
+                    e.preventDefault();
+                  }
+                }}
+                className="absolute top-full left-0 mt-1 z-50 p-3 bg-[#141518] border border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
+              >
+                <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold border-b border-gray-800 pb-1.5">
+                  <span className="flex items-center gap-1.5 text-white">
+                    <Highlighter size={12} className="text-amber-400" />
+                    <span>Highlight Color</span>
+                  </span>
+                  <div className="flex items-center gap-2">
+                    <button
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyHighlightColor("transparent", false);
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        applyHighlightColor("transparent", false);
+                      }}
+                      className="text-[10px] text-red-400 hover:underline"
+                    >
+                      Clear
+                    </button>
+                    <button
+                      type="button"
+                      onMouseDown={(e) => e.preventDefault()}
+                      onClick={() => {
+                        setShowHighlightPicker(false);
+                        editorRef.current?.focus();
+                      }}
+                      className="text-gray-400 hover:text-white p-0.5 rounded-[4px]"
+                      title="Close"
+                    >
+                      <X size={12} />
+                    </button>
+                  </div>
+                </div>
+
+                <div className="grid grid-cols-4 gap-1.5">
+                  {HIGHLIGHT_COLORS.map(c => (
+                    <button
+                      key={c.value}
+                      type="button"
+                      onMouseDown={(e) => {
+                        e.preventDefault();
+                        applyHighlightColor(c.value, false);
+                      }}
+                      onClick={(e) => {
+                        e.preventDefault();
+                        applyHighlightColor(c.value, false);
+                      }}
+                      className="w-12 h-7 rounded-[4px] border border-gray-700/80 hover:scale-105 hover:border-white transition flex items-center justify-center text-[10px] font-bold"
+                      style={{ backgroundColor: c.preview, color: c.text }}
+                      title={c.label}
+                    >
+                      ab
+                    </button>
+                  ))}
+                </div>
+
+                {/* Custom Highlight Selector & Hex Input */}
+                <div className="pt-2 border-t border-gray-800 space-y-1.5">
+                  <div className="text-[10px] uppercase font-bold text-gray-400 flex items-center justify-between">
+                    <span>Custom Highlight</span>
+                    <span className="font-mono text-gray-500 text-[10px]">{customHighlightHex}</span>
+                  </div>
+                  <div className="flex items-center gap-2">
+                    <label
+                      className="relative w-8 h-8 rounded-[4px] border border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
+                      style={{ backgroundColor: customHighlightHex }}
+                      title="Click to open color picker"
+                    >
+                      <input
+                        type="color"
+                        value={customHighlightHex.startsWith("#") ? customHighlightHex : "#facc15"}
+                        onMouseDown={(e) => {
+                          e.stopPropagation();
+                          saveSelection();
+                          isColorPickerOpenRef.current = true;
+                        }}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          saveSelection();
+                          isColorPickerOpenRef.current = true;
+                        }}
+                        onInput={(e) => {
+                          isColorPickerOpenRef.current = true;
+                          const hex = (e.target as HTMLInputElement).value;
+                          setCustomHighlightHex(hex);
+                          applyHighlightColor(hex, false, true);
+                        }}
+                        onChange={(e) => {
+                          const hex = (e.target as HTMLInputElement).value;
+                          setCustomHighlightHex(hex);
+                          applyHighlightColor(hex, false, true);
+                          setTimeout(() => {
+                            isColorPickerOpenRef.current = false;
+                          }, 1000);
+                        }}
+                        onBlur={() => {
+                          setTimeout(() => {
+                            isColorPickerOpenRef.current = false;
+                          }, 1000);
+                        }}
+                        className="opacity-0 absolute inset-0 w-full h-full cursor-pointer"
+                      />
+                    </label>
+                    <input
+                      type="text"
+                      value={customHighlightHex}
+                      onMouseDown={(e) => {
+                        e.stopPropagation();
+                        saveSelection();
+                      }}
+                      onChange={(e) => {
+                        const val = e.target.value;
+                        setCustomHighlightHex(val);
+                        if (/^#[0-9A-Fa-f]{6}$/.test(val) || /^#[0-9A-Fa-f]{3}$/.test(val)) {
+                          applyHighlightColor(val, false);
+                        }
+                      }}
+                      placeholder="#FACC15"
+                      className="w-full px-2 py-1 bg-[#181A1D] border border-gray-700 rounded-[4px] text-xs font-mono text-white uppercase focus:outline-none focus:border-[#3368B2]"
+                    />
+                  </div>
+                </div>
+
+                {/* Done Button */}
+                <div className="pt-1 border-t border-gray-800/80">
+                  <button
+                    type="button"
+                    onMouseDown={(e) => {
+                      e.preventDefault();
+                      applyHighlightColor(customHighlightHex, true);
+                    }}
+                    onClick={(e) => {
+                      e.preventDefault();
+                      applyHighlightColor(customHighlightHex, true);
+                    }}
+                    className="w-full py-1.5 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[4px] text-xs font-semibold transition"
+                  >
+                    Done
+                  </button>
+                </div>
+              </div>
+            )}
+          </div>
 
           <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
 
@@ -524,10 +1088,16 @@ export default function RichTextEditor({
           ref={editorRef}
           contentEditable={true}
           onInput={handleInput}
-          onKeyUp={updateActiveStates}
-          onMouseUp={updateActiveStates}
+          onKeyUp={() => {
+            updateActiveStates();
+            saveSelection();
+          }}
+          onMouseUp={() => {
+            updateActiveStates();
+            saveSelection();
+          }}
           data-placeholder={placeholder}
-          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-gray-200 focus:outline-none leading-relaxed overflow-y-auto`}
+          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-gray-200 focus:outline-none leading-relaxed overflow-y-auto rounded-b-[4px]`}
           style={{ minHeight: "210px" }}
         />
       </div>

@@ -65,7 +65,7 @@ export default function AboutPage() {
 
       {/* Intro Section */}
       <section className="py-20 bg-white text-gray-900">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <div className="w-full lg:w-1/2 flex justify-center">
               <img
@@ -110,7 +110,7 @@ export default function AboutPage() {
 
       {/* Services Offerings Grid */}
       <section className="py-20 bg-[#141416] border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 text-center">
           <p className="text-xs sm:text-sm uppercase text-[#3368B2] font-bold tracking-widest mb-2">
             Services We&apos;re Offering
           </p>
@@ -143,7 +143,7 @@ export default function AboutPage() {
 
       {/* Our IT Journey Section */}
       <section className="py-20 bg-[#18191D] border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="flex flex-col lg:flex-row gap-12 items-center">
             <div className="w-full lg:w-1/2">
               <span className="text-xs sm:text-sm font-bold text-[#3368B2] uppercase tracking-widest block mb-2">
@@ -181,7 +181,7 @@ export default function AboutPage() {
 
       {/* How It's Going */}
       <section className="py-20 bg-black border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="grid grid-cols-1 lg:grid-cols-12 gap-12 items-center">
             <div className="lg:col-span-6 flex justify-center">
               <img
@@ -214,7 +214,7 @@ export default function AboutPage() {
 
       {/* Mission, Vision & Promises Section */}
       <section className="py-20 bg-[#181A1D] border-t border-gray-800">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="grid grid-cols-1 md:grid-cols-3 gap-8">
             {/* Mission */}
             <div className="bg-[#141416] border border-gray-800 p-8 rounded-xl relative hover:border-[#3368B2] transition-colors">
@@ -260,7 +260,7 @@ export default function AboutPage() {
 
       {/* Call for more info bar */}
       <section className="bg-[#004282] py-8 border-y border-blue-600/30">
-        <div className="max-w-7xl mx-auto px-4 flex flex-col sm:flex-row items-center justify-between gap-6">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 flex flex-col sm:flex-row items-center justify-between gap-6">
           <div className="flex items-center gap-4 text-white">
             <PhoneCall className="w-8 h-8 text-blue-300" />
             <div>

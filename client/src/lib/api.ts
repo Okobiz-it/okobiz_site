@@ -95,7 +95,10 @@ export async function getBlogs(): Promise<BlogItem[]> {
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
-      return json.data;
+      return json.data.map((b: any) => ({
+        ...b,
+        slug: b.slug || createSlug(b.title)
+      }));
     }
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
@@ -107,7 +110,7 @@ export async function getBlogs(): Promise<BlogItem[]> {
 export async function getBlogById(id: string): Promise<BlogItem | null> {
   try {
     const blogs = await getBlogs();
-    return blogs.find((b) => b._id === id) || blogs[0] || null;
+    return blogs.find((b) => b._id === id || b.slug === id) || blogs[0] || null;
   } catch (err) {
     return null;
   }
@@ -927,4 +930,240 @@ export function getServiceWhatsAppUrl(serviceTitle: string, customNumber?: strin
     ? `Hello okobiz, I am interested in hiring your team for the "${planName}" package of "${serviceTitle}". Please share onboarding details and a quote.`
     : `Hello okobiz, I am interested in hiring your team for "${serviceTitle}". Please share project timelines and consultation details.`;
   return `https://wa.me/${cleanNumber}?text=${encodeURIComponent(text)}`;
+}
+
+export interface JobItem {
+  _id: string;
+  title: string;
+  slug: string;
+  department: string;
+  employmentType: string;
+  workplaceType: string;
+  location: string;
+  experience: string;
+  salary: string;
+  vacancies: number;
+  deadline: string;
+  description: string;
+  responsibilities: string[];
+  requirements: string[];
+  benefits: string[];
+  status: "active" | "closed";
+  order: number;
+  createdAt: string;
+}
+
+export const DEFAULT_JOBS: JobItem[] = [
+  {
+    _id: "job-1",
+    title: "Senior Full-Stack Engineer (Next.js & Node.js)",
+    slug: "senior-full-stack-engineer",
+    department: "Engineering",
+    employmentType: "Full-time",
+    workplaceType: "On-site",
+    location: "Mirpur, Dhaka 1216",
+    experience: "3-5+ Years",
+    salary: "৳90,000 - ৳150,000 / month",
+    vacancies: 2,
+    deadline: "2026-12-31",
+    description: "We are seeking a seasoned Senior Full-Stack Engineer to architect, build, and scale high-performance web applications and enterprise SaaS solutions. You will collaborate closely with UI/UX designers and product managers to deliver seamless digital experiences.",
+    responsibilities: [
+      "Architect and implement robust, scalable frontend architectures with Next.js 14/15, React, and TypeScript.",
+      "Design and maintain microservices, RESTful APIs, and MongoDB schemas with optimal query performance.",
+      "Ensure high code quality, security, and automated testing across CI/CD pipelines.",
+      "Mentor mid-level and junior developers, conducting rigorous code reviews and architecture planning."
+    ],
+    requirements: [
+      "3+ years of professional full-stack software development experience.",
+      "Deep expertise in React, Next.js (App Router), TypeScript, Tailwind CSS, and Node.js.",
+      "Solid hands-on experience with MongoDB, PostgreSQL, and cloud deployments (AWS, Vercel, Docker).",
+      "Strong understanding of web security, API optimization, state management, and Git workflows."
+    ],
+    benefits: [
+      "Competitive salary with bi-annual performance evaluations and increments.",
+      "2 Festival Bonuses per year (Eid-ul-Fitr & Eid-ul-Adha).",
+      "Subsidized gourmet lunch, unlimited coffee, tea, and healthy snacks.",
+      "Modern ergonomic engineering workstations with dual 4K displays.",
+      "Annual company pleasure retreat & recreation budget."
+    ],
+    status: "active",
+    order: 1,
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: "job-2",
+    title: "Frontend React / Next.js Developer",
+    slug: "frontend-react-nextjs-developer",
+    department: "Engineering",
+    employmentType: "Full-time",
+    workplaceType: "On-site",
+    location: "Mirpur, Dhaka 1216",
+    experience: "2-3 Years",
+    salary: "৳60,000 - ৳95,000 / month",
+    vacancies: 3,
+    deadline: "2026-12-15",
+    description: "Join our frontend engineering guild to build pixel-perfect, lightning-fast user interfaces. You will translate sophisticated Figma prototypes into responsive, accessible web applications.",
+    responsibilities: [
+      "Build responsive, pixel-perfect frontend pages using React, Next.js, and Tailwind CSS.",
+      "Integrate RESTful and GraphQL backend endpoints with optimistic UI updates.",
+      "Optimize Core Web Vitals (LCP, FID/INP, CLS) and browser rendering speed.",
+      "Collaborate actively with UI/UX designers to implement interactive motion and micro-interactions."
+    ],
+    requirements: [
+      "Strong proficiency in JavaScript (ES6+), TypeScript, React, and HTML5/CSS3.",
+      "Hands-on experience with Tailwind CSS, Next.js App Router, and responsive design systems.",
+      "Familiarity with Git version control, component-driven development, and Figma-to-code translation.",
+      "Enthusiasm for writing clean, self-documenting code and learning modern web standards."
+    ],
+    benefits: [
+      "2 Festival Bonuses per year.",
+      "Subsidized lunch & infinite coffee/snacks.",
+      "Friendly, collaborative, ego-free work environment.",
+      "Annual performance bonuses and sponsorship for online technical courses."
+    ],
+    status: "active",
+    order: 2,
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: "job-3",
+    title: "UI/UX Product Designer",
+    slug: "ui-ux-product-designer",
+    department: "UI/UX Design",
+    employmentType: "Full-time",
+    workplaceType: "On-site",
+    location: "Mirpur, Dhaka 1216",
+    experience: "2+ Years",
+    salary: "৳55,000 - ৳85,000 / month",
+    vacancies: 1,
+    deadline: "2026-12-20",
+    description: "We are looking for a creative UI/UX Product Designer who loves shaping delightful user journeys and modern SaaS interfaces. You will be the creative champion of our products and client brands.",
+    responsibilities: [
+      "Design wireframes, user journeys, high-fidelity prototypes, and design systems in Figma.",
+      "Conduct usability research, competitive benchmarking, and customer empathy mapping.",
+      "Work hand-in-hand with frontend engineers to guarantee design integrity during development.",
+      "Contribute to brand collateral, presentation decks, and product showcases."
+    ],
+    requirements: [
+      "Demonstrated portfolio showcasing modern SaaS, mobile apps, or web platform designs.",
+      "Mastery of Figma (auto-layout, components, variables, tokens) and modern prototyping tools.",
+      "Deep appreciation for typography, visual hierarchy, micro-interactions, and accessibility.",
+      "Excellent communication skills to articulate design rationales clearly."
+    ],
+    benefits: [
+      "Top-tier hardware and Figma Organization license.",
+      "2 Festival Bonuses + Annual retreat.",
+      "Flexible working hours and creative autonomy.",
+      "Weekly design critiques and professional growth budget."
+    ],
+    status: "active",
+    order: 3,
+    createdAt: new Date().toISOString()
+  },
+  {
+    _id: "job-4",
+    title: "Software Quality Assurance (SQA) Engineer",
+    slug: "sqa-engineer",
+    department: "SQA & Testing",
+    employmentType: "Full-time",
+    workplaceType: "On-site",
+    location: "Mirpur, Dhaka 1216",
+    experience: "2-4 Years",
+    salary: "৳50,000 - ৳80,000 / month",
+    vacancies: 1,
+    deadline: "2026-12-30",
+    description: "Ensure the uncompromising stability, reliability, and security of okobiz systems. You will lead functional, regression, API, and automation testing for all our mission-critical SaaS products.",
+    responsibilities: [
+      "Develop test plans, comprehensive test matrices, and automated test suites (Cypress / Playwright).",
+      "Perform manual and automated API testing using Postman and Newman.",
+      "Identify, document, and track software defects with thorough root-cause reports.",
+      "Collaborate with developers during sprint planning to establish rigorous acceptance criteria."
+    ],
+    requirements: [
+      "2+ years of hands-on experience in manual and automated software testing.",
+      "Strong understanding of SDLC, STLC, Agile/Scrum, and API testing methodologies.",
+      "Experience with Playwright, Cypress, or Selenium is a strong advantage.",
+      "Sharp attention to detail and analytical mindset."
+    ],
+    benefits: [
+      "2 Festival Bonuses + Annual increments.",
+      "Subsidized lunch & recreation area.",
+      "Continuous training in test automation and security audit."
+    ],
+    status: "active",
+    order: 4,
+    createdAt: new Date().toISOString()
+  }
+];
+
+export async function getJobs(): Promise<JobItem[]> {
+  try {
+    const res = await fetch(`${API_BASE}/api/jobs?active=true`, { cache: "no-store" });
+    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
+    const json = await res.json();
+    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+      return json.data.map((j: any) => ({
+        ...j,
+        slug: j.slug || createSlug(j.title)
+      }));
+    }
+  } catch (err: any) {
+    if (isDynamicBailout(err)) throw err;
+    console.warn("Failed to fetch jobs from API, using defaults:", err?.message || err);
+  }
+  return DEFAULT_JOBS;
+}
+
+export async function getJobBySlug(slug: string): Promise<JobItem | null> {
+  try {
+    const res = await fetch(`${API_BASE}/api/jobs?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+    if (res.ok) {
+      const json = await res.json();
+      if (json.success && json.data) {
+        return {
+          ...json.data,
+          slug: json.data.slug || createSlug(json.data.title)
+        };
+      }
+    }
+  } catch (err: any) {
+    if (isDynamicBailout(err)) throw err;
+    console.warn("Failed to fetch job by slug from API:", err?.message || err);
+  }
+
+  const allJobs = await getJobs();
+  const lower = slug.toLowerCase();
+  const match = allJobs.find(
+    (j) => (j.slug && j.slug.toLowerCase() === lower) || j._id === slug
+  );
+  return match || allJobs[0] || null;
+}
+
+export async function applyForJob(payload: {
+  jobId: string;
+  jobTitle?: string;
+  name: string;
+  email: string;
+  phone: string;
+  portfolioUrl?: string;
+  githubUrl?: string;
+  linkedinUrl?: string;
+  resumeUrl: string;
+  coverNote?: string;
+  experienceYears?: string;
+  currentCompany?: string;
+  expectedSalary?: string;
+  noticePeriod?: string;
+}): Promise<{ success: boolean; message: string }> {
+  try {
+    const res = await fetch(`${API_BASE}/api/applications`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload)
+    });
+    const json = await res.json();
+    return json;
+  } catch (err: any) {
+    return { success: false, message: err?.message || "Failed to submit application." };
+  }
 }

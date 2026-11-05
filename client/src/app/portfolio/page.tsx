@@ -125,7 +125,7 @@ export default function PortfolioPage() {
       />
 
       <section id="portfolio-grid-section" className="py-16 md:py-20 bg-[#121316]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           {/* Top Quick Bar: Download Official Company Profile PDF (2px radius) */}
           <div className="bg-[#181A1E] border border-gray-800 rounded-[2px] p-6 mb-16 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xl">
             <div className="flex items-center gap-4">

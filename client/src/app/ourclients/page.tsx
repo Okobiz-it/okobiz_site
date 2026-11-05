@@ -23,7 +23,7 @@ export default function OurClientsPage() {
       />
 
       <section className="py-20 bg-[#0E100F]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="text-center max-w-3xl mx-auto mb-16">
             <span
               className="font-bold px-5 py-2 mb-3 inline-block text-[#0167D6] rounded-full text-xs uppercase tracking-wider"

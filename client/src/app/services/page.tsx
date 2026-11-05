@@ -36,7 +36,7 @@ export default async function ServicesPage() {
         className="py-14 sm:py-14 md:py-16 lg:py-20 bg-no-repeat bg-left-top bg-[#000000]"
         style={{ backgroundImage: "url('/assets/pattern-img1-DvcDl20m.webp')" }}
       >
-        <div className="max-w-7xl px-4 mx-auto">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="text-center py-10">
             <span
               className="font-bold px-5 py-2 mb-3 inline-block text-[#0167D6] rounded-[4px]"

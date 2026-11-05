@@ -102,7 +102,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
 
       {/* Main Section - Reduced padding (0.8x) */}
       <section className="bg-[#141416] py-10 sm:py-14">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="flex flex-col lg:flex-row gap-8 xl:gap-10">
             {/* Left Sidebar - Reduced spacing (0.8x) & rounded-[4px] */}
             <aside className="w-full lg:w-[32%] space-y-4 shrink-0">
@@ -300,7 +300,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
       {/* FULL SECTION: EDITABLE PRICING PACKAGES LIKE PRODUCTS PAGE */}
       {activeService.pricingPlans && activeService.pricingPlans.length > 0 && (
         <section className="py-16 sm:py-20 bg-[#0E0F12] border-t border-gray-800/80">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
             <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16">
               <span className="text-xs font-bold uppercase tracking-widest text-[#0167D6] px-3.5 py-1 bg-[#0167D6]/20 rounded-[4px] inline-block mb-3 border border-[#0167D6]/30">
                 Transparent & Predictable Pricing

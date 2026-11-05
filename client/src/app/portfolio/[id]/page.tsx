@@ -101,7 +101,7 @@ function PortfolioDetailContent() {
       />
 
       <article className="py-16 md:py-24 bg-[#121316]">
-        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           {/* Back button and quick actions */}
           <div className="flex items-center justify-between mb-10 pb-6 border-b border-gray-800">
             <Link
@@ -224,7 +224,7 @@ function PortfolioDetailContent() {
               <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
                 Executive Summary
               </h2>
-              <div className="text-gray-300 text-sm sm:text-base leading-relaxed text-justify space-y-4">
+              <div className="text-gray-300 text-sm sm:text-base leading-relaxed space-y-4 prose prose-invert max-w-none">
                 {project.fullDescription ? (
                   <div dangerouslySetInnerHTML={{ __html: renderRichText(project.fullDescription) }} />
                 ) : (

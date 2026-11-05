@@ -65,42 +65,37 @@ textarea,
 }
 .wysiwyg-editor strong,
 .wysiwyg-editor b {
-  font-weight: 700 !important;
-  color: #ffffff !important;
+  font-weight: 700;
 }
 .wysiwyg-editor em,
 .wysiwyg-editor i {
-  font-style: italic !important;
-  color: #f3f4f6 !important;
+  font-style: italic;
 }
 .wysiwyg-editor u {
-  text-decoration: underline !important;
-  text-decoration-thickness: 1.5px !important;
-  text-underline-offset: 3px !important;
-  color: #ffffff !important;
+  text-decoration: underline;
+  text-decoration-thickness: 1.5px;
+  text-underline-offset: 3px;
 }
 .wysiwyg-editor h2 {
-  font-size: 1.35rem !important;
-  font-weight: 700 !important;
-  color: #ffffff !important;
-  margin-top: 0.75rem !important;
-  margin-bottom: 0.35rem !important;
+  font-size: 1.35rem;
+  font-weight: 700;
+  margin-top: 0.75rem;
+  margin-bottom: 0.35rem;
 }
 .wysiwyg-editor h3 {
-  font-size: 1.15rem !important;
-  font-weight: 600 !important;
-  color: #ffffff !important;
-  margin-top: 0.6rem !important;
-  margin-bottom: 0.25rem !important;
+  font-size: 1.15rem;
+  font-weight: 600;
+  margin-top: 0.6rem;
+  margin-bottom: 0.25rem;
 }
 .wysiwyg-editor blockquote {
-  border-left: 3px solid #3368B2 !important;
-  background: rgba(255, 255, 255, 0.04) !important;
-  padding: 8px 14px !important;
-  margin: 8px 0 !important;
-  font-style: italic !important;
-  color: #d1d5db !important;
-  border-radius: 0 4px 4px 0 !important;
+  border-left: 3px solid #3368B2;
+  background: rgba(255, 255, 255, 0.04);
+  padding: 8px 14px;
+  margin: 8px 0;
+  font-style: italic;
+  color: #d1d5db;
+  border-radius: 0 4px 4px 0;
 }
 .wysiwyg-editor ul {
   list-style-type: disc !important;

@@ -39,7 +39,7 @@ export default function BlogDetailPage() {
     getBlogs().then((data) => {
       if (data && data.length > 0) {
         setBlogs(data);
-        const match = data.find((b) => b._id === blogId) || data[0];
+        const match = data.find((b) => b._id === blogId || b.slug === blogId) || data[0];
         setBlog(match);
       }
     });
@@ -50,7 +50,7 @@ export default function BlogDetailPage() {
   }
 
   const currentShareUrl =
-    shareUrl || (typeof window !== "undefined" ? window.location.href : `https://okobiz.com/blogs/${blog._id}`);
+    shareUrl || (typeof window !== "undefined" ? window.location.href : `https://okobiz.com/blogs/${blog.slug || blog._id}`);
 
   const recentArticles = (
     blogs.filter((b) => b._id !== blog._id).length > 0
@@ -63,7 +63,7 @@ export default function BlogDetailPage() {
       <PageBanner title={blog.title} subtitle="Article & Industry Insights" />
 
       <section className="py-16 bg-[#141416]">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <Link
             href="/blog"
             className="inline-flex items-center gap-2 text-sm text-gray-400 hover:text-white mb-8 transition-colors"
@@ -184,7 +184,7 @@ export default function BlogDetailPage() {
                   {recentArticles.map((item) => (
                     <Link
                       key={item._id}
-                      href={`/blogs/${item._id}`}
+                      href={`/blogs/${item.slug || item._id}`}
                       className="flex gap-4 group items-center"
                     >
                       <img

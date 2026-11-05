@@ -2,7 +2,11 @@ import fs from "fs";
 import path from "path";
 import { createSlug } from "./slug";
 
-const DATA_FILE = path.join(process.cwd(), "data", "admin_store.json");
+const DATA_FILE = fs.existsSync(path.join(process.cwd(), "data", "admin_store.json"))
+  ? path.join(process.cwd(), "data", "admin_store.json")
+  : fs.existsSync(path.join(process.cwd(), "admin", "data", "admin_store.json"))
+  ? path.join(process.cwd(), "admin", "data", "admin_store.json")
+  : path.join(process.cwd(), "data", "admin_store.json");
 
 export interface DataStoreSchema {
   heroSlides: Array<{
@@ -96,6 +100,7 @@ export interface DataStoreSchema {
   blogs: Array<{
     _id: string;
     title: string;
+    slug?: string;
     content: string;
     category: string;
     author: string;
@@ -103,6 +108,15 @@ export interface DataStoreSchema {
     createdAt: string;
     commentsCount: number;
     isPublished: boolean;
+  }>;
+  emailTemplates?: Array<{
+    _id: string;
+    name: string;
+    subject: string;
+    body: string;
+    isDefault?: boolean;
+    createdAt?: string;
+    updatedAt?: string;
   }>;
   team: Array<{
     _id: string;
@@ -164,6 +178,55 @@ export interface DataStoreSchema {
     message: string;
     status: "new" | "in_progress" | "resolved";
     createdAt: string;
+  }>;
+  jobs?: Array<{
+    _id: string;
+    title: string;
+    slug: string;
+    department: string;
+    employmentType: string;
+    workplaceType: string;
+    location: string;
+    experience: string;
+    salary: string;
+    vacancies: number;
+    deadline: string;
+    description: string;
+    responsibilities: string[];
+    requirements: string[];
+    benefits: string[];
+    status: "active" | "closed";
+    order: number;
+    createdAt: string;
+    updatedAt?: string;
+  }>;
+  jobApplications?: Array<{
+    _id: string;
+    jobId: string;
+    jobTitle: string;
+    name: string;
+    email: string;
+    phone: string;
+    portfolioUrl?: string;
+    githubUrl?: string;
+    linkedinUrl?: string;
+    resumeUrl: string;
+    coverNote?: string;
+    experienceYears?: string;
+    currentCompany?: string;
+    expectedSalary?: string;
+    noticePeriod?: string;
+    status: "new" | "reviewing" | "shortlisted" | "interview" | "offered" | "rejected" | "hired";
+    notes?: string;
+    emailsSent?: Array<{
+      subject: string;
+      message: string;
+      sentAt: string;
+      sentBy?: string;
+      status: "sent" | "simulated" | "failed";
+    }>;
+    createdAt: string;
+    updatedAt?: string;
   }>;
   settings: {
     siteName: string;
@@ -338,6 +401,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "blg-1",
       title: "Why Modern Businesses Need Custom Website & Mobile App Development",
+      slug: "why-modern-businesses-need-custom-website-mobile-app-development",
       content: "In today's fast-paced digital ecosystem, off-the-shelf templates rarely capture the unique essence of a growing brand. Custom web and mobile app development allows organizations to engineer digital touchpoints tailored specifically to their client journeys, ensuring maximum conversion and retention.",
       category: "Web Development",
       author: "Md. Sorower Jahan",
@@ -349,6 +413,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "blg-2",
       title: "Maximizing ROI with Targeted Digital Marketing and Pixel Tracking",
+      slug: "maximizing-roi-with-targeted-digital-marketing-and-pixel-tracking",
       content: "Digital marketing is no longer about blindly spending advertising budget across broad channels. In 2024, data-driven targeting via Facebook Pixel, Google Tag Manager, and Demand-Side Platforms (DSP) allows brands to trace every single dollar back to revenue.",
       category: "Digital Marketing",
       author: "Anowar Hossain",
@@ -360,6 +425,7 @@ const DEFAULT_STORE: DataStoreSchema = {
     {
       _id: "blg-3",
       title: "The Art of Visual Storytelling: Motion Graphics & Brand Identity",
+      slug: "the-art-of-visual-storytelling-motion-graphics-brand-identity",
       content: "In a world of short attention spans, static visuals alone are often ignored. Dynamic motion graphics, 3D modeling, and cohesive brand identities capture attention within the first 3 seconds, conveying complex ideas effortlessly.",
       category: "Graphics Solution",
       author: "Sumiya Siddiqua",
@@ -1210,7 +1276,231 @@ const DEFAULT_STORE: DataStoreSchema = {
       pdfUrl: "/assets/okobiz_profile-DvU1SuUS.pdf",
       badge: ""
     }
-  }
+  },
+  jobs: [
+    {
+      _id: "job-1",
+      title: "Senior Full-Stack Engineer (Next.js & Node.js)",
+      slug: "senior-full-stack-engineer",
+      department: "Engineering",
+      employmentType: "Full-time",
+      workplaceType: "Hybrid",
+      location: "Mirpur, Dhaka 1216",
+      experience: "3-5+ Years",
+      salary: "৳90,000 - ৳150,000 / month",
+      vacancies: 2,
+      deadline: "2026-12-31",
+      description: "We are seeking a seasoned Senior Full-Stack Engineer to architect, build, and scale high-performance web applications and enterprise SaaS solutions. You will collaborate closely with UI/UX designers and product managers to deliver seamless digital experiences.",
+      responsibilities: [
+        "Architect and implement robust, scalable frontend architectures with Next.js 14/15, React, and TypeScript.",
+        "Design and maintain microservices, RESTful APIs, and MongoDB schemas with optimal query performance.",
+        "Ensure high code quality, security, and automated testing across CI/CD pipelines.",
+        "Mentor mid-level and junior developers, conducting rigorous code reviews and architecture planning."
+      ],
+      requirements: [
+        "3+ years of professional full-stack software development experience.",
+        "Deep expertise in React, Next.js (App Router), TypeScript, Tailwind CSS, and Node.js.",
+        "Solid hands-on experience with MongoDB, PostgreSQL, and cloud deployments (AWS, Vercel, Docker).",
+        "Strong understanding of web security, API optimization, state management, and Git workflows."
+      ],
+      benefits: [
+        "Competitive salary with bi-annual performance evaluations and increments.",
+        "2 Festival Bonuses per year (Eid-ul-Fitr & Eid-ul-Adha).",
+        "Subsidized gourmet lunch, unlimited coffee, tea, and healthy snacks.",
+        "Flexible working hours with 2 days hybrid work per week.",
+        "Annual company pleasure retreat & recreation budget."
+      ],
+      status: "active",
+      order: 1,
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "job-2",
+      title: "Frontend React / Next.js Developer",
+      slug: "frontend-react-nextjs-developer",
+      department: "Engineering",
+      employmentType: "Full-time",
+      workplaceType: "On-site",
+      location: "Mirpur, Dhaka 1216",
+      experience: "2-3 Years",
+      salary: "৳60,000 - ৳95,000 / month",
+      vacancies: 3,
+      deadline: "2026-12-15",
+      description: "Join our frontend engineering guild to build pixel-perfect, lightning-fast user interfaces. You will translate sophisticated Figma prototypes into responsive, accessible web applications.",
+      responsibilities: [
+        "Build responsive, pixel-perfect frontend pages using React, Next.js, and Tailwind CSS.",
+        "Integrate RESTful and GraphQL backend endpoints with optimistic UI updates.",
+        "Optimize Core Web Vitals (LCP, FID/INP, CLS) and browser rendering speed.",
+        "Collaborate actively with UI/UX designers to implement interactive motion and micro-interactions."
+      ],
+      requirements: [
+        "Strong proficiency in JavaScript (ES6+), TypeScript, React, and HTML5/CSS3.",
+        "Hands-on experience with Tailwind CSS, Next.js App Router, and responsive design systems.",
+        "Familiarity with Git version control, component-driven development, and Figma-to-code translation.",
+        "Enthusiasm for writing clean, self-documenting code and learning modern web standards."
+      ],
+      benefits: [
+        "2 Festival Bonuses per year.",
+        "Subsidized lunch & infinite coffee/snacks.",
+        "Friendly, collaborative, ego-free work environment.",
+        "Annual performance bonuses and sponsorship for online technical courses."
+      ],
+      status: "active",
+      order: 2,
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "job-3",
+      title: "UI/UX Product Designer",
+      slug: "ui-ux-product-designer",
+      department: "UI/UX Design",
+      employmentType: "Full-time",
+      workplaceType: "Hybrid",
+      location: "Mirpur, Dhaka 1216",
+      experience: "2+ Years",
+      salary: "৳55,000 - ৳85,000 / month",
+      vacancies: 1,
+      deadline: "2026-12-20",
+      description: "We are looking for a creative UI/UX Product Designer who loves shaping delightful user journeys and modern SaaS interfaces. You will be the creative champion of our products and client brands.",
+      responsibilities: [
+        "Design wireframes, user journeys, high-fidelity prototypes, and design systems in Figma.",
+        "Conduct usability research, competitive benchmarking, and customer empathy mapping.",
+        "Work hand-in-hand with frontend engineers to guarantee design integrity during development.",
+        "Contribute to brand collateral, presentation decks, and product showcases."
+      ],
+      requirements: [
+        "Demonstrated portfolio showcasing modern SaaS, mobile apps, or web platform designs.",
+        "Mastery of Figma (auto-layout, components, variables, tokens) and modern prototyping tools.",
+        "Deep appreciation for typography, visual hierarchy, micro-interactions, and accessibility.",
+        "Excellent communication skills to articulate design rationales clearly."
+      ],
+      benefits: [
+        "Top-tier hardware and Figma Organization license.",
+        "2 Festival Bonuses + Annual retreat.",
+        "Flexible working hours and creative autonomy.",
+        "Weekly design critiques and professional growth budget."
+      ],
+      status: "active",
+      order: 3,
+      createdAt: new Date().toISOString()
+    },
+    {
+      _id: "job-4",
+      title: "Software Quality Assurance (SQA) Engineer",
+      slug: "sqa-engineer",
+      department: "SQA & Testing",
+      employmentType: "Full-time",
+      workplaceType: "On-site",
+      location: "Mirpur, Dhaka 1216",
+      experience: "2-4 Years",
+      salary: "৳50,000 - ৳80,000 / month",
+      vacancies: 1,
+      deadline: "2026-12-30",
+      description: "Ensure the uncompromising stability, reliability, and security of okobiz systems. You will lead functional, regression, API, and automation testing for all our mission-critical SaaS products.",
+      responsibilities: [
+        "Develop test plans, comprehensive test matrices, and automated test suites (Cypress / Playwright).",
+        "Perform manual and automated API testing using Postman and Newman.",
+        "Identify, document, and track software defects with thorough root-cause reports.",
+        "Collaborate with developers during sprint planning to establish rigorous acceptance criteria."
+      ],
+      requirements: [
+        "2+ years of hands-on experience in manual and automated software testing.",
+        "Strong understanding of SDLC, STLC, Agile/Scrum, and API testing methodologies.",
+        "Experience with Playwright, Cypress, or Selenium is a strong advantage.",
+        "Sharp attention to detail and analytical mindset."
+      ],
+      benefits: [
+        "2 Festival Bonuses + Annual increments.",
+        "Subsidized lunch & recreation area.",
+        "Continuous training in test automation and security audit."
+      ],
+      status: "active",
+      order: 4,
+      createdAt: new Date().toISOString()
+    }
+  ],
+  jobApplications: [
+    {
+      _id: "app-101",
+      jobId: "job-1",
+      jobTitle: "Senior Full-Stack Engineer (Next.js & Node.js)",
+      name: "Tanvir Ahmed",
+      email: "tanvir.engr.dhaka@gmail.com",
+      phone: "+8801712345678",
+      portfolioUrl: "https://tanvir-portfolio.dev",
+      githubUrl: "https://github.com/tanvir-ahmed-dev",
+      linkedinUrl: "https://linkedin.com/in/tanvir-ahmed-fullstack",
+      resumeUrl: "https://drive.google.com/file/d/1exampleResumeTanvir/view",
+      coverNote: "Hi okobiz team, I have 4 years of hands-on experience developing enterprise SaaS platforms with Next.js and Node.js. I have previously built high-concurrency payment gateways and POS dashboards. I would love to bring my technical depth to okobiz.",
+      experienceYears: "4 Years",
+      currentCompany: "BrainTech Solutions Ltd",
+      expectedSalary: "৳120,000",
+      noticePeriod: "1 Month",
+      status: "shortlisted",
+      notes: "Strong GitHub profile with several production Next.js apps. Ready for tech interview.",
+      emailsSent: [],
+      createdAt: new Date(Date.now() - 86400000 * 2).toISOString()
+    },
+    {
+      _id: "app-102",
+      jobId: "job-2",
+      jobTitle: "Frontend React / Next.js Developer",
+      name: "Farzana Yasmin",
+      email: "farzana.uxdev@gmail.com",
+      phone: "+8801898765432",
+      portfolioUrl: "https://farzana-ui.vercel.app",
+      githubUrl: "https://github.com/farzana-frontend",
+      linkedinUrl: "https://linkedin.com/in/farzana-yasmin",
+      resumeUrl: "https://drive.google.com/file/d/1exampleResumeFarzana/view",
+      coverNote: "Passionate frontend engineer with 2.5 years of experience crafting accessible, responsive user interfaces with Tailwind CSS and Next.js. I specialize in micro-interactions and Core Web Vitals optimization.",
+      experienceYears: "2.5 Years",
+      currentCompany: "Orbit Digital",
+      expectedSalary: "৳75,000",
+      noticePeriod: "Immediate",
+      status: "new",
+      notes: "",
+      emailsSent: [],
+      createdAt: new Date(Date.now() - 86400000).toISOString()
+    }
+  ],
+  emailTemplates: [
+    {
+      _id: "tmpl-1",
+      name: "Technical Interview Invitation",
+      subject: "Interview Invitation: {jobTitle} at okobiz",
+      body: `<p>Dear {name},</p><p>Thank you for applying for the <strong>{jobTitle}</strong> position at <strong>okobiz</strong>.</p><p>We were very impressed by your qualifications and would like to invite you for a <strong>Technical &amp; Architecture Interview</strong>. This session will last approximately 45–60 minutes, where we will discuss your technical background, previous projects, and how we build software at okobiz.</p><p><strong>Proposed Timing:</strong> Please let us know your availability between 11:00 AM – 6:00 PM (BST) over the next two days for a Google Meet or in-person session at our Mirpur, Dhaka office.</p><p>Looking forward to speaking with you!</p><p>Best regards,<br/><strong>Recruitment Team</strong><br/>okobiz Software &amp; Digital Solutions<br/>Mirpur, Dhaka 1216 | <a href="https://okobiz.com">okobiz.com</a></p>`,
+      isDefault: true,
+      createdAt: "2024-01-01T00:00:00.000Z",
+      updatedAt: "2024-01-01T00:00:00.000Z"
+    },
+    {
+      _id: "tmpl-2",
+      name: "Shortlisted for Assessment",
+      subject: "Application Update: {jobTitle} at okobiz",
+      body: `<p>Dear {name},</p><p>We are pleased to inform you that your profile has been <strong>shortlisted</strong> for the <strong>{jobTitle}</strong> role at okobiz!</p><p>As the next step in our evaluation process, our engineering lead will review your code repositories and recent portfolio. You will receive a brief take-home scenario or interview schedule shortly.</p><p>Thank you for your enthusiasm to join the okobiz family!</p><p>Warm regards,<br/><strong>Talent Acquisition</strong><br/>okobiz</p>`,
+      isDefault: true,
+      createdAt: "2024-01-01T00:00:00.000Z",
+      updatedAt: "2024-01-01T00:00:00.000Z"
+    },
+    {
+      _id: "tmpl-3",
+      name: "Offer Letter Discussion",
+      subject: "Job Offer: {jobTitle} at okobiz",
+      body: `<p>Dear {name},</p><p>Congratulations! Following your interviews and assessments, the leadership team at okobiz is thrilled to extend a formal offer of employment for the position of <strong>{jobTitle}</strong>.</p><p>We were thoroughly impressed by your domain expertise, problem-solving mindset, and alignment with our company culture.</p><p>Attached to this email, please find the formal Offer Letter detailing your proposed compensation package, festival bonuses, benefits, and joining date.</p><p>Please review the details and let us know your feedback within 3 business days.</p><p>Welcome aboard!<br/><strong>Human Resources</strong><br/>okobiz</p>`,
+      isDefault: true,
+      createdAt: "2024-01-01T00:00:00.000Z",
+      updatedAt: "2024-01-01T00:00:00.000Z"
+    },
+    {
+      _id: "tmpl-4",
+      name: "Polite Rejection & Talent Pool",
+      subject: "Update regarding your application for {jobTitle} at okobiz",
+      body: `<p>Dear {name},</p><p>Thank you for taking the time to consider okobiz as your next career step and for applying for the <strong>{jobTitle}</strong> position.</p><p>We received an exceptionally large number of strong applications for this opening. After careful review, we have decided to move forward with candidates whose experience more closely matches our immediate requirements.</p><p>We have retained your profile in our active talent database and will reach out promptly should an opportunity arise that suits your strengths.</p><p>We wish you every success in your professional endeavors.</p><p>Sincerely,<br/><strong>okobiz Recruitment Team</strong></p>`,
+      isDefault: true,
+      createdAt: "2024-01-01T00:00:00.000Z",
+      updatedAt: "2024-01-01T00:00:00.000Z"
+    }
+  ]
 };
 
 function ensureStoreExists() {
@@ -1244,6 +1534,30 @@ export function getDataStore(): DataStoreSchema {
       try {
         fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf8");
       } catch (e) {}
+    }
+    if (!store.jobs || !Array.isArray(store.jobs) || store.jobs.length === 0) {
+      store.jobs = [...(DEFAULT_STORE.jobs || [])];
+      try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf8");
+      } catch (e) {}
+    }
+    if (!store.jobApplications || !Array.isArray(store.jobApplications)) {
+      store.jobApplications = [...(DEFAULT_STORE.jobApplications || [])];
+      try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf8");
+      } catch (e) {}
+    }
+    if (!store.emailTemplates || !Array.isArray(store.emailTemplates) || store.emailTemplates.length === 0) {
+      store.emailTemplates = [...(DEFAULT_STORE.emailTemplates || [])];
+      try {
+        fs.writeFileSync(DATA_FILE, JSON.stringify(store, null, 2), "utf8");
+      } catch (e) {}
+    }
+    // Ensure blogs have slugs
+    if (store.blogs && Array.isArray(store.blogs)) {
+      store.blogs.forEach((b: any) => {
+        if (!b.slug) b.slug = createSlug(b.title || "blog-post");
+      });
     }
     // Ensure services have pricingPlans and no priceRange
     if (store.services && Array.isArray(store.services)) {
