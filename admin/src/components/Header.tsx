@@ -4,20 +4,29 @@ import { Menu, ExternalLink } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
 
 interface HeaderProps {
-  onMenuToggle: () => void;
+  onMenuToggle?: () => void;
   title?: string;
 }
 
-export default function Header({ onMenuToggle, title }: HeaderProps) {
+export default function Header({
+  onMenuToggle,
+  title
+}: HeaderProps) {
   return (
     <header className="h-16 bg-white dark:bg-[#111216] border-b border-slate-200 dark:border-gray-800/80 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 transition-colors duration-200">
-      <div className="flex items-center gap-3">
-        <button
-          onClick={onMenuToggle}
-          className="lg:hidden p-2 rounded-[4px] text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition"
-        >
-          <Menu size={20} />
-        </button>
+      <div className="flex items-center gap-2 sm:gap-3">
+        {/* Mobile menu toggle drawer (lg:hidden) */}
+        {onMenuToggle && (
+          <button
+            onClick={onMenuToggle}
+            className="lg:hidden p-2 rounded-[4px] text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-white/5 transition cursor-pointer"
+            title="Open Navigation"
+            aria-label="Open Navigation"
+          >
+            <Menu size={20} />
+          </button>
+        )}
+
         <h1 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white capitalize">
           {title || "Dashboard"}
         </h1>
