@@ -128,28 +128,34 @@ export default function HomePage() {
           </button>
         </div>
 
-        {/* Tickers */}
+        {/* Tickers - High-contrast Signature Branding in both Light & Dark modes */}
         <div className="absolute bottom-0 w-full z-20 flex flex-col">
-          <div className="bg-[#FFFF00] text-black py-4 overflow-hidden flex">
-            <div className="animate-marquee whitespace-nowrap flex items-center font-bold text-[15px] md:text-[16px]">
+          <div
+            className="home-ticker-yellow bg-[#FFFF00] text-black py-3.5 sm:py-4 overflow-hidden flex select-none"
+            style={{ backgroundColor: "#FFFF00", color: "#000000" }}
+          >
+            <div className="animate-marquee whitespace-nowrap flex items-center font-bold text-[14px] sm:text-[16px]">
               {[...Array(6)].map((_, i) => (
                 <React.Fragment key={i}>
                   {TICKER_ITEMS.map((item, idx) => (
                     <span key={idx} className="mx-6 flex items-center">
-                      ★ <span className="mx-6 uppercase">{item}</span>
+                      ★ <span className="mx-6 uppercase tracking-wider">{item}</span>
                     </span>
                   ))}
                 </React.Fragment>
               ))}
             </div>
           </div>
-          <div className="bg-black text-[#FFFF00] py-4 overflow-hidden flex border-t border-[#333]">
-            <div className="animate-marquee-reverse whitespace-nowrap flex items-center font-bold text-[15px] md:text-[16px]">
+          <div
+            className="home-ticker-black bg-black text-[#FFFF00] py-3.5 sm:py-4 overflow-hidden flex border-t border-[#222] select-none"
+            style={{ backgroundColor: "#000000", color: "#FFFF00" }}
+          >
+            <div className="animate-marquee-reverse whitespace-nowrap flex items-center font-bold text-[14px] sm:text-[16px]">
               {[...Array(6)].map((_, i) => (
                 <React.Fragment key={i}>
                   {TICKER_ITEMS_BLACK.map((item, idx) => (
                     <span key={idx} className="mx-6 flex items-center">
-                      ★ <span className="mx-6 uppercase">{item}</span>
+                      ★ <span className="mx-6 uppercase tracking-wider">{item}</span>
                     </span>
                   ))}
                 </React.Fragment>
@@ -254,20 +260,22 @@ export default function HomePage() {
       </section>
 
       {/* Special Discount */}
-      <section className="bg-gradient-to-r from-[#0d1829] to-[#18191D] py-16 border-y border-[#3368B2]/20 relative overflow-hidden">
+      <section className="bg-gradient-to-r dark:from-[#0d1829] dark:to-[#18191D] from-[#102B54] to-[#1E4C8A] py-16 border-y dark:border-[#3368B2]/20 border-blue-400/30 relative overflow-hidden">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
           <div>
             <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#3368B2] rounded flex items-center justify-center">
+              <div className="w-10 h-10 bg-[#3368B2] rounded-[4px] flex items-center justify-center shadow-md">
                 <Monitor size={20} className="text-white" />
               </div>
-              <h3 className="text-[#3368B2] font-semibold text-lg">Special Discount for your first Project</h3>
+              <h3 className="text-sky-300 dark:text-[#3368B2] font-bold text-base sm:text-lg tracking-wide">
+                Special Discount for your first Project
+              </h3>
             </div>
-            <h2 className="text-4xl font-bold text-white mb-6">Web Design & Development.</h2>
-            <p className="text-gray-400 mb-8 leading-relaxed">
+            <h2 className="text-3xl sm:text-4xl font-black text-white mb-6">Web Design & Development.</h2>
+            <p className="text-slate-200 dark:text-gray-400 mb-8 leading-relaxed text-sm sm:text-base">
               Get your custom website and app development at a special rate. Our expert team designs user-friendly interfaces, responsive layouts, and practical features to enhance digital interactions and maximize your growth.
             </p>
-            <Link href="/contact-us" className="inline-flex items-center gap-2 bg-[#3368B2] text-white px-8 py-3 rounded font-bold uppercase tracking-wider hover:bg-blue-700 transition">
+            <Link href="/contact-us" className="inline-flex items-center gap-2 bg-[#3368B2] hover:bg-blue-600 text-white px-8 py-3 rounded-[4px] font-bold uppercase tracking-wider transition shadow-lg shadow-blue-900/40">
               Order Now <ArrowRight size={18} />
             </Link>
           </div>
@@ -281,40 +289,21 @@ export default function HomePage() {
       <section className="py-20 bg-[#131417]">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="mb-12">
-            <h2 className="text-3xl font-bold text-white border-b-2 border-white inline-block pb-2">Creative Graphics Solution</h2>
+            <h2 className="text-3xl font-bold text-white border-b-2 border-[#0167D6] inline-block pb-2">Creative Graphics Solution</h2>
           </div>
           
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6 mb-12">
+          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
             {[
               { t: 'Brand & Logo Identity', d: 'Brand identity encompasses how a brand visually, verbally, and emotionally represents itself...', i: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790853433/okobiz/assets/pattern-000-DD9OVOOk.png' },
               { t: '3D & Motion Design', d: 'We specialize in 3D & Motion Design services to fulfill our clients visual communication needs.', i: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790853433/okobiz/assets/pattern-000-DD9OVOOk.png' },
               { t: 'Static content', d: 'We specialize in Graphic Design services crafted to meet our clients visual communication needs.', i: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790853433/okobiz/assets/pattern-000-DD9OVOOk.png' }
             ].map((f, i) => (
-              <div key={i} className="bg-[#18191D] p-8 border border-gray-800 rounded group hover:border-[#3368B2] transition">
-                <div className="w-16 h-16 bg-[#222327] rounded-lg flex items-center justify-center mb-6 group-hover:bg-[#3368B2] transition-colors">
+              <div key={i} className="bg-[#18191D] p-8 border border-gray-800 rounded-[4px] group hover:border-[#0167D6] transition">
+                <div className="w-16 h-16 bg-[#222327] rounded-[4px] flex items-center justify-center mb-6 group-hover:bg-[#0167D6] transition-colors">
                   <PenTool className="text-white" size={28} />
                 </div>
                 <h3 className="text-xl font-bold mb-4">{f.t}</h3>
                 <p className="text-gray-400 text-sm leading-relaxed">{f.d}</p>
-              </div>
-            ))}
-          </div>
-
-          <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
-            {[
-              { t: 'Motion Graphics', s: 'Branding, Commercials, 2D', img: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790852880/okobiz/assets/motion-1q7Q6TgM.jpg' },
-              { t: 'App & UI Motion', s: 'Interactions, Micro-animations', img: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790852902/okobiz/assets/StockFootage-bNm9m1vC.jpg' },
-              { t: '3D Animation', s: 'Models, Product Visuals', img: 'https://res.cloudinary.com/dccui8s58/image/upload/v1790853446/okobiz/assets/photoshop-DHSFVnai.jpg' }
-            ].map((v, i) => (
-              <div key={i} className="relative group overflow-hidden rounded bg-black h-[250px]">
-                <img src={v.img} alt={v.t} className="w-full h-full object-cover opacity-60 group-hover:opacity-40 transition-opacity duration-300" />
-                <div className="absolute inset-0 flex flex-col items-center justify-center text-center p-4">
-                  <div className="w-12 h-12 bg-green-500 rounded-full flex items-center justify-center mb-4 cursor-pointer transform group-hover:scale-110 transition-transform shadow-lg shadow-green-500/50">
-                     <Play size={20} fill="white" className="text-white ml-1" />
-                  </div>
-                  <h3 className="text-xl font-bold text-white mb-1">{v.t}</h3>
-                  <p className="text-gray-300 text-sm">{v.s}</p>
-                </div>
               </div>
             ))}
           </div>
@@ -325,7 +314,7 @@ export default function HomePage() {
       <section className="py-20 bg-[#18191D]">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           <div className="text-center mb-16">
-            <h2 className="text-3xl font-bold text-white border-b-2 border-white inline-block pb-2">Digital Marketing</h2>
+            <h2 className="text-3xl font-bold text-white border-b-2 border-[#0167D6] inline-block pb-2">Digital Marketing</h2>
           </div>
           
           <div className="grid grid-cols-1 md:grid-cols-3 gap-0 border border-gray-800 rounded-lg overflow-hidden mb-24">

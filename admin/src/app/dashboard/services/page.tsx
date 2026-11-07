@@ -353,17 +353,17 @@ export default function ServicesPage() {
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white flex items-center gap-2.5">
-            <Server className="text-[#3368B2]" size={24} />
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
+            <Server className="text-[#0167D6] dark:text-[#3368B2]" size={24} />
             Services & Detailed Offerings
           </h1>
-          <p className="text-gray-400 text-xs mt-1">
+          <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">
             Manage your client /services cards and build highly customizable details pages for each offering
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer"
         >
           <Plus size={16} /> Add New Service
         </button>
@@ -392,13 +392,13 @@ export default function ServicesPage() {
           {services.map((srv) => (
             <div
               key={srv._id}
-              className="bg-[#131417] border border-gray-800 rounded-[4px] flex flex-col justify-between group hover:border-[#3368B2]/60 transition overflow-hidden shadow-xl"
+              className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] flex flex-col justify-between group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition overflow-hidden shadow-xs hover:shadow-md"
             >
               {/* Card Header & Media */}
               <div>
-                <div className="p-5 border-b border-gray-800/80 flex items-start justify-between gap-3 bg-[#181A1F]/50">
+                <div className="p-5 border-b border-slate-200 dark:border-gray-800/80 flex items-start justify-between gap-3 bg-slate-50/80 dark:bg-[#181A1F]/50">
                   <div className="flex items-center gap-3">
-                    <div className="w-12 h-12 rounded-[4px] bg-black/40 border border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
+                    <div className="w-12 h-12 rounded-[4px] bg-slate-100 dark:bg-black/40 border border-slate-200 dark:border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
                       {srv.image ? (
                         <img
                           src={srv.image}
@@ -406,20 +406,20 @@ export default function ServicesPage() {
                           className="w-full h-full object-contain p-1"
                         />
                       ) : (
-                        <Server className="w-6 h-6 text-[#3368B2]" />
+                        <Server className="w-6 h-6 text-[#0167D6] dark:text-[#3368B2]" />
                       )}
                     </div>
                     <div>
-                      <div className="text-[10px] font-bold text-[#3368B2] tracking-wider uppercase">
+                      <div className="text-[10px] font-bold text-[#0167D6] dark:text-[#3368B2] tracking-wider uppercase">
                         Order #{srv.order || 1}
                       </div>
-                      <h3 className="text-sm font-bold text-white line-clamp-1 group-hover:text-blue-400 transition">
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#0167D6] transition">
                         {srv.title}
                       </h3>
                     </div>
                   </div>
                   {srv.pricingPlans && srv.pricingPlans.length > 0 && (
-                    <span className="text-[11px] font-semibold text-emerald-400 bg-emerald-950/40 px-2 py-0.5 rounded-[4px] border border-emerald-800/40 shrink-0">
+                    <span className="text-[11px] font-semibold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-[4px] border border-emerald-200 dark:border-emerald-800/40 shrink-0">
                       {srv.pricingPlans.length} {srv.pricingPlans.length === 1 ? "Plan" : "Plans"}
                     </span>
                   )}
@@ -428,14 +428,14 @@ export default function ServicesPage() {
                 {/* Card Body */}
                 <div className="p-5 space-y-3.5">
                   <div className="flex items-center justify-between text-xs">
-                    <span className="font-mono text-[11px] text-gray-400 bg-[#0d0e11] px-2 py-0.5 rounded-[4px] border border-gray-800 truncate max-w-[210px]">
+                    <span className="font-mono text-[11px] text-slate-700 dark:text-gray-300 bg-slate-100 dark:bg-[#0d0e11] px-2 py-0.5 rounded-[4px] border border-slate-200 dark:border-gray-800 truncate max-w-[210px]">
                       /services/{srv.slug}
                     </span>
                     <a
                       href={`http://localhost:3000/services/${srv.slug}`}
                       target="_blank"
                       rel="noopener noreferrer"
-                      className="text-[#3368B2] hover:text-blue-400 flex items-center gap-1 text-[11px] font-medium"
+                      className="text-[#0167D6] dark:text-[#3368B2] hover:text-blue-700 dark:hover:text-blue-400 flex items-center gap-1 text-[11px] font-medium"
                       title="Open details page"
                     >
                       <span>Preview</span>
@@ -444,24 +444,24 @@ export default function ServicesPage() {
                   </div>
 
                   <div>
-                    <div className="text-[10px] font-bold uppercase tracking-wider text-gray-500 mb-1">
+                    <div className="text-[10px] font-bold uppercase tracking-wider text-slate-500 dark:text-gray-400 mb-1">
                       Card Description (/services)
                     </div>
-                    <p className="text-xs text-gray-300 leading-relaxed line-clamp-3 bg-[#181A1F]/40 p-2.5 rounded-[4px] border border-gray-800/60 min-h-[4.5rem]">
+                    <p className="text-xs text-slate-700 dark:text-gray-300 leading-relaxed line-clamp-3 bg-slate-50 dark:bg-[#181A1F]/40 p-2.5 rounded-[4px] border border-slate-200 dark:border-gray-800/60 min-h-[4.5rem]">
                       {cleanSnippet(srv.shortDesc, 140) || (
-                        <span className="text-gray-600 italic">No short description set</span>
+                        <span className="text-slate-400 dark:text-gray-600 italic">No short description set</span>
                       )}
                     </p>
                   </div>
 
                   {/* Highlights overview */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-gray-800/60 text-[11px] text-gray-400">
+                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-200 dark:border-gray-800/60 text-[11px] text-slate-600 dark:text-gray-400">
                     <div className="flex items-center gap-1.5">
-                      <Layers size={13} className="text-[#3368B2]" />
+                      <Layers size={13} className="text-[#0167D6] dark:text-[#3368B2]" />
                       <span>{srv.features?.length || 0} Features</span>
                     </div>
                     <div className="flex items-center gap-1.5">
-                      <Sparkles size={13} className="text-emerald-500" />
+                      <Sparkles size={13} className="text-emerald-600 dark:text-emerald-500" />
                       <span>{srv.whyChooseUs?.length || 0} Why Choose</span>
                     </div>
                   </div>
@@ -469,28 +469,28 @@ export default function ServicesPage() {
               </div>
 
               {/* Card Footer Actions */}
-              <div className="flex items-center justify-between p-4 bg-[#181A1F]/80 border-t border-gray-800/80">
+              <div className="flex items-center justify-between p-4 bg-slate-50/80 dark:bg-[#181A1F]/80 border-t border-slate-200 dark:border-gray-800/80">
                 <a
                   href={`http://localhost:3000/services/${srv.slug}`}
                   target="_blank"
                   rel="noopener noreferrer"
-                  className="inline-flex items-center gap-1 text-xs text-gray-400 hover:text-white transition"
+                  className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-[#0167D6] dark:text-gray-400 dark:hover:text-white transition"
                 >
-                  <ArrowRight size={13} className="text-[#3368B2]" />
+                  <ArrowRight size={13} className="text-[#0167D6] dark:text-[#3368B2]" />
                   <span>View Details</span>
                 </a>
 
                 <div className="flex items-center gap-2">
                   <button
                     onClick={() => openEdit(srv)}
-                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-[4px] bg-white/5 hover:bg-[#3368B2] text-gray-300 hover:text-white text-xs font-medium transition"
+                    className="flex items-center gap-1 px-2.5 py-1.5 rounded-[4px] bg-slate-100 dark:bg-white/5 hover:bg-[#0167D6] hover:text-white text-slate-700 dark:text-gray-300 dark:hover:text-white text-xs font-medium border border-slate-200 dark:border-transparent transition"
                   >
                     <Edit2 size={13} />
                     <span>Edit</span>
                   </button>
                   <button
                     onClick={() => handleDelete(srv._id, srv.title)}
-                    className="p-1.5 rounded-[4px] bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
+                    className="p-1.5 rounded-[4px] bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-transparent transition"
                     title="Delete service"
                   >
                     <Trash2 size={14} />
@@ -505,39 +505,39 @@ export default function ServicesPage() {
       {/* CREATE / EDIT MODAL */}
       {modalOpen && (
         <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm overflow-y-auto">
-          <div className="bg-[#131417] border border-gray-800 rounded-[4px] w-full max-w-3xl my-8 p-6 relative max-h-[92vh] flex flex-col shadow-2xl">
+          <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] w-full max-w-3xl my-8 p-6 relative max-h-[92vh] flex flex-col shadow-2xl">
             {/* Modal Header */}
-            <div className="flex items-center justify-between pb-4 border-b border-gray-800">
+            <div className="flex items-center justify-between pb-4 border-b border-slate-200 dark:border-gray-800">
               <div className="flex items-center gap-3">
-                <div className="w-9 h-9 rounded-[4px] bg-[#3368B2]/20 border border-[#3368B2]/40 flex items-center justify-center text-[#3368B2]">
+                <div className="w-9 h-9 rounded-[4px] bg-blue-50 dark:bg-[#3368B2]/20 border border-blue-200 dark:border-[#3368B2]/40 flex items-center justify-center text-[#0167D6] dark:text-[#3368B2]">
                   <Server size={18} />
                 </div>
                 <div>
-                  <h2 className="text-base font-bold text-white">
+                  <h2 className="text-base font-bold text-slate-900 dark:text-white">
                     {editItem ? `Edit Service: ${editItem.title}` : "Create New Service"}
                   </h2>
-                  <p className="text-gray-400 text-xs">
+                  <p className="text-slate-500 dark:text-gray-400 text-xs">
                     Configure both the /services summary card and its dedicated details page
                   </p>
                 </div>
               </div>
               <button
                 onClick={() => setModalOpen(false)}
-                className="text-gray-400 hover:text-white p-1 rounded-[4px] hover:bg-white/5"
+                className="text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white p-1 rounded-[4px] hover:bg-slate-100 dark:hover:bg-white/5"
               >
                 <X size={20} />
               </button>
             </div>
 
             {/* Tab Navigation */}
-            <div className="flex border-b border-gray-800 mt-4">
+            <div className="flex border-b border-slate-200 dark:border-gray-800 mt-4">
               <button
                 type="button"
                 onClick={() => setActiveTab("card")}
                 className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold border-b-2 transition ${
                   activeTab === "card"
-                    ? "border-[#3368B2] text-white bg-blue-900/10"
-                    : "border-transparent text-gray-400 hover:text-white"
+                    ? "border-[#0167D6] text-[#0167D6] bg-blue-50 dark:border-[#3368B2] dark:text-white dark:bg-blue-900/10"
+                    : "border-transparent text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white"
                 }`}
               >
                 <Layers size={14} />
@@ -549,8 +549,8 @@ export default function ServicesPage() {
                 onClick={() => setActiveTab("details")}
                 className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold border-b-2 transition ${
                   activeTab === "details"
-                    ? "border-[#3368B2] text-white bg-blue-900/10"
-                    : "border-transparent text-gray-400 hover:text-white"
+                    ? "border-[#0167D6] text-[#0167D6] bg-blue-50 dark:border-[#3368B2] dark:text-white dark:bg-blue-900/10"
+                    : "border-transparent text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white"
                 }`}
               >
                 <Sparkles size={14} />
@@ -562,8 +562,8 @@ export default function ServicesPage() {
                 onClick={() => setActiveTab("pricing")}
                 className={`flex items-center gap-2 px-5 py-2.5 text-xs font-bold border-b-2 transition ${
                   activeTab === "pricing"
-                    ? "border-[#3368B2] text-white bg-blue-900/10"
-                    : "border-transparent text-gray-400 hover:text-white"
+                    ? "border-[#0167D6] text-[#0167D6] bg-blue-50 dark:border-[#3368B2] dark:text-white dark:bg-blue-900/10"
+                    : "border-transparent text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white"
                 }`}
               >
                 <Tag size={14} />
@@ -584,8 +584,8 @@ export default function ServicesPage() {
                 <div className="space-y-5">
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                        Service Title <span className="text-red-400">*</span>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
+                        Service Title <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -593,13 +593,13 @@ export default function ServicesPage() {
                         value={form.title}
                         onChange={e => handleTitleChange(e.target.value)}
                         placeholder="e.g. Website, Mobile App Design & Development"
-                        className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                        className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
-                        URL Slug <span className="text-red-400">*</span>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
+                        URL Slug <span className="text-red-500">*</span>
                       </label>
                       <input
                         type="text"
@@ -607,12 +607,12 @@ export default function ServicesPage() {
                         value={form.slug}
                         onChange={e => setForm({ ...form, slug: e.target.value })}
                         placeholder="e.g. website-app-development-service"
-                        className={`w-full bg-[#181A1F] border ${
-                          isDuplicateSlug ? "border-red-500 focus:border-red-500" : "border-gray-800 focus:border-[#3368B2]"
-                        } rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none font-mono`}
+                        className={`w-full bg-white dark:bg-[#181A1F] border ${
+                          isDuplicateSlug ? "border-red-500 focus:border-red-500" : "border-slate-300 dark:border-gray-800 focus:border-[#0167D6]"
+                        } rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none font-mono`}
                       />
                       {isDuplicateSlug && (
-                        <p className="text-[11px] text-red-400 mt-1 font-medium flex items-center gap-1">
+                        <p className="text-[11px] text-red-500 mt-1 font-medium flex items-center gap-1">
                           ⚠️ A service with this URL slug already exists. Please choose a unique slug.
                         </p>
                       )}
@@ -620,7 +620,7 @@ export default function ServicesPage() {
                   </div>
 
                   <div>
-                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
                       Display Order on /services
                     </label>
                     <input
@@ -628,21 +628,21 @@ export default function ServicesPage() {
                       min={1}
                       value={form.order}
                       onChange={e => setForm({ ...form, order: Number(e.target.value) })}
-                      className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                      className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                     />
                   </div>
 
                   {/* Card Thumbnail Image */}
-                  <div className="p-4 bg-[#181A1F]/60 border border-gray-800 rounded-[4px]">
-                    <label className="block text-xs font-semibold text-white mb-1">
+                  <div className="p-4 bg-slate-50 dark:bg-[#181A1F]/60 border border-slate-200 dark:border-gray-800 rounded-[4px]">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-white mb-1">
                       Service Card Thumbnail / Icon
                     </label>
-                    <p className="text-[11px] text-gray-400 mb-3">
+                    <p className="text-[11px] text-slate-500 dark:text-gray-400 mb-3">
                       This icon or illustration is displayed inside the service card on the client /services page.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-24 h-24 rounded-[4px] bg-black/60 border border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
+                      <div className="w-24 h-24 rounded-[4px] bg-slate-100 dark:bg-black/60 border border-slate-200 dark:border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
                         {form.image ? (
                           <img
                             src={form.image}
@@ -650,7 +650,7 @@ export default function ServicesPage() {
                             className="w-full h-full object-contain p-2"
                           />
                         ) : (
-                          <ImageIcon className="w-8 h-8 text-gray-600" />
+                          <ImageIcon className="w-8 h-8 text-slate-400 dark:text-gray-600" />
                         )}
                       </div>
 
@@ -670,7 +670,7 @@ export default function ServicesPage() {
                             type="button"
                             disabled={uploadingImage}
                             onClick={() => imageInputRef.current?.click()}
-                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-semibold transition"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold transition shadow-sm"
                           >
                             {uploadingImage ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -684,7 +684,7 @@ export default function ServicesPage() {
                             <button
                               type="button"
                               onClick={() => setForm({ ...form, image: "" })}
-                              className="px-3 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs"
+                              className="px-3 py-2 rounded-[4px] bg-slate-200 hover:bg-slate-300 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white text-xs font-medium transition"
                             >
                               Remove
                             </button>
@@ -697,10 +697,10 @@ export default function ServicesPage() {
                   {/* Short Description */}
                   <div>
                     <div className="flex items-center justify-between mb-1.5">
-                      <label className="block text-xs font-semibold text-gray-300">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300">
                         Short Description (Card Box Content)
                       </label>
-                      <span className="text-[11px] text-gray-500">
+                      <span className="text-[11px] text-slate-500 dark:text-gray-500">
                         {form.shortDesc.length} characters (approx 200–260 recommended)
                       </span>
                     </div>
@@ -709,9 +709,9 @@ export default function ServicesPage() {
                       value={form.shortDesc}
                       onChange={e => setForm({ ...form, shortDesc: e.target.value })}
                       placeholder="Enter the concise summary shown in the card box on /services..."
-                      className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] p-3 text-xs text-white leading-relaxed focus:outline-none focus:border-[#3368B2]"
+                      className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] p-3 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 leading-relaxed focus:outline-none focus:border-[#0167D6]"
                     />
-                    <p className="text-[10px] text-gray-500 mt-1">
+                    <p className="text-[10px] text-slate-500 dark:text-gray-500 mt-1">
                       Tip: Kept limited in height so all service cards on the main page remain uniform and aligned.
                     </p>
                   </div>
@@ -723,7 +723,7 @@ export default function ServicesPage() {
                 <div className="space-y-6">
                   {/* Hero Subtitle */}
                   <div>
-                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
                       Details Page Hero Subtitle
                     </label>
                     <input
@@ -731,21 +731,21 @@ export default function ServicesPage() {
                       value={form.bannerSubtitle}
                       onChange={e => setForm({ ...form, bannerSubtitle: e.target.value })}
                       placeholder="e.g. Custom, scalable, and high-performance digital platforms"
-                      className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                      className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                     />
                   </div>
 
                   {/* Details Page Hero Cover Image */}
-                  <div className="p-4 bg-[#181A1F]/60 border border-gray-800 rounded-[4px]">
-                    <label className="block text-xs font-semibold text-white mb-1">
+                  <div className="p-4 bg-slate-50 dark:bg-[#181A1F]/60 border border-slate-200 dark:border-gray-800 rounded-[4px]">
+                    <label className="block text-xs font-bold text-slate-900 dark:text-white mb-1">
                       Details Page Main Cover / Hero Image
                     </label>
-                    <p className="text-[11px] text-gray-400 mb-3">
+                    <p className="text-[11px] text-slate-600 dark:text-gray-400 mb-3">
                       High-resolution showcase image displayed above the detailed service narrative.
                     </p>
 
                     <div className="flex flex-col sm:flex-row items-center gap-4">
-                      <div className="w-36 h-20 rounded-[4px] bg-black/60 border border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
+                      <div className="w-36 h-20 rounded-[4px] bg-slate-100 dark:bg-black/60 border border-slate-200 dark:border-gray-800 flex items-center justify-center overflow-hidden shrink-0">
                         {form.bannerImage ? (
                           <img
                             src={form.bannerImage}
@@ -753,7 +753,7 @@ export default function ServicesPage() {
                             className="w-full h-full object-cover"
                           />
                         ) : (
-                          <ImageIcon className="w-8 h-8 text-gray-600" />
+                          <ImageIcon className="w-8 h-8 text-gray-400" />
                         )}
                       </div>
 
@@ -773,7 +773,7 @@ export default function ServicesPage() {
                             type="button"
                             disabled={uploadingBanner}
                             onClick={() => bannerInputRef.current?.click()}
-                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-semibold transition"
+                            className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-semibold transition"
                           >
                             {uploadingBanner ? (
                               <Loader2 className="w-4 h-4 animate-spin" />
@@ -787,7 +787,7 @@ export default function ServicesPage() {
                             <button
                               type="button"
                               onClick={() => setForm({ ...form, bannerImage: "" })}
-                              className="px-3 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white text-xs"
+                              className="px-3 py-2 rounded-[4px] bg-slate-200 dark:bg-white/5 hover:bg-slate-300 dark:hover:bg-white/10 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white text-xs transition"
                             >
                               Remove
                             </button>
@@ -798,7 +798,7 @@ export default function ServicesPage() {
                           value={form.bannerImage}
                           onChange={e => setForm({ ...form, bannerImage: e.target.value })}
                           placeholder="Or paste cover URL (e.g. /assets/web-CPDVLYNo.jpeg)"
-                          className="w-full bg-[#131417] border border-gray-800 rounded-[4px] px-3 py-1.5 text-xs text-gray-300 focus:outline-none focus:border-[#3368B2]"
+                          className="w-full bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-1.5 text-xs text-slate-900 dark:text-gray-300 focus:outline-none focus:border-[#0167D6]"
                         />
                       </div>
                     </div>
@@ -806,7 +806,7 @@ export default function ServicesPage() {
 
                   {/* WYSIWYG MS WORD RICH TEXT EDITOR FOR FULL DETAILS */}
                   <div>
-                    <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                    <label className="block text-xs font-bold text-slate-800 dark:text-gray-300 mb-1.5">
                       Full Service Narrative & Details
                     </label>
                     <RichTextEditor
@@ -818,21 +818,21 @@ export default function ServicesPage() {
                   </div>
 
                   {/* WHY CHOOSE US REPEATER */}
-                  <div className="p-4 bg-[#181A1F]/50 border border-gray-800 rounded-[4px] space-y-4">
+                  <div className="p-4 bg-slate-50 dark:bg-[#181A1F]/50 border border-slate-200 dark:border-gray-800 rounded-[4px] space-y-4">
                     <div className="flex items-center justify-between">
                       <div>
-                        <h4 className="text-xs font-bold text-white flex items-center gap-1.5">
-                          <CheckCircle2 size={14} className="text-[#3368B2]" />
+                        <h4 className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-1.5">
+                          <CheckCircle2 size={14} className="text-[#0167D6] dark:text-[#3368B2]" />
                           Why Choose Us Checklist (Customizable)
                         </h4>
-                        <p className="text-[11px] text-gray-400">
+                        <p className="text-[11px] text-slate-600 dark:text-gray-400">
                           Highlights rendered in the &quot;Why Choose Us?&quot; card on the details page.
                         </p>
                       </div>
                       <button
                         type="button"
                         onClick={handleAddWhyChoose}
-                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-[#3368B2]/20 hover:bg-[#3368B2]/40 text-[#3368B2] hover:text-white text-xs font-semibold transition border border-[#3368B2]/40"
+                        className="inline-flex items-center gap-1 px-3 py-1.5 rounded-[4px] bg-blue-50 dark:bg-[#3368B2]/20 hover:bg-blue-100 dark:hover:bg-[#3368B2]/40 text-[#0167D6] dark:text-[#3368B2] hover:text-blue-800 dark:hover:text-white text-xs font-semibold transition border border-blue-200 dark:border-[#3368B2]/40"
                       >
                         <Plus size={13} />
                         <span>Add Item</span>
@@ -843,7 +843,7 @@ export default function ServicesPage() {
                       {form.whyChooseUs.map((item, idx) => (
                         <div
                           key={idx}
-                          className="flex items-start gap-2 bg-[#131417] p-3 rounded-[4px] border border-gray-800"
+                          className="flex items-start gap-2 bg-white dark:bg-[#131417] p-3 rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-xs"
                         >
                           <div className="flex-1 space-y-2">
                             <input
@@ -851,14 +851,14 @@ export default function ServicesPage() {
                               value={item.title}
                               onChange={e => handleWhyChooseChange(idx, "title", e.target.value)}
                               placeholder="Title (e.g. Expert Team)"
-                              className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3 py-1.5 text-xs text-white focus:outline-none focus:border-[#3368B2] font-semibold"
+                              className="w-full bg-slate-50 dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-1.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6] font-semibold"
                             />
                             <textarea
                               rows={2}
                               value={item.desc}
                               onChange={e => handleWhyChooseChange(idx, "desc", e.target.value)}
                               placeholder="Explanation of this benefit..."
-                              className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] p-2 text-xs text-gray-300 focus:outline-none focus:border-[#3368B2]"
+                              className="w-full bg-slate-50 dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] p-2 text-xs text-slate-900 dark:text-gray-300 focus:outline-none focus:border-[#0167D6]"
                             />
                           </div>
                           <button
@@ -877,7 +877,7 @@ export default function ServicesPage() {
                   {/* Key Features & Tech Stack */}
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
                         Key Features / Deliverables (One per line)
                       </label>
                       <textarea
@@ -885,12 +885,12 @@ export default function ServicesPage() {
                         value={form.featuresText}
                         onChange={e => setForm({ ...form, featuresText: e.target.value })}
                         placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
-                        className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] p-3 text-xs text-white font-mono leading-relaxed focus:outline-none focus:border-[#3368B2]"
+                        className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] p-3 text-xs text-slate-900 dark:text-white font-mono leading-relaxed focus:outline-none focus:border-[#0167D6]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-xs font-semibold text-gray-300 mb-1.5">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
                         Frameworks, Tools & Technologies (Comma-separated)
                       </label>
                       <textarea
@@ -898,7 +898,7 @@ export default function ServicesPage() {
                         value={form.techStackText}
                         onChange={e => setForm({ ...form, techStackText: e.target.value })}
                         placeholder="e.g. React, Next.js, TypeScript, Node.js, Express, Tailwind CSS, PostgreSQL, Docker"
-                        className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] p-3 text-xs text-white leading-relaxed focus:outline-none focus:border-[#3368B2]"
+                        className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] p-3 text-xs text-slate-900 dark:text-white leading-relaxed focus:outline-none focus:border-[#0167D6]"
                       />
                     </div>
                   </div>
@@ -908,12 +908,12 @@ export default function ServicesPage() {
               {/* TAB 3: PRICING PACKAGES */}
               {activeTab === "pricing" && (
                 <div className="space-y-6">
-                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-gray-800">
+                  <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-gray-800">
                     <div>
-                      <h3 className="text-xs font-bold text-white uppercase tracking-wider">
+                      <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
                         Editable Pricing Packages & Feature Comparison
                       </h3>
-                      <p className="text-xs text-gray-400 mt-0.5">
+                      <p className="text-xs text-slate-600 dark:text-gray-400 mt-0.5">
                         Build tiered pricing packages (Starter, Business, Enterprise) with customizable features for this service.
                       </p>
                     </div>
@@ -921,7 +921,7 @@ export default function ServicesPage() {
                     <button
                       type="button"
                       onClick={addPricingPlan}
-                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold transition shadow shrink-0"
+                      className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-emerald-600 hover:bg-emerald-500 text-white text-white-always text-xs font-bold transition shadow shrink-0"
                     >
                       <Plus size={14} />
                       <span>Add Another Pricing Plan</span>
@@ -929,12 +929,12 @@ export default function ServicesPage() {
                   </div>
 
                   {form.pricingPlans.length === 0 ? (
-                    <div className="p-8 text-center border border-gray-800 rounded-lg bg-[#0E0F12]">
-                      <p className="text-xs text-gray-400">No pricing plans defined for this service yet.</p>
+                    <div className="p-8 text-center border border-slate-200 dark:border-gray-800 rounded-[4px] bg-slate-50 dark:bg-[#0E0F12]">
+                      <p className="text-xs text-slate-600 dark:text-gray-400">No pricing plans defined for this service yet.</p>
                       <button
                         type="button"
                         onClick={addPricingPlan}
-                        className="mt-3 px-4 py-2 bg-[#3368B2] text-white text-xs font-bold rounded"
+                        className="mt-3 px-4 py-2 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold rounded-[4px]"
                       >
                         Add Starter Pricing Plan
                       </button>
@@ -944,20 +944,20 @@ export default function ServicesPage() {
                       {form.pricingPlans.map((plan, idx) => (
                         <div
                           key={idx}
-                          className={`p-5 rounded-xl border bg-[#0E0F12] space-y-4 relative ${
-                            plan.isPopular ? "border-[#3368B2] ring-1 ring-blue-500/30" : "border-gray-800"
+                          className={`p-5 rounded-[4px] border bg-slate-50 dark:bg-[#0E0F12] space-y-4 relative ${
+                            plan.isPopular ? "border-[#0167D6] ring-1 ring-blue-500/30" : "border-slate-200 dark:border-gray-800"
                           }`}
                         >
-                          <div className="flex items-center justify-between pb-3 border-b border-gray-800/80">
+                          <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800/80">
                             <div className="flex items-center gap-2">
-                              <span className="w-6 h-6 rounded-full bg-blue-900/40 text-[#3368B2] font-bold text-xs flex items-center justify-center">
+                              <span className="w-6 h-6 rounded-full bg-blue-100 text-[#0167D6] dark:bg-blue-900/40 dark:text-[#3368B2] font-bold text-xs flex items-center justify-center">
                                 {idx + 1}
                               </span>
-                              <h4 className="text-xs font-bold text-white uppercase tracking-wide">
+                              <h4 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wide">
                                 {plan.name || `Plan #${idx + 1}`}
                               </h4>
                               {plan.isPopular && (
-                                <span className="text-[10px] bg-blue-900/40 text-blue-300 font-bold px-2 py-0.5 rounded">
+                                <span className="text-[10px] bg-blue-100 text-[#0167D6] dark:bg-blue-900/40 dark:text-blue-300 font-bold px-2 py-0.5 rounded-[4px]">
                                   Most Popular
                                 </span>
                               )}
@@ -966,7 +966,7 @@ export default function ServicesPage() {
                             <button
                               type="button"
                               onClick={() => removePricingPlan(idx)}
-                              className="text-gray-400 hover:text-red-400 p-1 rounded transition"
+                              className="text-slate-400 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-1 rounded transition"
                               title="Delete this plan"
                             >
                               <Trash2 size={15} />
@@ -975,29 +975,29 @@ export default function ServicesPage() {
 
                           <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-4 gap-3">
                             <div className="space-y-1">
-                              <label className="text-[11px] font-bold text-gray-400">Plan Name</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Plan Name</label>
                               <input
                                 type="text"
                                 value={plan.name}
                                 placeholder="e.g. Starter Package"
                                 onChange={(e) => updatePricingPlan(idx, "name", e.target.value)}
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
 
                             <div className="space-y-1">
-                              <label className="text-[11px] font-bold text-gray-400">Price (৳ BDT)</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Price (৳ BDT)</label>
                               <input
                                 type="number"
                                 value={plan.price}
                                 placeholder="15000"
                                 onChange={(e) => updatePricingPlan(idx, "price", Number(e.target.value) || 0)}
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
 
                             <div className="space-y-1">
-                              <label className="text-[11px] font-bold text-gray-400">Regular / Discount Price</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Regular / Discount Price</label>
                               <input
                                 type="number"
                                 value={plan.discountPrice}
@@ -1005,66 +1005,66 @@ export default function ServicesPage() {
                                 onChange={(e) =>
                                   updatePricingPlan(idx, "discountPrice", Number(e.target.value) || 0)
                                 }
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
 
                             <div className="space-y-1">
-                              <label className="text-[11px] font-bold text-gray-400">Billing Cycle / Duration</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Billing Cycle / Duration</label>
                               <input
                                 type="text"
                                 value={plan.period}
                                 placeholder="e.g. One-Time Setup, / month"
                                 onChange={(e) => updatePricingPlan(idx, "period", e.target.value)}
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
 
                             <div className="space-y-1 sm:col-span-2">
-                              <label className="text-[11px] font-bold text-gray-400">Badge Text (Optional)</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Badge Text (Optional)</label>
                               <input
                                 type="text"
                                 value={plan.badge}
                                 placeholder="e.g. Most Popular, Best Value"
                                 onChange={(e) => updatePricingPlan(idx, "badge", e.target.value)}
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
 
                             <div className="space-y-1 sm:col-span-2">
-                              <label className="text-[11px] font-bold text-gray-400">Short Description</label>
+                              <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400">Short Description</label>
                               <input
                                 type="text"
                                 value={plan.description}
                                 placeholder="e.g. Essential features tailored for startup tier."
                                 onChange={(e) => updatePricingPlan(idx, "description", e.target.value)}
-                                className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                                className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                               />
                             </div>
                           </div>
 
                           {/* Features textarea */}
                           <div className="space-y-1">
-                            <label className="text-[11px] font-bold text-gray-400 flex items-center justify-between">
+                            <label className="text-[11px] font-bold text-slate-700 dark:text-gray-400 flex items-center justify-between">
                               <span>Included Features (1 feature per line)</span>
-                              <span className="text-[10px] text-gray-500">Will display as checkmarked items</span>
+                              <span className="text-[10px] text-slate-500 dark:text-gray-500">Will display as checkmarked items</span>
                             </label>
                             <textarea
                               rows={3}
                               value={plan.featuresText}
                               placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
                               onChange={(e) => updatePricingPlan(idx, "featuresText", e.target.value)}
-                              className="w-full px-3 py-2 bg-[#15171C] border border-gray-800 rounded text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+                              className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                             />
                           </div>
 
                           <div className="flex items-center gap-2 pt-1">
-                            <label className="flex items-center gap-2 cursor-pointer text-xs text-gray-300">
+                            <label className="flex items-center gap-2 cursor-pointer text-xs text-slate-700 dark:text-gray-300">
                               <input
                                 type="checkbox"
                                 checked={plan.isPopular}
                                 onChange={(e) => updatePricingPlan(idx, "isPopular", e.target.checked)}
-                                className="rounded border-gray-700 text-[#3368B2] focus:ring-0"
+                                className="rounded border-slate-300 text-[#0167D6] focus:ring-0"
                               />
                               <span className="text-xs font-semibold">
                                 Highlight this plan as "Most Popular" on sales cards
@@ -1079,13 +1079,13 @@ export default function ServicesPage() {
               )}
 
               {/* Modal Footer Controls */}
-              <div className="flex items-center justify-between pt-5 border-t border-gray-800">
+              <div className="flex items-center justify-between pt-5 border-t border-slate-200 dark:border-gray-800">
                 <div className="flex items-center gap-2">
                   {activeTab === "card" && (
                     <button
                       type="button"
                       onClick={() => setActiveTab("details")}
-                      className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold flex items-center gap-1.5"
+                      className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold flex items-center gap-1.5 transition"
                     >
                       <span>Next: Details Page</span>
                       <ArrowRight size={14} />
@@ -1096,14 +1096,14 @@ export default function ServicesPage() {
                       <button
                         type="button"
                         onClick={() => setActiveTab("card")}
-                        className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                        className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                       >
                         Back to Card
                       </button>
                       <button
                         type="button"
                         onClick={() => setActiveTab("pricing")}
-                        className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold flex items-center gap-1.5"
+                        className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold flex items-center gap-1.5 transition"
                       >
                         <span>Next: Pricing Packages</span>
                         <ArrowRight size={14} />
@@ -1114,7 +1114,7 @@ export default function ServicesPage() {
                     <button
                       type="button"
                       onClick={() => setActiveTab("details")}
-                      className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                      className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                     >
                       Back to Details Page
                     </button>
@@ -1125,13 +1125,13 @@ export default function ServicesPage() {
                   <button
                     type="button"
                     onClick={() => setModalOpen(false)}
-                    className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                    className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                   >
                     Cancel
                   </button>
                   <button
                     type="submit"
-                    className="px-6 py-2 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/40 transition"
+                    className="px-6 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-lg shadow-blue-500/20 transition"
                   >
                     {editItem ? "Save Service Changes" : "Create Service"}
                   </button>

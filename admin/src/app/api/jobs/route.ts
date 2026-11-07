@@ -1,3 +1,4 @@
+export const dynamic = "force-dynamic";
 import { NextResponse } from "next/server";
 import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import { connectDB } from "@/lib/mongodb";
@@ -65,7 +66,9 @@ export async function GET(req: Request) {
           };
         });
 
-        return NextResponse.json({ success: true, data: mapped });
+        if (mapped.length > 0) {
+          return NextResponse.json({ success: true, data: mapped });
+        }
       }
     }
   } catch (err: any) {

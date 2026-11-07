@@ -6,30 +6,527 @@
   --foreground-rgb: 255, 255, 255;
   --background-start-rgb: 20, 20, 22;
   --background-end-rgb: 0, 0, 0;
+
+  /* Semantic Theme Tokens - Dark Mode Default */
+  --bg-canvas: #000000;
+  --bg-card: #18191D;
+  --bg-elevated: #141416;
+  --bg-subtle: #0E100F;
+  --text-main: #FFFFFF;
+  --text-sub: #D1D5DB;
+  --text-dim: #9CA3AF;
+  --border-line: #1F2937;
+  --border-card: #29292C;
+  --nav-backdrop: rgba(0, 0, 0, 0.95);
+  --nav-border: transparent;
+}
+
+html.light {
+  --foreground-rgb: 15, 23, 42;
+  --background-start-rgb: 244, 246, 249;
+  --background-end-rgb: 238, 242, 246;
+
+  /* Semantic Theme Tokens - Light Mode Architectural Palette */
+  --bg-canvas: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-subtle: #EDF2F7;
+  --text-main: #0F172A;
+  --text-sub: #334155;
+  --text-dim: #64748B;
+  --border-line: #E2E8F0;
+  --border-card: #E2E8F0;
+  --nav-backdrop: rgba(255, 255, 255, 0.92);
+  --nav-border: #E2E8F0;
 }
 
 body {
-  color: rgb(var(--foreground-rgb));
-  background: #000000;
+  color: var(--text-main);
+  background-color: var(--bg-canvas);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
-/* Custom glow effects */
-.glow-effect {
-  filter: drop-shadow(0 0 10px rgba(51, 104, 178, 0.8));
+/* =========================================================
+   LIGHT MODE: HIGH-FIDELITY ARCHITECTURAL SYSTEM
+   Rhythmic section pacing, layered cards, & visual anchors
+   ========================================================= */
+
+/* 1. Base Canvas & Section Rhythm */
+html.light body {
+  background-color: #F4F6F9 !important;
+  color: #0F172A !important;
 }
 
-.glow-blue {
-  box-shadow: 0 0 20px 4px rgba(51, 104, 178, 0.6);
+/* General Page Section Canvas (Titanium Porcelain) */
+html.light .bg-\[\#18191D\],
+html.light .bg-\[\#16171B\],
+html.light .bg-\[\#1A1A1C\] {
+  background-color: #F4F6F9 !important;
 }
 
-.glow-border {
-  transition: all 0.3s ease;
+/* Secondary Section Alt (Pure White Section Ground) */
+html.light .bg-\[\#181A1D\] {
+  background-color: #FFFFFF !important;
 }
-.glow-border:hover {
-  box-shadow: 0 0 15px 3px rgba(51, 104, 178, 0.7);
-  border-color: #0167d6;
+
+/* 2. Elevated Cards & Structural Containers (Crisp White on Titanium Canvas) */
+html.light .bg-\[\#131417\],
+html.light .bg-\[\#141416\],
+html.light .bg-\[\#141518\],
+html.light .bg-\[\#131418\],
+html.light .bg-\[\#121316\],
+html.light .bg-\[\#121317\],
+html.light .bg-\[\#141519\],
+html.light .bg-\[\#16171B\],
+html.light .bg-\[\#181A1E\],
+html.light .bg-\[\#111215\],
+html.light .bg-\[\#1A1A1C\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 15px -3px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* General Page Section Background for .bg-black sections (except dark anchors below) */
+html.light .bg-black:not(.aspect-video):not(video):not(iframe):not(.aspect-video *):not(.video-container *):not(.video-canvas *):not(.page-banner *):not(section.page-banner *):not(.home-ticker-black):not(.home-ticker-black *),
+html.light .bg-\[\#000000\]:not(.aspect-video):not(video):not(iframe):not(.aspect-video *):not(.video-container *):not(.video-canvas *):not(.page-banner *):not(section.page-banner *):not(.home-ticker-black):not(.home-ticker-black *) {
+  background-color: #F4F6F9 !important;
+}
+
+/* Media Players & Video Frames - Video player screens stay deep black */
+video,
+iframe,
+.aspect-video:has(video),
+.aspect-video:has(iframe),
+html.light video,
+html.light iframe,
+html.light .aspect-video:has(video),
+html.light .aspect-video:has(iframe) {
+  background-color: #000000 !important;
+}
+
+/* Image showcases in light mode use clean luminous slate canvas */
+html.light .aspect-video:not(:has(video)):not(:has(iframe)) {
+  background-color: #F1F5F9 !important;
+}
+
+/* Translucent Dark Scrims on Images, Videos & Badges (NEVER override to opaque light!) */
+.aspect-video .bg-black\/40,
+.aspect-video .bg-black\/30,
+.aspect-video .bg-black\/50,
+.aspect-video .bg-black\/60,
+.aspect-video .bg-black\/70,
+.aspect-video .bg-black\/80,
+div:has(> img) .bg-black\/40,
+div:has(> img) .bg-black\/30,
+div:has(> img) .bg-black\/50,
+div:has(> img) .bg-black\/60,
+div:has(> img) .bg-black\/70,
+div:has(> img) .bg-black\/80,
+html.light .aspect-video .bg-black\/40,
+html.light .aspect-video .bg-black\/30,
+html.light .aspect-video .bg-black\/50,
+html.light div:has(> img) .bg-black\/40,
+html.light div:has(> img) .bg-black\/30,
+html.light div:has(> img) .bg-black\/50 {
+  background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+/* Subtle Inset Bars, Filters & Tags */
+html.light .bg-\[\#0E100F\],
+html.light .bg-\[\#0E0F12\],
+html.light .bg-\[\#111215\],
+html.light .bg-\[\#111216\] {
+  background-color: #EDF2F7 !important;
+}
+
+/* Secondary Buttons & Icon Plates (e.g. "READ MORE +") */
+html.light .bg-\[\#222327\] {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #1E293B !important;
+}
+html.light .bg-\[\#222327\]:hover {
+  background-color: #3368B2 !important;
+  border-color: #3368B2 !important;
+  color: #FFFFFF !important;
+}
+html.light .bg-\[\#222327\]:hover * {
+  color: #FFFFFF !important;
+}
+
+/* Inactive Filter Pills & Tab Buttons (Specific to button elements) */
+html.light button.bg-black\/60,
+html.light button.bg-gray-800,
+html.light .bg-gray-800:not(footer *):not(.bg-gradient-to-r.from-\[\#0d1829\] *):not(.aspect-video *):not(div:has(> img) *) {
+  background-color: #F1F5F9 !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #334155 !important;
+}
+html.light button.bg-black\/60:hover,
+html.light button.bg-gray-800:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Hairline Borders */
+html.light .border-gray-800,
+html.light .border-gray-800\/80,
+html.light .border-gray-800\/90,
+html.light .border-gray-800\/60,
+html.light .border-gray-700,
+html.light .border-gray-700\/80,
+html.light .border-gray-900 {
+  border-color: #E2E8F0 !important;
+}
+
+/* Card Elevation & Shadows */
+html.light .shadow-2xl,
+html.light .shadow-xl {
+  box-shadow: 0 4px 6px -1px rgba(15, 23, 42, 0.05), 0 2px 4px -2px rgba(15, 23, 42, 0.03) !important;
+}
+
+/* =========================================================
+   PROTECTED DARK CINEMATIC & BRAND ANCHOR COMPONENTS
+   These must stay rich, atmospheric & high-contrast!
+   ========================================================= */
+
+/* A. Home Hero Slideshow Overlay & Text */
+html.light section.h-screen .bg-black\/70,
+html.light section.h-screen .bg-black {
+  background-color: rgba(0, 0, 0, 0.7) !important;
+}
+html.light section.h-screen h1,
+html.light section.h-screen .text-white {
+  color: #FFFFFF !important;
+}
+
+/* Home Hero Marquee Ticker Strips - Black & Yellow signature branding in both light & dark modes */
+.home-ticker-yellow,
+html.light .home-ticker-yellow,
+html.dark .home-ticker-yellow {
+  background-color: #FFFF00 !important;
+  color: #000000 !important;
+}
+.home-ticker-yellow *,
+html.light .home-ticker-yellow *,
+html.dark .home-ticker-yellow * {
+  color: #000000 !important;
+}
+
+.home-ticker-black,
+html.light .home-ticker-black,
+html.dark .home-ticker-black {
+  background-color: #000000 !important;
+  color: #FFFF00 !important;
+  border-top: 1px solid #222222 !important;
+}
+.home-ticker-black *,
+html.light .home-ticker-black *,
+html.dark .home-ticker-black * {
+  color: #FFFF00 !important;
+}
+
+/* B. Feature Showcase: "Website & Apps Development" Navy Anchor Section */
+html.light section.py-20.bg-\[\#18191D\]:has(.bg-white) {
+  background-color: #0A1424 !important;
+}
+html.light section.py-20.bg-\[\#18191D\] .bg-white {
+  background-color: #FFFFFF !important;
+  box-shadow: 0 20px 30px -10px rgba(0, 0, 0, 0.35) !important;
+}
+html.light section.py-20.bg-\[\#18191D\] .bg-white h2 {
+  color: #0F172A !important;
+}
+html.light section.py-20.bg-\[\#18191D\] .bg-white p {
+  color: #475569 !important;
+}
+
+/* C. Special Discount Promotional Banner */
+html.light .bg-gradient-to-r.from-\[\#0d1829\].to-\[\#18191D\],
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] {
+  background: linear-gradient(135deg, #102B54 0%, #163B72 50%, #204E91 100%) !important;
+  border-color: rgba(51, 104, 178, 0.5) !important;
+}
+html.light .bg-gradient-to-r.from-\[\#0d1829\].to-\[\#18191D\] .text-white,
+html.light .bg-gradient-to-r.from-\[\#0d1829\].to-\[\#18191D\] h2,
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] .text-white,
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] h2 {
+  color: #FFFFFF !important;
+}
+html.light .bg-gradient-to-r.from-\[\#0d1829\].to-\[\#18191D\] h3,
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] h3,
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] .text-sky-300 {
+  color: #7DD3FC !important;
+}
+html.light .bg-gradient-to-r.from-\[\#0d1829\].to-\[\#18191D\] .text-gray-400,
+html.light .bg-gradient-to-r.from-\[\#102B54\].to-\[\#1E4C8A\] .text-slate-200 {
+  color: #E2E8F0 !important;
+}
+
+/* D. Creative Graphics Video Cards with Play Buttons */
+html.light .relative.group.overflow-hidden.rounded.bg-black.h-\[250px\],
+html.light .relative.group.overflow-hidden.rounded.bg-black {
+  background-color: #0B0D12 !important;
+}
+html.light .relative.group.overflow-hidden.rounded.bg-black .text-white {
+  color: #FFFFFF !important;
+}
+html.light .relative.group.overflow-hidden.rounded.bg-black .text-gray-300 {
+  color: #CBD5E1 !important;
+}
+
+/* E. Talk CTA Section */
+html.light section.talk-cta-section {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+html.light section.talk-cta-section .talk-cta-title,
+html.light section.talk-cta-section h3 {
+  color: #0F172A !important;
+}
+html.light section.talk-cta-section .talk-cta-heading,
+html.light section.talk-cta-section h2 div:first-child {
+  color: #0F172A !important;
+}
+html.light section.talk-cta-section .talk-cta-contact,
+html.light section.talk-cta-section a {
+  color: #0F172A !important;
+}
+html.light section.talk-cta-section a:hover {
+  color: #0167D6 !important;
+}
+
+/* F. Global Luxury Footer (Anchors the Bottom of the Page) */
+html.light footer {
+  background-color: #0F172A !important;
+}
+html.light footer .text-white {
+  color: #FFFFFF !important;
+}
+html.light footer .text-gray-300 {
+  color: #CBD5E1 !important;
+}
+html.light footer .text-gray-400 {
+  color: #94A3B8 !important;
+}
+
+/* G. PageBanner Photographic Header (All Inner Pages) */
+html.dark .page-banner,
+html.dark section.page-banner,
+html.dark section:has(> .bg-black\/75),
+html.dark section:has(> .bg-black\/80) {
+  background-color: #0B0E14 !important;
+}
+html.light .page-banner,
+html.light section.page-banner {
+  background-color: #F8FAFC !important;
+}
+html.light .page-banner h1,
+html.light section.page-banner h1 {
+  color: #0F172A !important;
+  text-shadow: none !important;
+}
+html.light .page-banner p,
+html.light section.page-banner p {
+  color: #475569 !important;
+  text-shadow: none !important;
+}
+html.dark .page-banner h1,
+html.dark section.page-banner h1,
+html.dark section:has(> .bg-black\/75) h1,
+html.dark section:has(> .bg-black\/80) h1 {
+  color: #FFFFFF !important;
+  text-shadow: 0 2px 10px rgba(0, 0, 0, 0.85) !important;
+}
+html.dark .page-banner p,
+html.dark section.page-banner p,
+html.dark section:has(> .bg-black\/75) p,
+html.dark section:has(> .bg-black\/80) p {
+  color: #E2E8F0 !important;
+  text-shadow: 0 1px 6px rgba(0, 0, 0, 0.75) !important;
+}
+
+/* =========================================================
+   LIGHT MODE: COMPONENT SPECIFIC COLOR VARIATIONS
+   ========================================================= */
+
+/* Stats Section: Okobiz Blue Numbers on Pure White Cards */
+html.light .bg-\[\#181A1D\] .text-4xl {
+  color: #3368B2 !important;
+}
+html.light .bg-\[\#181A1D\] .bg-\[\#131417\] {
+  background-color: #FFFFFF !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 4px 12px -2px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* Career Hero: Soft Luminous Sky/Porcelain Gradient */
+html.light section.relative.pt-24.bg-gradient-to-b.from-black {
+  background: linear-gradient(180deg, #FFFFFF 0%, #F1F5F9 50%, #E8EEF5 100%) !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+html.light section.relative.pt-24.bg-gradient-to-b.from-black h1 {
+  color: #0F172A !important;
+}
+html.light section.relative.pt-24.bg-gradient-to-b.from-black p {
+  color: #334155 !important;
+}
+html.light section.relative.pt-24.bg-gradient-to-b.from-black button.bg-black\/60 {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.06) !important;
+}
+html.light section.relative.pt-24.bg-gradient-to-b.from-black button.bg-black\/60:hover {
+  background-color: #F8FAFC !important;
+  border-color: #94A3B8 !important;
+}
+
+/* Job Cards in Light Mode */
+html.light .space-y-4 > div.bg-\[\#131418\],
+html.light div.bg-\[\#131418\] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 2px 8px -2px rgba(15, 23, 42, 0.05) !important;
+}
+html.light div.bg-\[\#131418\]:hover {
+  border-color: #3368B2 !important;
+  box-shadow: 0 10px 20px -3px rgba(51, 104, 178, 0.12) !important;
+}
+
+/* Soft Tint Badges in Light Mode */
+html.light .bg-\[\#3368B2\]\/20,
+html.light .bg-\[\#3368B2\]\/15,
+html.light .bg-blue-900\/20,
+html.light .bg-blue-900\/30 {
+  background-color: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border-color: #BFDBFE !important;
+}
+
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-500\/15,
+html.light .bg-emerald-500\/10 {
+  background-color: #ECFDF5 !important;
+  color: #047857 !important;
+  border-color: #A7F3D0 !important;
+}
+
+html.light .bg-purple-500\/10,
+html.light .bg-purple-500\/20 {
+  background-color: #FAF5FF !important;
+  color: #7E22CE !important;
+  border-color: #E9D5FF !important;
+}
+
+html.light .bg-amber-500\/10,
+html.light .bg-amber-500\/20 {
+  background-color: #FFFBEB !important;
+  color: #B45309 !important;
+  border-color: #FDE68A !important;
+}
+
+/* General Typography Hierarchy in Light Mode */
+html.light h1:not(section.h-screen h1):not(footer h1):not(section.bg-black.py-16 h1):not(.page-banner *):not(section.page-banner *):not(section:has(> .bg-black\/75) *):not(section:has(> .bg-black\/80) *),
+html.light h2:not(section.h-screen h2):not(footer h2):not(section.bg-black.py-16 h2):not(.bg-gradient-to-r.from-\[\#0d1829\] h2):not(.page-banner *):not(section.page-banner *),
+html.light h3:not(section.h-screen h3):not(footer h3):not(section.bg-black.py-16 h3):not(.relative.group.overflow-hidden.rounded.bg-black h3):not(.page-banner *):not(section.page-banner *),
+html.light h4:not(footer h4) {
+  color: #0F172A;
+}
+
+html.light .text-white:not(button):not(button *):not(.btn):not(.btn *):not(.bg-\[\#3368B2\] *):not(.bg-\[\#0167D6\] *):not(.bg-blue-600 *):not(.bg-red-600 *):not(.bg-emerald-600 *):not(section.h-screen *):not(footer *):not(section.bg-black.py-16 *):not(.relative.group.overflow-hidden.rounded.bg-black *):not(.bg-gradient-to-r.from-\[\#0d1829\] *):not(.text-white-always):not(.page-banner *):not(section.page-banner *):not(section:has(> .bg-black\/75) *):not(section:has(> .bg-black\/80) *) {
+  color: #0F172A;
+}
+
+html.light .text-gray-200,
+html.light .text-gray-300:not(footer *):not(section.h-screen *):not(section.bg-black.py-16 *):not(.relative.group.overflow-hidden.rounded.bg-black *):not(.page-banner *):not(section.page-banner *):not(section:has(> .bg-black\/75) *):not(section:has(> .bg-black\/80) *) {
+  color: #334155;
+}
+
+html.light .text-gray-400:not(footer *):not(section.h-screen *):not(section.bg-black.py-16 *):not(.bg-gradient-to-r.from-\[\#0d1829\] *):not(.page-banner *):not(section.page-banner *) {
+  color: #475569;
+}
+
+html.light .text-gray-500 {
+  color: #64748B;
+}
+
+/* Maintain crisp white text on colored accent buttons, badges, and avatars */
+html.light .bg-\[\#3368B2\],
+html.light .bg-\[\#3368B2\] *,
+html.light .bg-\[\#0167D6\],
+html.light .bg-\[\#0167D6\] *,
+html.light a.bg-\[\#0167D6\],
+html.light a.bg-\[\#0167D6\] *,
+html.light button.bg-\[\#0167D6\],
+html.light button.bg-\[\#0167D6\] *,
+html.light .bg-blue-600,
+html.light .bg-blue-600 *,
+html.light a.bg-blue-600,
+html.light a.bg-blue-600 *,
+html.light .bg-red-600,
+html.light .bg-red-600 *,
+html.light .bg-rose-600,
+html.light .bg-rose-600 *,
+html.light .bg-emerald-600,
+html.light .bg-emerald-600 *,
+html.light .bg-green-500,
+html.light .bg-green-500 *,
+html.light .text-white-always,
+html.light .text-white-always *,
+html.light [style*="color: #FFFFFF"],
+html.light [style*="color:#FFFFFF"] {
+  color: #FFFFFF !important;
+}
+
+/* Input Fields & Textareas in Light Mode */
+html.light input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]),
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #3368B2 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 1px #3368B2 !important;
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #141416;
+}
+::-webkit-scrollbar-thumb {
+  background: #3368B2;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #0167D6;
+}
+
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9 !important;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1 !important;
+  border-radius: 4px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8 !important;
 }
 
 /* Custom Button Styles from okobiz original */
@@ -38,7 +535,7 @@ body {
   display: inline-flex;
   align-items: center;
   justify-content: center;
-  background-color: #3368B2;
+  background-color: #0167D6;
   color: #ffffff;
   font-size: 14px;
   font-weight: 700;
@@ -46,7 +543,9 @@ body {
   text-transform: uppercase;
   overflow: hidden;
   padding: 10px 24px;
-  transition: all 0.4s ease;
+  border-radius: 4px;
+  box-shadow: 0 2px 6px rgba(1, 103, 214, 0.25);
+  transition: all 0.3s ease;
   z-index: 1;
 }
 
@@ -57,8 +556,8 @@ body {
   left: -100%;
   width: 100%;
   height: 100%;
-  background: #0167D6;
-  transition: all 0.4s ease;
+  background: #0055B8;
+  transition: all 0.3s ease;
   z-index: -1;
 }
 
@@ -87,46 +586,6 @@ body {
 
 .digital-card:hover span.slide-bg {
   width: 100%;
-}
-
-/* Team background zoom */
-.team-background-animation {
-  overflow: hidden;
-}
-.team-background-animation img {
-  transition: transform 0.5s ease;
-}
-.team-background-animation:hover img {
-  transform: scale(1.06);
-}
-
-/* Blink Animation */
-@keyframes blink {
-  0%, 100% { opacity: 1; }
-  50% { opacity: 0.7; }
-}
-.blink {
-  animation: blink 2s infinite ease-in-out;
-}
-
-/* Smooth Scrolling */
-html {
-  scroll-behavior: smooth;
-}
-
-/* Custom scrollbars */
-::-webkit-scrollbar {
-  width: 8px;
-}
-::-webkit-scrollbar-track {
-  background: #141416;
-}
-::-webkit-scrollbar-thumb {
-  background: #3368B2;
-  border-radius: 4px;
-}
-::-webkit-scrollbar-thumb:hover {
-  background: #0167D6;
 }
 
 /* Rich Text & WYSIWYG Content Typography */
@@ -204,63 +663,25 @@ html {
   color: #60a5fa !important;
 }
 
-/* Reviews Marquee Sliding Left to Right (Pauses on Hover) */
-@keyframes slideReviewsLTR {
-  0% {
-    transform: translateX(-50%);
-  }
-  100% {
-    transform: translateX(0%);
-  }
+/* Light mode rich text overrides */
+html.light .rich-text-content strong,
+html.light .rich-text-content b,
+html.light .rich-text-content u,
+html.light .rich-text-content h2,
+html.light .rich-text-content h3 {
+  color: #0F172A !important;
 }
-
-.reviews-marquee-track {
-  display: flex;
-  width: max-content;
-  animation: slideReviewsLTR 35s linear infinite;
-  will-change: transform;
+html.light .rich-text-content em,
+html.light .rich-text-content i {
+  color: #334155 !important;
 }
-
-.reviews-marquee-track:hover {
-  animation-play-state: paused !important;
+html.light .rich-text-content blockquote {
+  background: #F1F5F9 !important;
+  color: #334155 !important;
+  border-left-color: #3368B2 !important;
 }
-
-/* Universal Loader: <okobiz/> Smooth Horizontal Expand and Squeeze Animation */
-@keyframes okobizTagExpandSqueeze {
-  0%, 100% {
-    transform: scaleX(0.78);
-  }
-  50% {
-    transform: scaleX(1.22);
-  }
+html.light .rich-text-content code {
+  background: #F1F5F9 !important;
+  color: #B45309 !important;
+  border: 1px solid #E2E8F0 !important;
 }
-
-.animate-okobiz-tag {
-  display: inline-block;
-  animation: okobizTagExpandSqueeze 1.8s ease-in-out infinite;
-  transform-origin: center center;
-  will-change: transform;
-  backface-visibility: hidden;
-  -webkit-font-smoothing: antialiased;
-}
-
-/* Video Play Button: Smooth Blinking & Glowing Pulse Animation */
-@keyframes playButtonBlink {
-  0%, 100% {
-    opacity: 1;
-    transform: scale(1);
-    box-shadow: 0 0 20px 2px rgba(225, 29, 72, 0.7);
-  }
-  50% {
-    opacity: 0.45;
-    transform: scale(1.08);
-    box-shadow: 0 0 35px 8px rgba(225, 29, 72, 0.95);
-  }
-}
-
-.animate-play-blink {
-  animation: playButtonBlink 1.8s ease-in-out infinite;
-  will-change: transform, opacity, box-shadow;
-  backface-visibility: hidden;
-}
-

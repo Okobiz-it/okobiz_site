@@ -111,27 +111,27 @@ export default function ProductsPage() {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen transition-colors">
       <PageBanner
         title="Finished Digital Products & SaaS Systems"
         subtitle="Battle-tested, turnkey software & enterprise management systems ready for deployment. Test live demos, compare pricing plans, or request a personalized demo on WhatsApp."
       />
 
       {/* Main Catalog Section */}
-      <section className="py-16 bg-[#141416]" ref={gridTopRef}>
+      <section className="py-16 bg-[#F8FAFC] dark:bg-[#141416] transition-colors" ref={gridTopRef}>
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           {/* Controls Bar: Search, Category & Sort */}
-          <div className="bg-[#181A1D] border border-gray-800 rounded-[4px] p-5 sm:p-6 mb-12 shadow-xl">
+          <div className="bg-white dark:bg-[#181A1D] border border-slate-200 dark:border-gray-800 rounded-[4px] p-5 sm:p-6 mb-12 shadow-sm">
             <div className="flex flex-col md:flex-row gap-4 items-center justify-between">
               {/* Search Bar */}
               <div className="relative w-full md:w-80">
-                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-400" />
+                <Search className="w-4 h-4 absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-400" />
                 <input
                   type="text"
                   placeholder="Search products (e.g. Pharmacy, Restaurant, POS)..."
                   value={searchTerm}
                   onChange={(e) => setSearchTerm(e.target.value)}
-                  className="w-full pl-10 pr-4 py-2.5 bg-black/60 border border-gray-700 rounded-[4px] text-xs sm:text-sm text-white placeholder-gray-500 focus:outline-none focus:border-[#3368B2] transition-colors"
+                  className="w-full pl-10 pr-4 py-2.5 bg-slate-50 dark:bg-black/60 border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] transition-colors"
                 />
               </div>
 
@@ -141,10 +141,10 @@ export default function ProductsPage() {
                   <button
                     key={cat}
                     onClick={() => setSelectedCategory(cat)}
-                    className={`text-xs font-semibold px-3.5 py-2 rounded-[4px] transition-all ${
+                    className={`text-xs font-semibold px-3.5 py-2 rounded-[4px] transition-all cursor-pointer ${
                       selectedCategory === cat
-                        ? "bg-[#3368B2] text-white shadow-md shadow-blue-900/40"
-                        : "bg-gray-800 text-gray-400 hover:text-white hover:bg-gray-700"
+                        ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20"
+                        : "bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-700 border border-slate-200 dark:border-transparent"
                     }`}
                   >
                     {cat}
@@ -154,11 +154,11 @@ export default function ProductsPage() {
 
               {/* Sort Dropdown */}
               <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-                <ArrowUpDown className="w-4 h-4 text-gray-400" />
+                <ArrowUpDown className="w-4 h-4 text-slate-500 dark:text-gray-400" />
                 <select
                   value={sortBy}
                   onChange={(e) => setSortBy(e.target.value)}
-                  className="bg-black/60 border border-gray-700 rounded-[4px] px-3 py-2 text-xs font-semibold text-gray-200 focus:outline-none focus:border-[#3368B2]"
+                  className="bg-slate-50 dark:bg-black/60 border border-slate-300 dark:border-gray-700 rounded-[4px] px-3 py-2 text-xs font-semibold text-slate-800 dark:text-gray-200 focus:outline-none focus:border-[#0167D6]"
                 >
                   <option value="Recommended">Recommended</option>
                   <option value="Popular">Most Popular</option>
@@ -171,18 +171,18 @@ export default function ProductsPage() {
 
           {/* Products Grid */}
           {loading ? (
-            <div className="bg-[#181A1D] rounded-[4px] border border-gray-800 py-10">
+            <div className="bg-white dark:bg-[#181A1D] rounded-[4px] border border-slate-200 dark:border-gray-800 py-10 shadow-sm">
               <SectionLoader size="md" />
             </div>
           ) : filteredProducts.length === 0 ? (
-            <div className="text-center py-20 bg-[#181A1D] rounded-[4px] border border-gray-800">
-              <p className="text-gray-400 text-base">No finished products matched your search.</p>
+            <div className="text-center py-20 bg-white dark:bg-[#181A1D] rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-sm">
+              <p className="text-slate-600 dark:text-gray-400 text-base">No finished products matched your search.</p>
               <button
                 onClick={() => {
                   setSearchTerm("");
                   setSelectedCategory("All");
                 }}
-                className="mt-4 px-4 py-2 bg-[#3368B2] text-white text-xs font-bold rounded-[4px]"
+                className="mt-4 px-4 py-2 bg-[#0167D6] text-white text-xs font-bold rounded-[4px] hover:bg-blue-700 transition"
               >
                 Clear Filters
               </button>
@@ -227,7 +227,7 @@ export default function ProductsPage() {
                   return (
                     <div
                       key={product._id}
-                      className="bg-[#181A1D] border border-gray-800 rounded-[4px] overflow-hidden hover:border-[#3368B2] transition-all duration-300 group flex flex-col justify-between shadow-xl hover:shadow-2xl hover:shadow-blue-900/10"
+                      className="bg-white dark:bg-[#181A1D] border border-slate-200 dark:border-gray-800 rounded-[4px] overflow-hidden hover:border-[#0167D6] transition-all duration-300 group flex flex-col justify-between shadow-xs hover:shadow-xl hover:shadow-blue-900/10"
                     >
                       <div>
                         {/* Media Cover - clicking video frame opens detail page and autoplays */}
@@ -243,6 +243,12 @@ export default function ProductsPage() {
                           <img
                             src={displayThumb}
                             alt={product.title}
+                            onError={(e) => {
+                              const target = e.currentTarget;
+                              if (!target.src.includes("web-2-DujjTO8C")) {
+                                target.src = "/assets/web-2-DujjTO8C.webp";
+                              }
+                            }}
                             className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
                           />
 
@@ -251,7 +257,7 @@ export default function ProductsPage() {
 
                           {/* Top Badges */}
                           <div className="absolute top-3 left-3 flex items-center gap-2">
-                            <span className="bg-[#3368B2] text-white text-[11px] font-extrabold px-3 py-1 rounded-[4px] shadow-lg">
+                            <span className="bg-[#0167D6] text-white text-[11px] font-extrabold px-3 py-1 rounded-[4px] shadow-lg">
                               {product.category}
                             </span>
                           </div>
@@ -267,8 +273,8 @@ export default function ProductsPage() {
                           {/* Video Play Button Overlay if product contains video */}
                           {hasVideo && (
                             <div className="absolute inset-0 flex items-center justify-center group-hover/cover:scale-110 transition-transform duration-300">
-                              <div className="w-14 h-14 rounded-full bg-rose-600/95 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.85)] backdrop-blur-sm border-2 border-rose-400 animate-play-blink">
-                                <Play size={24} fill="white" className="ml-1" />
+                              <div className="w-14 h-14 rounded-full bg-[#0167D6] hover:bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 backdrop-blur-md border-2 border-white/70">
+                                <Play size={24} fill="white" className="ml-1 text-white" />
                               </div>
                             </div>
                           )}
@@ -277,21 +283,21 @@ export default function ProductsPage() {
                         {/* Card Details */}
                         <div className="p-6">
                           <Link href={`/products/${product.slug || product._id}`}>
-                            <h3 className="text-lg font-extrabold text-white mb-2 line-clamp-1 group-hover:text-[#0167D6] transition-colors">
+                            <h3 className="text-lg font-extrabold text-slate-900 dark:text-white mb-2 line-clamp-1 group-hover:text-[#0167D6] transition-colors">
                               {product.title}
                             </h3>
                           </Link>
 
-                          <p className="text-xs text-gray-400 line-clamp-2 mb-4 leading-relaxed">
+                          <p className="text-xs text-slate-600 dark:text-gray-400 line-clamp-2 mb-4 leading-relaxed">
                             {product.tagline || "Enterprise ready cloud system with automated workflows."}
                           </p>
 
                           {/* Top 3 Highlight Bullets */}
                           {product.features && product.features.length > 0 && (
-                            <div className="space-y-1.5 mb-5 pb-4 border-b border-gray-800/80">
+                            <div className="space-y-1.5 mb-5 pb-4 border-b border-slate-100 dark:border-gray-800/80">
                               {product.features.slice(0, 3).map((feat, idx) => (
-                                <div key={idx} className="flex items-center gap-2 text-xs text-gray-300">
-                                  <Check className="w-3.5 h-3.5 text-emerald-400 shrink-0" />
+                                <div key={idx} className="flex items-center gap-2 text-xs text-slate-700 dark:text-gray-300">
+                                  <Check className="w-3.5 h-3.5 text-emerald-600 dark:text-emerald-400 shrink-0" />
                                   <span className="truncate">{feat}</span>
                                 </div>
                               ))}
@@ -301,15 +307,15 @@ export default function ProductsPage() {
                           {/* Pricing Display */}
                           <div className="flex items-baseline justify-between">
                             <div>
-                              <p className="text-[10px] uppercase font-bold text-gray-400 tracking-wider">
+                              <p className="text-[10px] uppercase font-bold text-slate-500 dark:text-gray-400 tracking-wider">
                                 Starting From
                               </p>
                               <div className="flex items-baseline gap-2 mt-0.5">
-                                <span className="text-2xl font-extrabold text-white">
+                                <span className="text-2xl font-extrabold text-slate-900 dark:text-white">
                                   ৳{lowestPrice.toLocaleString()}
                                 </span>
                                 {hasDiscount && (
-                                  <span className="text-xs text-gray-500 line-through">
+                                  <span className="text-xs text-slate-400 dark:text-gray-500 line-through">
                                     ৳{regularPrice.toLocaleString()}
                                   </span>
                                 )}
@@ -317,7 +323,7 @@ export default function ProductsPage() {
                             </div>
 
                             {savingsPct > 0 && (
-                              <span className="text-[11px] font-bold text-emerald-400 bg-emerald-950/60 border border-emerald-800/40 px-2 py-0.5 rounded-[4px]">
+                              <span className="text-[11px] font-bold text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-200 dark:border-emerald-800/40 px-2 py-0.5 rounded-[4px]">
                                 Save {savingsPct}%
                               </span>
                             )}
@@ -326,14 +332,14 @@ export default function ProductsPage() {
                       </div>
 
                       {/* Action Buttons */}
-                      <div className="px-6 pb-6 pt-3 border-t border-gray-800/80">
+                      <div className="px-6 pb-6 pt-3 border-t border-slate-100 dark:border-gray-800/80">
                         <div className="flex items-center gap-2.5">
                           {/* Ask for Demo WhatsApp Button */}
                           <a
                             href={whatsappDemoUrl}
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex-1 text-xs font-bold text-white bg-[#25D366] hover:bg-[#20ba59] py-2.5 px-3 rounded-[4px] transition-colors flex items-center justify-center gap-1.5 shadow-md shadow-emerald-950/50"
+                            className="flex-1 text-xs font-bold text-white bg-[#0167D6] hover:bg-blue-600 py-2.5 px-3 rounded-[4px] transition-all flex items-center justify-center gap-1.5 shadow-sm hover:shadow-md hover:shadow-blue-500/25"
                             title="Direct WhatsApp chat asking for demo of this product"
                           >
                             <MessageCircle className="w-4 h-4 fill-white" />
@@ -346,7 +352,7 @@ export default function ProductsPage() {
                               href={product.liveUrl}
                               target="_blank"
                               rel="noopener noreferrer"
-                              className="text-xs font-semibold text-gray-300 hover:text-white flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-[4px] bg-gray-800 hover:bg-gray-700 transition-colors"
+                              className="text-xs font-semibold text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white flex items-center justify-center gap-1.5 py-2.5 px-3.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 border border-slate-200 dark:border-transparent transition-colors"
                               title="Test Live Demo"
                             >
                               <ExternalLink className="w-3.5 h-3.5" />
@@ -362,16 +368,16 @@ export default function ProductsPage() {
 
               {/* Pagination Bar */}
               {totalPages > 1 && (
-                <div className="mt-14 pt-8 border-t border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
-                  <p className="text-xs text-gray-400">
-                    Showing <span className="text-white font-semibold">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>–<span className="text-white font-semibold">{Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}</span> of <span className="text-white font-semibold">{filteredProducts.length}</span> finished products
+                <div className="mt-14 pt-8 border-t border-slate-200 dark:border-gray-800 flex flex-col sm:flex-row items-center justify-between gap-4">
+                  <p className="text-xs text-slate-600 dark:text-gray-400">
+                    Showing <span className="text-slate-900 dark:text-white font-semibold">{(currentPage - 1) * ITEMS_PER_PAGE + 1}</span>–<span className="text-slate-900 dark:text-white font-semibold">{Math.min(currentPage * ITEMS_PER_PAGE, filteredProducts.length)}</span> of <span className="text-slate-900 dark:text-white font-semibold">{filteredProducts.length}</span> finished products
                   </p>
 
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => handlePageChange(currentPage - 1)}
                       disabled={currentPage === 1}
-                      className="p-2 rounded-[4px] bg-[#181A1D] border border-gray-800 text-gray-400 hover:text-white hover:border-[#3368B2] disabled:opacity-30 disabled:pointer-events-none transition"
+                      className="p-2 rounded-[4px] bg-white dark:bg-[#181A1D] border border-slate-300 dark:border-gray-800 text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white hover:border-[#0167D6] disabled:opacity-30 disabled:pointer-events-none transition"
                       aria-label="Previous Page"
                     >
                       <ChevronLeft size={16} />
@@ -383,8 +389,8 @@ export default function ProductsPage() {
                         onClick={() => handlePageChange(page)}
                         className={`w-9 h-9 rounded-[4px] text-xs font-bold transition ${
                           currentPage === page
-                            ? "bg-[#3368B2] text-white shadow-lg shadow-blue-900/40"
-                            : "bg-[#181A1D] border border-gray-800 text-gray-300 hover:border-gray-600 hover:text-white"
+                            ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/30"
+                            : "bg-white dark:bg-[#181A1D] border border-slate-300 dark:border-gray-800 text-slate-700 dark:text-gray-300 hover:border-slate-400 dark:hover:border-gray-600 hover:text-slate-900 dark:hover:text-white"
                         }`}
                       >
                         {page}
@@ -394,7 +400,7 @@ export default function ProductsPage() {
                     <button
                       onClick={() => handlePageChange(currentPage + 1)}
                       disabled={currentPage === totalPages}
-                      className="p-2 rounded-[4px] bg-[#181A1D] border border-gray-800 text-gray-400 hover:text-white hover:border-[#3368B2] disabled:opacity-30 disabled:pointer-events-none transition"
+                      className="p-2 rounded-[4px] bg-white dark:bg-[#181A1D] border border-slate-300 dark:border-gray-800 text-slate-600 hover:text-slate-900 dark:text-gray-400 dark:hover:text-white hover:border-[#0167D6] disabled:opacity-30 disabled:pointer-events-none transition"
                       aria-label="Next Page"
                     >
                       <ChevronRight size={16} />

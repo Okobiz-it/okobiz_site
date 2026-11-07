@@ -20,40 +20,40 @@ export default function CareerStatsHeader({
 
   return (
     <div className="grid grid-cols-2 sm:grid-cols-4 gap-4">
-      <div className="bg-[#141518] border border-gray-800/80 rounded-[4px] p-4">
-        <div className="flex items-center justify-between text-gray-400 text-xs font-semibold mb-2">
+      <div className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800/80 rounded-[4px] p-4 shadow-sm">
+        <div className="flex items-center justify-between text-slate-600 dark:text-gray-400 text-xs font-semibold mb-2">
           <span>Active Roles</span>
-          <Briefcase size={16} className="text-[#3368B2]" />
+          <Briefcase size={16} className="text-[#0167D6]" />
         </div>
-        <div className="text-2xl font-black text-white">{activeRolesCount}</div>
-        <p className="text-[11px] text-gray-500 mt-1">Out of {jobs.length} total postings</p>
+        <div className="text-2xl font-black text-slate-900 dark:text-white">{activeRolesCount}</div>
+        <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">Out of {jobs.length} total postings</p>
       </div>
 
-      <div className="bg-[#141518] border border-gray-800/80 rounded-[4px] p-4">
-        <div className="flex items-center justify-between text-gray-400 text-xs font-semibold mb-2">
+      <div className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800/80 rounded-[4px] p-4 shadow-sm">
+        <div className="flex items-center justify-between text-slate-600 dark:text-gray-400 text-xs font-semibold mb-2">
           <span>Total Applicants</span>
-          <Users size={16} className="text-emerald-400" />
+          <Users size={16} className="text-emerald-500 dark:text-emerald-400" />
         </div>
-        <div className="text-2xl font-black text-white">{applications.length}</div>
-        <p className="text-[11px] text-gray-500 mt-1">Candidates across all roles</p>
+        <div className="text-2xl font-black text-slate-900 dark:text-white">{applications.length}</div>
+        <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">Candidates across all roles</p>
       </div>
 
-      <div className="bg-[#141518] border border-gray-800/80 rounded-[4px] p-4">
-        <div className="flex items-center justify-between text-gray-400 text-xs font-semibold mb-2">
+      <div className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800/80 rounded-[4px] p-4 shadow-sm">
+        <div className="flex items-center justify-between text-slate-600 dark:text-gray-400 text-xs font-semibold mb-2">
           <span>Email Templates</span>
-          <Layers size={16} className="text-purple-400" />
+          <Layers size={16} className="text-purple-500 dark:text-purple-400" />
         </div>
-        <div className="text-2xl font-black text-white">{templates.length}</div>
-        <p className="text-[11px] text-gray-500 mt-1">Rich-text response templates</p>
+        <div className="text-2xl font-black text-slate-900 dark:text-white">{templates.length}</div>
+        <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">Rich-text response templates</p>
       </div>
 
-      <div className="bg-[#141518] border border-gray-800/80 rounded-[4px] p-4">
-        <div className="flex items-center justify-between text-gray-400 text-xs font-semibold mb-2">
+      <div className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800/80 rounded-[4px] p-4 shadow-sm">
+        <div className="flex items-center justify-between text-slate-600 dark:text-gray-400 text-xs font-semibold mb-2">
           <span>Email Replies</span>
-          <Mail size={16} className="text-amber-400" />
+          <Mail size={16} className="text-amber-500 dark:text-amber-400" />
         </div>
-        <div className="text-2xl font-black text-white">{emailRepliesCount}</div>
-        <p className="text-[11px] text-gray-500 mt-1">Sent / simulated notifications</p>
+        <div className="text-2xl font-black text-slate-900 dark:text-white">{emailRepliesCount}</div>
+        <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">Sent / simulated notifications</p>
       </div>
     </div>
   );

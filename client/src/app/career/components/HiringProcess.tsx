@@ -46,23 +46,23 @@ export default function HiringProcess() {
   ];
 
   return (
-    <section className="py-20 bg-gradient-to-b from-[#06080b] via-[#090b10] to-[#06080b] border-t border-b border-gray-800/80">
+    <section className="py-20 bg-gradient-to-b from-slate-50 via-white to-slate-50 dark:from-[#06080b] dark:via-[#090b10] dark:to-[#06080b] border-t border-b border-slate-200 dark:border-gray-800/80">
       <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
         <div className="text-center max-w-2xl mx-auto mb-16">
-          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] bg-blue-500/10 border border-blue-500/30 text-blue-400 text-xs font-semibold uppercase tracking-widest mb-3">
+          <div className="inline-flex items-center gap-2 px-3 py-1 rounded-[4px] bg-blue-500/10 border border-blue-500/30 text-[#0167D6] dark:text-blue-400 text-xs font-semibold uppercase tracking-widest mb-3">
             <Sparkles className="w-3.5 h-3.5" /> Transparent Roadmap
           </div>
-          <h2 className="text-3xl sm:text-4xl font-black text-white tracking-tight uppercase">
-            Our 5-Step Hiring <span className="text-[#3368B2]">Process</span>
+          <h2 className="text-3xl sm:text-4xl font-black text-slate-900 dark:text-white tracking-tight uppercase">
+            Our 5-Step Hiring <span className="text-[#0167D6] dark:text-[#3368B2]">Process</span>
           </h2>
-          <p className="mt-3 text-xs sm:text-sm text-gray-400">
+          <p className="mt-3 text-xs sm:text-sm text-slate-600 dark:text-gray-400">
             Fast, respectful, and transparent. We value your time with actionable feedback at every milestone.
           </p>
         </div>
 
         {/* 5 Connected Step Nodes */}
         <div className="relative">
-          <div className="hidden lg:block absolute top-12 left-12 right-12 h-1 bg-gradient-to-r from-emerald-500 via-blue-500 via-amber-500 via-purple-500 to-rose-500 z-0 opacity-40" />
+          <div className="hidden lg:block absolute top-12 left-12 right-12 h-1 bg-gradient-to-r from-emerald-500 via-blue-500 via-amber-500 via-purple-500 to-rose-500 z-0 opacity-30" />
 
           <div className="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-5 gap-6 relative z-10">
             {steps.map((st) => {
@@ -70,16 +70,16 @@ export default function HiringProcess() {
               return (
                 <div
                   key={st.step}
-                  className="bg-[#141519] border border-gray-800 rounded-[4px] p-5 text-center flex flex-col items-center hover:border-gray-700 transition-all"
+                  className="bg-white dark:bg-[#141519] border border-slate-200 dark:border-gray-800 rounded-[4px] p-5 text-center flex flex-col items-center hover:border-[#0167D6] dark:hover:border-gray-700 transition-all shadow-sm"
                 >
-                  <div className="w-20 h-20 rounded-[4px] bg-white/5 border-2 border-gray-700 flex items-center justify-center text-white shadow-xl mb-4">
-                    <Icon className="w-8 h-8" />
+                  <div className="w-20 h-20 rounded-[4px] bg-slate-100 dark:bg-white/5 border-2 border-slate-200 dark:border-gray-700 flex items-center justify-center text-slate-800 dark:text-white shadow-sm mb-4">
+                    <Icon className="w-8 h-8 text-[#0167D6] dark:text-white" />
                   </div>
-                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#3368B2] mb-1">
+                  <span className="text-[11px] font-bold uppercase tracking-wider text-[#0167D6] dark:text-[#3368B2] mb-1">
                     Step {st.step} • {st.timing}
                   </span>
-                  <h4 className="text-sm font-bold text-white mb-2">{st.title}</h4>
-                  <p className="text-xs text-gray-400 leading-relaxed">{st.description}</p>
+                  <h4 className="text-sm font-bold text-slate-900 dark:text-white mb-2">{st.title}</h4>
+                  <p className="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">{st.description}</p>
                 </div>
               );
             })}

@@ -118,30 +118,30 @@ export default function PortfolioPage() {
   };
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen">
       <PageBanner
         title="Our Portfolio"
         subtitle="Official okobiz credentials, completed case studies, and engineering capabilities"
       />
 
-      <section id="portfolio-grid-section" className="py-16 md:py-20 bg-[#121316]">
+      <section id="portfolio-grid-section" className="py-16 md:py-20 bg-white dark:bg-[#121316]">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
-          {/* Top Quick Bar: Download Official Company Profile PDF (2px radius) */}
-          <div className="bg-[#181A1E] border border-gray-800 rounded-[2px] p-6 mb-16 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-2xl">
+          {/* Top Quick Bar: Download Official Company Profile PDF (4px radius) */}
+          <div className="bg-slate-50 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800 rounded-[4px] p-6 mb-16 flex flex-col sm:flex-row items-center justify-between gap-5 shadow-xs dark:shadow-2xl">
             <div className="flex items-center gap-4">
-              <div className="w-12 h-12 rounded-[2px] bg-[#3368B2]/20 border border-[#3368B2]/40 flex items-center justify-center text-[#3368B2] shrink-0">
+              <div className="w-12 h-12 rounded-[4px] bg-blue-50 dark:bg-[#3368B2]/20 border border-blue-200 dark:border-[#3368B2]/40 flex items-center justify-center text-[#0167D6] dark:text-[#3368B2] shrink-0">
                 <FileText className="w-6 h-6" />
               </div>
               <div>
-                <h2 className="text-base sm:text-lg font-bold text-white flex items-center gap-2">
+                <h2 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white flex items-center gap-2">
                   {pdfData.heading}
                   {pdfData.badge && pdfData.badge.trim() && (
-                    <span className="hidden sm:inline-block px-2 py-0.5 rounded-[2px] text-[10px] bg-green-500/20 text-green-400 font-bold">
+                    <span className="hidden sm:inline-block px-2 py-0.5 rounded-[4px] text-[10px] bg-green-500/20 text-emerald-600 dark:text-green-400 font-bold">
                       {pdfData.badge}
                     </span>
                   )}
                 </h2>
-                <p className="text-xs text-gray-400 mt-0.5">
+                <p className="text-xs text-slate-600 dark:text-gray-400 mt-0.5">
                   {pdfData.subheading}
                 </p>
               </div>
@@ -152,7 +152,7 @@ export default function PortfolioPage() {
                 href={`/api/pdf?url=${encodeURIComponent(pdfData.pdfUrl)}`}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="px-4 py-2.5 bg-gray-800 hover:bg-gray-700 text-white rounded-[2px] text-xs font-semibold flex items-center gap-2 transition-colors"
+                className="px-4 py-2.5 bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-700 dark:text-white rounded-[4px] text-xs font-semibold flex items-center gap-2 transition-colors border border-slate-300 dark:border-transparent"
               >
                 <span>View PDF</span>
                 <ExternalLink className="w-3.5 h-3.5" />
@@ -160,7 +160,7 @@ export default function PortfolioPage() {
 
               <a
                 href={`/api/pdf?url=${encodeURIComponent(pdfData.pdfUrl)}&download=1`}
-                className="px-5 py-2.5 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[2px] text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-colors shadow-lg shadow-blue-900/30"
+                className="px-5 py-2.5 bg-[#0167D6] hover:bg-blue-600 text-white rounded-[4px] text-xs font-bold uppercase tracking-wider flex items-center gap-2 transition-colors shadow-md shadow-blue-500/20"
               >
                 <Download className="w-4 h-4" />
                 <span>Download PDF</span>
@@ -170,27 +170,27 @@ export default function PortfolioPage() {
 
           {/* Section Header: Already Done Projects */}
           <div className="text-center max-w-3xl mx-auto mb-14">
-            <span className="font-bold text-[#0077FF] text-xs sm:text-sm uppercase tracking-widest inline-block mb-3">
+            <span className="font-bold text-[#0167D6] dark:text-[#0077FF] text-xs sm:text-sm uppercase tracking-widest inline-block mb-3">
               - OUR WORK & CASE STUDIES -
             </span>
-            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-white tracking-tight mb-4">
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-extrabold text-slate-900 dark:text-white tracking-tight mb-4">
               Featured Completed Projects
             </h2>
-            <p className="text-gray-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
+            <p className="text-slate-600 dark:text-gray-400 text-xs sm:text-sm leading-relaxed max-w-2xl mx-auto">
               Explore our track record of already delivered high-performance web applications, enterprise SaaS platforms, mobile ecosystems, and interactive video experiences.
             </p>
           </div>
 
-          {/* Category Filter Pills (2px radius) */}
+          {/* Category Filter Pills (4px radius) */}
           <div className="flex justify-center flex-wrap gap-2.5 mb-14">
             {categories.map((cat) => (
               <button
                 key={cat}
                 onClick={() => handleCategoryChange(cat)}
-                className={`text-xs font-semibold px-5 py-2.5 rounded-[2px] transition-all duration-200 ${
+                className={`text-xs font-bold px-5 py-2.5 rounded-[4px] transition-all duration-200 ${
                   selectedCategory === cat
-                    ? "bg-[#3368B2] text-white shadow-lg shadow-blue-900/40 border border-[#3368B2]"
-                    : "bg-[#181A1E] border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
+                    ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20 border border-[#0167D6]"
+                    : "bg-slate-100 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-gray-700"
                 }`}
               >
                 {cat}
@@ -208,36 +208,44 @@ export default function PortfolioPage() {
               {paginatedProjects.map((project) => {
                 const isVideo = project.mediaType === "video" || !!project.videoUrl;
                 const isYt = isYouTubeUrl(project.videoUrl);
-                const displayImage =
-                  project.videoThumbnail ||
+                const rawImage =
+                  (project.videoThumbnail && project.videoThumbnail.trim()) ||
                   (isYt ? getYouTubeThumbnailUrl(project.videoUrl) : null) ||
-                  project.thumbnail;
+                  (project.thumbnail && project.thumbnail.trim()) ||
+                  "/assets/bdhajj-D468QQtK.png";
+                const displayImage = rawImage || "/assets/bdhajj-D468QQtK.png";
 
                 return (
                   <div
                     key={project._id}
-                    className="bg-[#16171B] border border-gray-800/90 rounded-[2px] overflow-hidden hover:border-[#3368B2] transition-all duration-300 flex flex-col justify-between group shadow-xl hover:shadow-[0_10px_35px_rgba(51,104,178,0.2)]"
+                    className="bg-white dark:bg-[#16171B] border border-slate-200 dark:border-gray-800/90 rounded-[4px] overflow-hidden hover:border-[#0167D6] transition-all duration-300 flex flex-col justify-between group shadow-xs hover:shadow-xl hover:shadow-blue-900/10"
                   >
                     <div>
                       {/* Media Preview Box */}
-                      <div className="relative h-56 sm:h-60 overflow-hidden bg-black rounded-t-[2px]">
+                      <div className="relative h-56 sm:h-60 overflow-hidden bg-slate-100 dark:bg-black rounded-t-[4px]">
                         <img
                           src={displayImage}
                           alt={project.title}
+                          onError={(e) => {
+                            const target = e.currentTarget;
+                            if (!target.src.includes("bdhajj-D468QQtK")) {
+                              target.src = "/assets/bdhajj-D468QQtK.png";
+                            }
+                          }}
                           className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                         />
 
-                        {/* Dark Gradient Overlay */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-black/20 to-transparent" />
+                        {/* Subtle Gradient Overlay */}
+                        <div className="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-black/30 pointer-events-none" />
 
-                        {/* Top Badges (2px radius) */}
+                        {/* Top Badges (4px radius) */}
                         <div className="absolute top-3.5 left-3.5 right-3.5 flex items-center justify-between pointer-events-none">
-                          <span className="px-3 py-1 rounded-[2px] bg-[#3368B2] text-white text-[11px] font-bold shadow">
+                          <span className="px-3 py-1 rounded-[4px] bg-[#0167D6] text-white text-[11px] font-bold shadow-md">
                             {project.category}
                           </span>
 
                           {isVideo && (
-                            <span className="px-2.5 py-1 rounded-[2px] bg-rose-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-lg">
+                            <span className="px-2.5 py-1 rounded-[4px] bg-rose-600 text-white text-[11px] font-bold flex items-center gap-1 shadow-lg">
                               <Video size={12} /> Video Case
                             </span>
                           )}
@@ -254,45 +262,45 @@ export default function PortfolioPage() {
                           title={isVideo ? "Watch Video Case Study" : project.title}
                         >
                           {isVideo && (
-                            <div className="w-14 h-14 rounded-full bg-rose-600/95 text-white flex items-center justify-center shadow-[0_0_25px_rgba(225,29,72,0.85)] backdrop-blur-sm border-2 border-rose-400 group-hover:scale-110 transition-transform animate-play-blink">
-                              <Play size={24} fill="white" className="ml-1" />
+                            <div className="w-14 h-14 rounded-full bg-[#0167D6] hover:bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 backdrop-blur-md border-2 border-white/70 group-hover:scale-110 transition-transform duration-300">
+                              <Play size={24} fill="white" className="ml-1 text-white" />
                             </div>
                           )}
                         </Link>
 
                         {/* Bottom Client Tag */}
-                        <div className="absolute bottom-3 left-3.5 text-xs text-gray-300 flex items-center gap-2">
-                          <span className="w-2 h-2 rounded-full bg-green-400"></span>
+                        <div className="absolute bottom-3 left-3.5 text-xs text-white/95 font-semibold flex items-center gap-2 drop-shadow-sm">
+                          <span className="w-2 h-2 rounded-full bg-emerald-400"></span>
                           <span>{project.clientName}</span>
-                          <span className="text-gray-500">•</span>
-                          <span className="text-gray-400">{project.completionYear}</span>
+                          <span className="text-white/60">•</span>
+                          <span className="text-white/80">{project.completionYear}</span>
                         </div>
                       </div>
 
                       {/* Card Content */}
                       <div className="p-6">
                         <Link href={`/portfolio/${project.slug || project._id}`}>
-                          <h3 className="text-lg font-bold text-white group-hover:text-[#3368B2] transition-colors mb-2.5 line-clamp-1">
+                          <h3 className="text-lg font-bold text-slate-900 dark:text-white group-hover:text-[#0167D6] transition-colors mb-2.5 line-clamp-1">
                             {project.title}
                           </h3>
                         </Link>
 
-                        <p className="text-xs text-gray-400 leading-relaxed line-clamp-2 mb-4">
+                        <p className="text-xs text-slate-600 dark:text-gray-400 leading-relaxed line-clamp-2 mb-4">
                           {stripMarkdown(project.shortDescription)}
                         </p>
 
-                        {/* Tech Stack Tags (2px radius) */}
+                        {/* Tech Stack Tags (4px radius) */}
                         <div className="flex flex-wrap gap-1.5 pt-1">
                           {project.techStack.slice(0, 3).map((tech, i) => (
                             <span
                               key={i}
-                              className="text-[11px] px-2.5 py-0.5 rounded-[2px] bg-white/5 border border-gray-800 text-gray-300"
+                              className="text-[11px] px-2.5 py-0.5 rounded-[4px] bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-300 font-medium"
                             >
                               {tech}
                             </span>
                           ))}
                           {project.techStack.length > 3 && (
-                            <span className="text-[11px] px-2 py-0.5 rounded-[2px] bg-white/5 text-gray-400">
+                            <span className="text-[11px] px-2 py-0.5 rounded-[4px] bg-slate-100 dark:bg-white/5 text-slate-500 dark:text-gray-400 font-medium">
                               +{project.techStack.length - 3}
                             </span>
                           )}
@@ -301,10 +309,10 @@ export default function PortfolioPage() {
                     </div>
 
                     {/* Card Bottom Actions */}
-                    <div className="p-6 pt-0 border-t border-gray-800/80 mt-2 flex items-center justify-between">
+                    <div className="p-6 pt-0 border-t border-slate-100 dark:border-gray-800/80 mt-2 flex items-center justify-between">
                       <Link
                         href={`/portfolio/${project.slug || project._id}`}
-                        className="text-xs font-bold text-[#3368B2] group-hover:text-blue-400 flex items-center gap-1.5 transition-colors"
+                        className="text-xs font-bold text-[#0167D6] hover:text-blue-700 flex items-center gap-1.5 transition-colors"
                       >
                         <span>Explore Details</span>
                         <ArrowRight size={14} className="group-hover:translate-x-1 transition-transform" />
@@ -315,7 +323,7 @@ export default function PortfolioPage() {
                           href={project.liveUrl}
                           target="_blank"
                           rel="noopener noreferrer"
-                          className="text-xs text-gray-400 hover:text-white flex items-center gap-1 transition-colors"
+                          className="text-xs text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white flex items-center gap-1 transition-colors"
                         >
                           <span>Live Site</span>
                           <ExternalLink size={12} />

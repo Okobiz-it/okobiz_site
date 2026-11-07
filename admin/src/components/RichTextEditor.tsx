@@ -545,19 +545,18 @@ export default function RichTextEditor({
     <div className="space-y-1.5">
       {label && (
         <div className="flex items-center justify-between">
-          <label className="block text-xs font-semibold text-gray-300">{label}</label>
-          <span className="text-[11px] text-gray-500">MS Word-style WYSIWYG Editor</span>
+          <label className="block text-xs font-bold text-slate-800 dark:text-gray-300">{label}</label>
         </div>
       )}
 
-      <div className="border border-gray-800 rounded-[4px] bg-[#181A1F] relative focus-within:border-[#3368B2] transition shadow-inner">
+      <div className="border border-slate-300 dark:border-gray-800 rounded-[4px] bg-white dark:bg-[#181A1F] relative focus-within:border-[#0167D6] dark:focus-within:border-[#3368B2] transition shadow-xs">
         {/* Formatting Toolbar */}
-        <div className="flex flex-wrap items-center gap-1 p-1.5 bg-[#141518] border-b border-gray-800 select-none rounded-t-[4px]">
+        <div className="rich-text-toolbar flex flex-wrap items-center gap-1 p-1.5 bg-slate-100 dark:bg-[#141518] border-b border-slate-200 dark:border-gray-800 select-none rounded-t-[4px]">
           {/* Undo / Redo */}
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "undo")}
-            className="p-1.5 rounded-[4px] text-gray-400 hover:text-white hover:bg-white/10 transition"
+            className="p-1.5 rounded-[4px] text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition"
             title="Undo (Ctrl+Z)"
           >
             <RotateCcw size={13} />
@@ -565,13 +564,13 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "redo")}
-            className="p-1.5 rounded-[4px] text-gray-400 hover:text-white hover:bg-white/10 transition"
+            className="p-1.5 rounded-[4px] text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10 transition"
             title="Redo (Ctrl+Y)"
           >
             <RotateCw size={13} />
           </button>
 
-          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+          <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
           {/* Bold */}
           <button
@@ -579,8 +578,8 @@ export default function RichTextEditor({
             onMouseDown={(e) => execFormat(e, "bold")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.bold
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Bold (Ctrl+B) - Click again to remove"
           >
@@ -593,8 +592,8 @@ export default function RichTextEditor({
             onMouseDown={(e) => execFormat(e, "italic")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.italic
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Italic (Ctrl+I) - Click again to remove"
           >
@@ -607,15 +606,15 @@ export default function RichTextEditor({
             onMouseDown={toggleUnderline}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.underline
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Underline (Ctrl+U) - Click again to remove"
           >
             <Underline size={13} />
           </button>
 
-          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+          <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
           {/* Text Color Picker */}
           <div className="relative" ref={textColorRef}>
@@ -629,8 +628,8 @@ export default function RichTextEditor({
               }}
               className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
                 showTextColorPicker
-                  ? "bg-[#3368B2] text-white shadow-sm"
-                  : "text-gray-400 hover:text-white hover:bg-white/10"
+                  ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                  : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
               }`}
               title="Change Text Color"
             >
@@ -638,7 +637,7 @@ export default function RichTextEditor({
                 <span className="font-bold text-xs leading-none">A</span>
                 <span className="w-3.5 h-[2px] mt-0.5 rounded-full bg-gradient-to-r from-red-500 via-amber-400 to-blue-500" />
               </div>
-              <ChevronDown size={10} className="text-gray-400" />
+              <ChevronDown size={10} className="text-slate-500 dark:text-gray-400" />
             </button>
 
             {showTextColorPicker && (
@@ -648,11 +647,11 @@ export default function RichTextEditor({
                     e.preventDefault();
                   }
                 }}
-                className="absolute top-full left-0 mt-1 z-50 p-3 bg-[#141518] border border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
+                className="absolute top-full left-0 mt-1 z-50 p-3 bg-white dark:bg-[#141518] border border-slate-300 dark:border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
               >
-                <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold border-b border-gray-800 pb-1.5">
-                  <span className="flex items-center gap-1.5 text-white">
-                    <Palette size={12} className="text-[#3368B2]" />
+                <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-gray-400 font-semibold border-b border-slate-200 dark:border-gray-800 pb-1.5">
+                  <span className="flex items-center gap-1.5 text-slate-900 dark:text-white font-bold">
+                    <Palette size={12} className="text-[#0167D6]" />
                     <span>Text Color</span>
                   </span>
                   <div className="flex items-center gap-2">
@@ -660,15 +659,15 @@ export default function RichTextEditor({
                       type="button"
                       onMouseDown={(e) => {
                         e.preventDefault();
-                        applyTextColor("#ffffff", false);
+                        applyTextColor("#0F172A", false);
                       }}
                       onClick={(e) => {
                         e.preventDefault();
-                        applyTextColor("#ffffff", false);
+                        applyTextColor("#0F172A", false);
                       }}
-                      className="text-[10px] text-blue-400 hover:underline"
+                      className="text-[10px] text-blue-600 dark:text-blue-400 hover:underline font-semibold"
                     >
-                      Reset (White)
+                      Reset
                     </button>
                     <button
                       type="button"
@@ -677,7 +676,7 @@ export default function RichTextEditor({
                         setShowTextColorPicker(false);
                         editorRef.current?.focus();
                       }}
-                      className="text-gray-400 hover:text-white p-0.5 rounded-[4px]"
+                      className="text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white p-0.5 rounded-[4px]"
                       title="Close"
                     >
                       <X size={12} />
@@ -698,7 +697,7 @@ export default function RichTextEditor({
                         e.preventDefault();
                         applyTextColor(c.value, false);
                       }}
-                      className="w-8 h-7 rounded-[4px] border border-gray-700/80 hover:scale-110 hover:border-white transition flex items-center justify-center relative group"
+                      className="w-8 h-7 rounded-[4px] border border-slate-300 dark:border-gray-700/80 hover:scale-110 hover:border-blue-500 transition flex items-center justify-center relative group"
                       style={{ backgroundColor: c.value }}
                       title={c.label}
                     />
@@ -706,14 +705,14 @@ export default function RichTextEditor({
                 </div>
 
                 {/* Custom Color Selector & Hex Input */}
-                <div className="pt-2 border-t border-gray-800 space-y-1.5">
-                  <div className="text-[10px] uppercase font-bold text-gray-400 flex items-center justify-between">
+                <div className="pt-2 border-t border-slate-200 dark:border-gray-800 space-y-1.5">
+                  <div className="text-[10px] uppercase font-bold text-slate-600 dark:text-gray-400 flex items-center justify-between">
                     <span>Custom Text Color</span>
-                    <span className="font-mono text-gray-500 text-[10px]">{customTextHex}</span>
+                    <span className="font-mono text-slate-500 text-[10px]">{customTextHex}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <label
-                      className="relative w-8 h-8 rounded-[4px] border border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
+                      className="relative w-8 h-8 rounded-[4px] border border-slate-300 dark:border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
                       style={{ backgroundColor: customTextHex }}
                       title="Click to open color picker"
                     >
@@ -767,13 +766,13 @@ export default function RichTextEditor({
                         }
                       }}
                       placeholder="#38BDF8"
-                      className="w-full px-2 py-1 bg-[#181A1D] border border-gray-700 rounded-[4px] text-xs font-mono text-white uppercase focus:outline-none focus:border-[#3368B2]"
+                      className="w-full px-2 py-1 bg-white dark:bg-[#181A1D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs font-mono text-slate-900 dark:text-white uppercase focus:outline-none focus:border-[#0167D6]"
                     />
                   </div>
                 </div>
 
                 {/* Done Button */}
-                <div className="pt-1 border-t border-gray-800/80">
+                <div className="pt-1 border-t border-slate-200 dark:border-gray-800/80">
                   <button
                     type="button"
                     onMouseDown={(e) => {
@@ -784,7 +783,7 @@ export default function RichTextEditor({
                       e.preventDefault();
                       applyTextColor(customTextHex, true);
                     }}
-                    className="w-full py-1.5 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[4px] text-xs font-semibold transition"
+                    className="w-full py-1.5 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold transition shadow-xs"
                   >
                     Done
                   </button>
@@ -805,13 +804,13 @@ export default function RichTextEditor({
               }}
               className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
                 showHighlightPicker
-                  ? "bg-[#3368B2] text-white shadow-sm"
-                  : "text-gray-400 hover:text-white hover:bg-white/10"
+                  ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                  : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
               }`}
               title="Text Highlight Marker"
             >
               <Highlighter size={13} />
-              <ChevronDown size={10} className="text-gray-400" />
+              <ChevronDown size={10} className="text-slate-500 dark:text-gray-400" />
             </button>
 
             {showHighlightPicker && (
@@ -821,11 +820,11 @@ export default function RichTextEditor({
                     e.preventDefault();
                   }
                 }}
-                className="absolute top-full left-0 mt-1 z-50 p-3 bg-[#141518] border border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
+                className="absolute top-full left-0 mt-1 z-50 p-3 bg-white dark:bg-[#141518] border border-slate-300 dark:border-gray-700 rounded-[4px] shadow-2xl w-64 space-y-2.5 select-none"
               >
-                <div className="flex items-center justify-between text-[11px] text-gray-400 font-semibold border-b border-gray-800 pb-1.5">
-                  <span className="flex items-center gap-1.5 text-white">
-                    <Highlighter size={12} className="text-amber-400" />
+                <div className="flex items-center justify-between text-[11px] text-slate-600 dark:text-gray-400 font-semibold border-b border-slate-200 dark:border-gray-800 pb-1.5">
+                  <span className="flex items-center gap-1.5 text-slate-900 dark:text-white font-bold">
+                    <Highlighter size={12} className="text-amber-500" />
                     <span>Highlight Color</span>
                   </span>
                   <div className="flex items-center gap-2">
@@ -839,7 +838,7 @@ export default function RichTextEditor({
                         e.preventDefault();
                         applyHighlightColor("transparent", false);
                       }}
-                      className="text-[10px] text-red-400 hover:underline"
+                      className="text-[10px] text-red-500 hover:underline font-semibold"
                     >
                       Clear
                     </button>
@@ -850,7 +849,7 @@ export default function RichTextEditor({
                         setShowHighlightPicker(false);
                         editorRef.current?.focus();
                       }}
-                      className="text-gray-400 hover:text-white p-0.5 rounded-[4px]"
+                      className="text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white p-0.5 rounded-[4px]"
                       title="Close"
                     >
                       <X size={12} />
@@ -871,7 +870,7 @@ export default function RichTextEditor({
                         e.preventDefault();
                         applyHighlightColor(c.value, false);
                       }}
-                      className="w-12 h-7 rounded-[4px] border border-gray-700/80 hover:scale-105 hover:border-white transition flex items-center justify-center text-[10px] font-bold"
+                      className="w-12 h-7 rounded-[4px] border border-slate-300 dark:border-gray-700/80 hover:scale-105 hover:border-blue-500 transition flex items-center justify-center text-[10px] font-bold"
                       style={{ backgroundColor: c.preview, color: c.text }}
                       title={c.label}
                     >
@@ -881,14 +880,14 @@ export default function RichTextEditor({
                 </div>
 
                 {/* Custom Highlight Selector & Hex Input */}
-                <div className="pt-2 border-t border-gray-800 space-y-1.5">
-                  <div className="text-[10px] uppercase font-bold text-gray-400 flex items-center justify-between">
+                <div className="pt-2 border-t border-slate-200 dark:border-gray-800 space-y-1.5">
+                  <div className="text-[10px] uppercase font-bold text-slate-600 dark:text-gray-400 flex items-center justify-between">
                     <span>Custom Highlight</span>
-                    <span className="font-mono text-gray-500 text-[10px]">{customHighlightHex}</span>
+                    <span className="font-mono text-slate-500 text-[10px]">{customHighlightHex}</span>
                   </div>
                   <div className="flex items-center gap-2">
                     <label
-                      className="relative w-8 h-8 rounded-[4px] border border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
+                      className="relative w-8 h-8 rounded-[4px] border border-slate-300 dark:border-gray-700 overflow-hidden shrink-0 cursor-pointer shadow-inner block"
                       style={{ backgroundColor: customHighlightHex }}
                       title="Click to open color picker"
                     >
@@ -942,13 +941,13 @@ export default function RichTextEditor({
                         }
                       }}
                       placeholder="#FACC15"
-                      className="w-full px-2 py-1 bg-[#181A1D] border border-gray-700 rounded-[4px] text-xs font-mono text-white uppercase focus:outline-none focus:border-[#3368B2]"
+                      className="w-full px-2 py-1 bg-white dark:bg-[#181A1D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs font-mono text-slate-900 dark:text-white uppercase focus:outline-none focus:border-[#0167D6]"
                     />
                   </div>
                 </div>
 
                 {/* Done Button */}
-                <div className="pt-1 border-t border-gray-800/80">
+                <div className="pt-1 border-t border-slate-200 dark:border-gray-800/80">
                   <button
                     type="button"
                     onMouseDown={(e) => {
@@ -959,7 +958,7 @@ export default function RichTextEditor({
                       e.preventDefault();
                       applyHighlightColor(customHighlightHex, true);
                     }}
-                    className="w-full py-1.5 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[4px] text-xs font-semibold transition"
+                    className="w-full py-1.5 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold transition shadow-xs"
                   >
                     Done
                   </button>
@@ -968,7 +967,7 @@ export default function RichTextEditor({
             )}
           </div>
 
-          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+          <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
           {/* Heading 2 */}
           <button
@@ -976,8 +975,8 @@ export default function RichTextEditor({
             onMouseDown={(e) => toggleHeading(e, "h2")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.h2
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Heading 2 - Click again to revert"
           >
@@ -990,15 +989,15 @@ export default function RichTextEditor({
             onMouseDown={(e) => toggleHeading(e, "h3")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.h3
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Heading 3 - Click again to revert"
           >
             <Heading3 size={13} />
           </button>
 
-          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+          <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
           {/* Bullet List */}
           <button
@@ -1006,8 +1005,8 @@ export default function RichTextEditor({
             onMouseDown={(e) => execFormat(e, "insertUnorderedList")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.bullet
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Bullet List - Click again to remove"
           >
@@ -1020,8 +1019,8 @@ export default function RichTextEditor({
             onMouseDown={(e) => execFormat(e, "insertOrderedList")}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.number
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Numbered List - Click again to remove"
           >
@@ -1034,8 +1033,8 @@ export default function RichTextEditor({
             onMouseDown={toggleBlockquote}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.quote
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Blockquote - Click again to revert"
           >
@@ -1048,8 +1047,8 @@ export default function RichTextEditor({
             onMouseDown={toggleCode}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.code
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title="Inline Code - Click again to remove"
           >
@@ -1062,21 +1061,21 @@ export default function RichTextEditor({
             onMouseDown={toggleLink}
             className={`p-1.5 rounded-[4px] transition ${
               activeStates.link
-                ? "bg-[#3368B2] text-white shadow-sm"
-                : "text-gray-400 hover:text-white hover:bg-white/10"
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
             }`}
             title={activeStates.link ? "Remove Link" : "Insert Link"}
           >
             <LinkIcon size={13} />
           </button>
 
-          <span className="w-[1px] h-4 bg-gray-800 mx-0.5" />
+          <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
           {/* Clear Formatting */}
           <button
             type="button"
             onMouseDown={clearFormatting}
-            className="p-1.5 rounded-[4px] text-gray-400 hover:text-red-400 hover:bg-red-500/10 transition"
+            className="p-1.5 rounded-[4px] text-slate-700 dark:text-gray-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
             title="Remove All Formatting"
           >
             <RemoveFormatting size={13} />
@@ -1097,7 +1096,7 @@ export default function RichTextEditor({
             saveSelection();
           }}
           data-placeholder={placeholder}
-          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-gray-200 focus:outline-none leading-relaxed overflow-y-auto rounded-b-[4px]`}
+          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-slate-900 dark:text-gray-200 bg-white dark:bg-[#181A1F] focus:outline-none leading-relaxed overflow-y-auto rounded-b-[4px]`}
           style={{ minHeight: "210px" }}
         />
       </div>

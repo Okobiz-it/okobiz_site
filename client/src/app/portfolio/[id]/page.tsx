@@ -88,25 +88,27 @@ function PortfolioDetailContent() {
   const isVideo = project.mediaType === "video" || !!project.videoUrl;
   const isYt = isYouTubeUrl(project.videoUrl);
   const ytEmbedUrl = isYt ? getYouTubeEmbedUrl(project.videoUrl, isPlaying) : null;
-  const displayPoster =
-    project.videoThumbnail ||
+  const rawPoster =
+    (project.videoThumbnail && project.videoThumbnail.trim()) ||
     (isYt ? getYouTubeThumbnailUrl(project.videoUrl) : null) ||
-    project.thumbnail;
+    (project.thumbnail && project.thumbnail.trim()) ||
+    "/assets/bdhajj-D468QQtK.png";
+  const displayPoster = rawPoster || "/assets/bdhajj-D468QQtK.png";
 
   return (
-    <div className="bg-black text-white min-h-screen">
+    <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen">
       <PageBanner
         title={project.title}
         subtitle={`Case Study • ${project.category} • Delivered for ${project.clientName}`}
       />
 
-      <article className="py-16 md:py-24 bg-[#121316]">
+      <article className="py-16 md:py-24 bg-white dark:bg-[#121316]">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
           {/* Back button and quick actions */}
-          <div className="flex items-center justify-between mb-10 pb-6 border-b border-gray-800">
+          <div className="flex items-center justify-between mb-10 pb-6 border-b border-slate-200 dark:border-gray-800">
             <Link
               href="/portfolio"
-              className="inline-flex items-center gap-2 text-xs sm:text-sm font-semibold text-gray-400 hover:text-white transition group"
+              className="inline-flex items-center gap-2 text-xs sm:text-sm font-bold text-slate-600 dark:text-gray-400 hover:text-[#0167D6] dark:hover:text-white transition group"
             >
               <ArrowLeft size={16} className="group-hover:-translate-x-1 transition-transform" />
               <span>Back to Portfolio</span>
@@ -117,7 +119,7 @@ function PortfolioDetailContent() {
                 href={project.liveUrl}
                 target="_blank"
                 rel="noopener noreferrer"
-                className="inline-flex items-center gap-2 px-4 py-2 rounded-[2px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition"
+                className="inline-flex items-center gap-2 px-4 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold shadow-md shadow-blue-500/20 transition"
               >
                 <span>Live Project Demo</span>
                 <ExternalLink size={14} />
@@ -126,54 +128,60 @@ function PortfolioDetailContent() {
           </div>
 
           {/* Project Meta Details Card */}
-          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-[#16171B] border border-gray-800 rounded-[2px] mb-12 shadow-xl">
+          <div className="grid grid-cols-2 sm:grid-cols-4 gap-4 p-6 bg-slate-50 dark:bg-[#16171B] border border-slate-200 dark:border-gray-800 rounded-[4px] mb-12 shadow-xs dark:shadow-xl">
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Client</p>
-              <p className="text-sm font-bold text-white mt-1 flex items-center gap-1.5">
-                <Building size={14} className="text-[#3368B2]" />
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 uppercase tracking-wider font-bold">Client</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 flex items-center gap-1.5">
+                <Building size={14} className="text-[#0167D6] dark:text-[#3368B2]" />
                 {project.clientName}
               </p>
             </div>
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Category</p>
-              <p className="text-sm font-bold text-[#3368B2] mt-1">{project.category}</p>
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 uppercase tracking-wider font-bold">Category</p>
+              <p className="text-sm font-bold text-[#0167D6] dark:text-[#3368B2] mt-1">{project.category}</p>
             </div>
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Delivered In</p>
-              <p className="text-sm font-bold text-white mt-1 flex items-center gap-1.5">
-                <Calendar size={14} className="text-gray-400" />
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 uppercase tracking-wider font-bold">Delivered In</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mt-1 flex items-center gap-1.5">
+                <Calendar size={14} className="text-slate-400 dark:text-gray-400" />
                 {project.completionYear}
               </p>
             </div>
             <div>
-              <p className="text-[11px] text-gray-500 uppercase tracking-wider font-semibold">Media Type</p>
-              <p className="text-sm font-bold text-white mt-1">
+              <p className="text-[11px] text-slate-500 dark:text-gray-500 uppercase tracking-wider font-bold">Media Type</p>
+              <p className="text-sm font-bold text-slate-900 dark:text-white mt-1">
                 {isVideo ? (isYt ? "YouTube Video Case" : "Video Case Study") : "Web Showcase"}
               </p>
             </div>
           </div>
 
           {/* Media Showcase: YouTube Iframe, HTML5 Video, or Image */}
-          <div className="mb-14 rounded-[2px] overflow-hidden border border-gray-800 bg-black shadow-2xl relative">
+          <div className="mb-14 rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 bg-slate-100 dark:bg-black shadow-lg relative">
             {isVideo && project.videoUrl ? (
               !isPlaying ? (
                 /* Paused state when user clicked outside video play frame */
-                <div className="relative aspect-video w-full bg-black flex items-center justify-center group overflow-hidden">
+                <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center group overflow-hidden">
                   <img
                     src={displayPoster}
                     alt={project.title}
+                    onError={(e) => {
+                      const target = e.currentTarget;
+                      if (!target.src.includes("bdhajj-D468QQtK")) {
+                        target.src = "/assets/bdhajj-D468QQtK.png";
+                      }
+                    }}
                     className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
                   />
-                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors" />
+                  <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors pointer-events-none" />
                   <button
                     type="button"
                     onClick={() => setIsPlaying(true)}
-                    className="absolute z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-rose-600/95 hover:bg-rose-500 text-white flex items-center justify-center shadow-[0_0_30px_rgba(225,29,72,0.8)] backdrop-blur-sm border-2 border-rose-400 hover:scale-110 transition-transform cursor-pointer animate-play-blink"
+                    className="absolute z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0167D6] hover:bg-blue-600 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 backdrop-blur-md border-2 border-white/70 hover:scale-110 transition-all cursor-pointer"
                     aria-label="Click to play video"
                   >
-                    <Play size={28} fill="white" className="ml-1" />
+                    <Play size={28} fill="white" className="ml-1 text-white" />
                   </button>
-                  <div className="absolute bottom-4 left-4 z-10 text-xs font-semibold text-white/90 bg-black/60 px-3 py-1 rounded-[2px] border border-gray-700">
+                  <div className="absolute bottom-4 left-4 z-10 text-xs font-semibold text-white/90 bg-black/60 px-3 py-1 rounded-[4px] border border-gray-700">
                     Click to play video
                   </div>
                 </div>
@@ -204,11 +212,17 @@ function PortfolioDetailContent() {
                 )
               )
             ) : (
-              <div className="relative aspect-video w-full overflow-hidden bg-gray-950">
+              <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-gray-950 flex items-center justify-center p-2 sm:p-4">
                 <img
                   src={displayPoster}
                   alt={project.title}
-                  className="w-full h-full object-cover"
+                  onError={(e) => {
+                    const target = e.currentTarget;
+                    if (!target.src.includes("bdhajj-D468QQtK")) {
+                      target.src = "/assets/bdhajj-D468QQtK.png";
+                    }
+                  }}
+                  className="w-full h-full object-contain max-h-[550px] transition-all duration-300 rounded-[2px]"
                 />
               </div>
             )}
@@ -218,13 +232,13 @@ function PortfolioDetailContent() {
           <div className="space-y-12">
             {/* Overview */}
             <div>
-              <span className="text-[#0077FF] text-xs font-bold uppercase tracking-widest block mb-2">
+              <span className="text-[#0167D6] dark:text-[#0077FF] text-xs font-bold uppercase tracking-widest block mb-2">
                 - Overview -
               </span>
-              <h2 className="text-xl sm:text-2xl font-bold text-white mb-4">
+              <h2 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white mb-4">
                 Executive Summary
               </h2>
-              <div className="text-gray-300 text-sm sm:text-base leading-relaxed space-y-4 prose prose-invert max-w-none">
+              <div className="text-slate-700 dark:text-gray-300 text-sm sm:text-base leading-relaxed space-y-4 prose dark:prose-invert max-w-none">
                 {project.fullDescription ? (
                   <div dangerouslySetInnerHTML={{ __html: renderRichText(project.fullDescription) }} />
                 ) : (
@@ -235,26 +249,26 @@ function PortfolioDetailContent() {
 
             {/* Challenge & Solution Grid */}
             {(project.challenge || project.solution) && (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-gray-800">
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-8 pt-6 border-t border-slate-200 dark:border-gray-800">
                 {project.challenge && (
-                  <div className="bg-[#16171B] p-6 rounded-[2px] border border-gray-800/80">
-                    <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
+                  <div className="bg-slate-50 dark:bg-[#16171B] p-6 rounded-[4px] border border-slate-200 dark:border-gray-800/80 shadow-xs">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
                       <span className="w-2 h-2 rounded-full bg-red-500"></span>
                       The Architectural Challenge
                     </h3>
-                    <div className="text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
+                    <div className="text-slate-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
                       <div dangerouslySetInnerHTML={{ __html: renderRichText(project.challenge) }} />
                     </div>
                   </div>
                 )}
 
                 {project.solution && (
-                  <div className="bg-[#16171B] p-6 rounded-[2px] border border-gray-800/80">
-                    <h3 className="text-base font-bold text-white mb-3 flex items-center gap-2">
-                      <span className="w-2 h-2 rounded-full bg-blue-500"></span>
+                  <div className="bg-slate-50 dark:bg-[#16171B] p-6 rounded-[4px] border border-slate-200 dark:border-gray-800/80 shadow-xs">
+                    <h3 className="text-base font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                      <span className="w-2 h-2 rounded-full bg-[#0167D6]"></span>
                       Our Engineered Solution
                     </h3>
-                    <div className="text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
+                    <div className="text-slate-700 dark:text-gray-300 text-xs sm:text-sm leading-relaxed text-justify">
                       <div dangerouslySetInnerHTML={{ __html: renderRichText(project.solution) }} />
                     </div>
                   </div>
@@ -264,18 +278,18 @@ function PortfolioDetailContent() {
 
             {/* Key Features List */}
             {project.features && project.features.length > 0 && (
-              <div className="pt-6 border-t border-gray-800">
-                <h3 className="text-base sm:text-lg font-bold text-white mb-4 flex items-center gap-2">
-                  <CheckCircle size={18} className="text-[#3368B2]" />
+              <div className="pt-6 border-t border-slate-200 dark:border-gray-800">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2">
+                  <CheckCircle size={18} className="text-[#0167D6] dark:text-[#3368B2]" />
                   Delivered Features & Technical Milestones
                 </h3>
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                   {project.features.map((feat: string, idx: number) => (
                     <div
                       key={idx}
-                      className="flex items-start gap-2.5 p-3 rounded-[2px] bg-[#16171B] border border-gray-800/60 text-xs sm:text-sm text-gray-300"
+                      className="flex items-start gap-2.5 p-3 rounded-[4px] bg-slate-50 dark:bg-[#16171B] border border-slate-200 dark:border-gray-800/60 text-xs sm:text-sm text-slate-700 dark:text-gray-300"
                     >
-                      <span className="w-1.5 h-1.5 rounded-full bg-[#3368B2] mt-1.5 shrink-0" />
+                      <span className="w-1.5 h-1.5 rounded-full bg-[#0167D6] dark:bg-[#3368B2] mt-1.5 shrink-0" />
                       <span>{feat}</span>
                     </div>
                   ))}
@@ -285,16 +299,16 @@ function PortfolioDetailContent() {
 
             {/* Technology Stack Grid */}
             {project.techStack && project.techStack.length > 0 && (
-              <div className="pt-6 border-t border-gray-800">
-                <h3 className="text-base sm:text-lg font-bold text-white mb-3 flex items-center gap-2">
-                  <Layers size={18} className="text-[#3368B2]" />
+              <div className="pt-6 border-t border-slate-200 dark:border-gray-800">
+                <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
+                  <Layers size={18} className="text-[#0167D6] dark:text-[#3368B2]" />
                   Technology Frameworks & Infrastructure
                 </h3>
                 <div className="flex flex-wrap gap-2 pt-1">
                   {project.techStack.map((tech: string, idx: number) => (
                     <span
                       key={idx}
-                      className="px-3 py-1.5 rounded-[2px] bg-[#16171B] border border-gray-700 text-xs font-semibold text-gray-200"
+                      className="px-3.5 py-1.5 rounded-[4px] bg-slate-100 dark:bg-[#16171B] border border-slate-200 dark:border-gray-700 text-xs font-bold text-slate-800 dark:text-gray-200"
                     >
                       {tech}
                     </span>

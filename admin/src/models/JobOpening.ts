@@ -44,7 +44,7 @@ const JobOpeningSchema = new Schema<IJobOpening>(
     createdAt: { type: Date, default: Date.now },
     updatedAt: { type: Date, default: Date.now }
   },
-  { _id: false }
+  { timestamps: true }
 );
 
 export default mongoose.models.JobOpening || mongoose.model<IJobOpening>("JobOpening", JobOpeningSchema);

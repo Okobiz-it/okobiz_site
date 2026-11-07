@@ -111,32 +111,32 @@ export default function TeamPage() {
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
-          <h1 className="text-2xl font-black text-white flex items-center gap-2.5">
-            <UserCheck className="text-[#3368B2]" size={24} />
+          <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
+            <UserCheck className="text-[#0167D6] dark:text-[#3368B2]" size={24} />
             Team Members & Advisors
           </h1>
-          <p className="text-gray-400 text-xs mt-1">
+          <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">
             Manage company leadership, executive engineers, digital marketers, and legal advisors
           </p>
         </div>
         <button
           onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-xl bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer"
         >
           <Plus size={16} /> Add Member
         </button>
       </div>
 
       {/* Tabs */}
-      <div className="flex gap-2 border-b border-gray-800 pb-3">
+      <div className="flex gap-2 border-b border-slate-200 dark:border-gray-800 pb-3">
         {(["all", "team", "advisor"] as const).map(t => (
           <button
             key={t}
             onClick={() => setTab(t)}
-            className={`px-4 py-1.5 rounded-lg text-xs font-bold uppercase tracking-wider transition ${
+            className={`px-4 py-1.5 rounded-[4px] text-xs font-bold uppercase tracking-wider transition ${
               tab === t
-                ? "bg-[#3368B2] text-white"
-                : "bg-white/5 text-gray-400 hover:text-white"
+                ? "bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "bg-slate-100 dark:bg-white/5 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 border border-slate-200 dark:border-transparent"
             }`}
           >
             {t === "all" ? "All Roster" : t === "team" ? "Core Team" : "Legal Advisors"}
@@ -146,38 +146,43 @@ export default function TeamPage() {
 
       {/* Team Grid */}
       {loading ? (
-        <div className="text-center py-20 text-gray-500 text-xs">Loading roster...</div>
+        <div className="text-center py-20 text-slate-500 dark:text-gray-500 text-xs">Loading roster...</div>
       ) : (
         <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
           {filtered.map((member) => (
             <div
               key={member._id}
-              className="bg-[#131417] border border-gray-800 rounded-2xl p-4 flex flex-col items-center justify-between text-center group hover:border-gray-700 transition"
+              className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 flex flex-col items-center justify-between text-center group hover:border-[#0167D6] dark:hover:border-gray-700 shadow-xs hover:shadow-md transition"
             >
-              <div className="w-20 h-20 sm:w-24 sm:h-24 rounded-full overflow-hidden bg-gray-900 border-2 border-[#3368B2]/40 shadow-lg my-2 relative">
+              {/* Photo Frame - 20% Bigger, Crisp Pure White Background in Light Mode */}
+              <div className="w-24 h-24 sm:w-28 sm:h-28 rounded-full overflow-hidden bg-white dark:bg-[#181A1F] border-2 border-slate-200 dark:border-[#3368B2]/40 shadow-sm my-2 relative shrink-0">
                 <img src={member.image} alt={member.name} className="w-full h-full object-cover group-hover:scale-105 transition duration-300" />
               </div>
 
               <div className="mt-2 w-full">
-                <h3 className="text-xs font-bold text-white truncate">{member.name}</h3>
-                <p className="text-[11px] text-[#3368B2] font-semibold truncate mt-0.5">{member.designation}</p>
+                <h3 className="text-xs font-bold text-slate-900 dark:text-white truncate" title={member.name}>{member.name}</h3>
+                <p className="text-[11px] text-[#0167D6] dark:text-[#3368B2] font-semibold truncate mt-0.5">{member.designation}</p>
                 <span className={`inline-block mt-2 text-[10px] px-2 py-0.5 rounded-full font-bold uppercase ${
-                  member.type === 'advisor' ? 'bg-purple-500/20 text-purple-400' : 'bg-blue-500/20 text-blue-400'
+                  member.type === 'advisor'
+                    ? 'bg-purple-50 text-purple-700 dark:bg-purple-500/20 dark:text-purple-400 border border-purple-200 dark:border-transparent'
+                    : 'bg-blue-50 text-[#0167D6] dark:bg-blue-500/20 dark:text-blue-400 border border-blue-200 dark:border-transparent'
                 }`}>
                   {member.type === 'advisor' ? 'Legal Advisor' : 'Team'}
                 </span>
               </div>
 
-              <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-gray-800/80 w-full justify-center">
+              <div className="flex items-center gap-1.5 mt-4 pt-3 border-t border-slate-100 dark:border-gray-800/80 w-full justify-center">
                 <button
                   onClick={() => openEdit(member)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition"
+                  className="p-1.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white border border-slate-200 dark:border-transparent transition"
+                  title="Edit Member"
                 >
                   <Edit2 size={13} />
                 </button>
                 <button
                   onClick={() => handleDelete(member._id)}
-                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
+                  className="p-1.5 rounded-[4px] bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 transition"
+                  title="Delete Member"
                 >
                   <Trash2 size={13} />
                 </button>
@@ -189,49 +194,49 @@ export default function TeamPage() {
 
       {/* Member Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#131417] border border-gray-800 rounded-2xl w-full max-w-md p-6 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] w-full max-w-md p-6 relative shadow-2xl">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white"
             >
               <X size={20} />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
               {editItem ? "Edit Team Member" : "Add Team Member"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Full Name</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Full Name</label>
                 <input
                   type="text"
                   required
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Md. Sorower Jahan"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Designation / Role</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Designation / Role</label>
                 <input
                   type="text"
                   required
                   value={form.designation}
                   onChange={e => setForm({ ...form, designation: e.target.value })}
                   placeholder="e.g. CEO, Sr. Software Engineer"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Member Category</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Member Category</label>
                 <select
                   value={form.type}
                   onChange={e => setForm({ ...form, type: e.target.value as any })}
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 >
                   <option value="team">Core Team Member</option>
                   <option value="advisor">Legal Advisor</option>
@@ -239,16 +244,16 @@ export default function TeamPage() {
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Profile Photo</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Profile Photo</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
                     required
                     value={form.image}
                     onChange={e => setForm({ ...form, image: e.target.value })}
-                    className="flex-1 bg-[#181A1F] border border-gray-800 rounded-xl px-3 py-2 text-xs text-white"
+                    className="flex-1 bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                   />
-                  <label className="cursor-pointer px-3 py-2 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 min-w-[80px] h-[34px]">
+                  <label className="cursor-pointer px-3.5 py-2 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold flex items-center justify-center gap-1.5 shrink-0 min-w-[85px] h-[34px] shadow-sm transition">
                     {uploading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
@@ -261,33 +266,33 @@ export default function TeamPage() {
                   </label>
                 </div>
                 {form.image && (
-                  <div className="w-16 h-16 rounded-full overflow-hidden mx-auto bg-black/50 border border-gray-800">
+                  <div className="w-20 h-20 rounded-full overflow-hidden mx-auto bg-white dark:bg-[#181A1F] border-2 border-slate-200 dark:border-gray-800 shadow-sm">
                     <img src={form.image} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Display Order</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Display Order</label>
                 <input
                   type="number"
                   value={form.order}
                   onChange={e => setForm({ ...form, order: Number(e.target.value) })}
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-800">
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-gray-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                  className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold"
+                  className="px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition"
                 >
                   {editItem ? "Save Changes" : "Add Member"}
                 </button>

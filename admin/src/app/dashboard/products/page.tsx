@@ -7,82 +7,13 @@ import {
   ProductFormState,
   PricingPlanForm,
   ProductReviewForm,
+  DEFAULT_PRODUCT_FORM as DEFAULT_FORM,
 } from "@/components/products/types";
 import ProductModal from "@/components/products/ProductModal";
 import ProductTable from "@/components/products/ProductTable";
 import { createSlug } from "@/lib/slug";
 
 const ITEMS_PER_PAGE = 10;
-
-const DEFAULT_FORM: ProductFormState = {
-  title: "",
-  slug: "",
-  tagline: "",
-  category: "SaaS & ERP",
-  customCategory: "",
-  mediaType: "image",
-  thumbnail: "",
-  images: [],
-  video: "",
-  videoThumbnail: "",
-  youtubeUrl: "",
-  liveUrl: "",
-  whatsappNumber: "+8801973590937",
-  popularBadge: false,
-  featuredBadge: false,
-  order: 1,
-  status: "active",
-  description:
-    "<h2>Overview</h2><p>Provide a comprehensive overview of your SaaS solution and its core modules.</p><h3>Key Features:</h3><ul><li>Feature item 1</li><li>Feature item 2</li></ul>",
-  featuresText:
-    "Cloud-Based SaaS Architecture\nRole-Based Access Control\nAutomated Cloud Backups\nFast Responsive Performance",
-  pricingPlans: [
-    {
-      name: "Standard Package",
-      price: 15000,
-      discountPrice: 20000,
-      period: "One-Time Setup",
-      badge: "Starter",
-      description: "Essential tools for single store or individual business setup.",
-      featuresText:
-        "Full System Installation\n1 Year Free Cloud Hosting\nStandard User Roles\nEmail & Chat Support",
-      isPopular: false,
-    },
-    {
-      name: "Professional Package",
-      price: 28000,
-      discountPrice: 35000,
-      period: "One-Time Setup",
-      badge: "Most Popular",
-      description: "Ideal for growing enterprises with advanced modules and multi-counters.",
-      featuresText:
-        "Multi-User / Multi-Counter Support\nAdvanced Analytics & SMS Gateway\nLifetime System License\n24/7 Dedicated WhatsApp Support",
-      isPopular: true,
-    },
-  ],
-  reviews: [
-    {
-      name: "Dr. Rafiqul Islam",
-      designation: "Managing Director",
-      company: "Al-Madina Pharma Care Ltd.",
-      location: "Dhaka",
-      rating: 5,
-      comment:
-        "PharmaCare Pro completely eliminated our medicine expiry losses. The automatic advance alerts and barcode POS billing have made our checkout 3x faster.",
-      tag: "Healthcare & Pharmacy",
-    },
-    {
-      name: "Tanvir Ahmed",
-      designation: "Founder & Owner",
-      company: "The Smokehouse Grill & Cafe",
-      location: "Gulshan",
-      rating: 5,
-      comment:
-        "The kitchen order token (KOT) and table occupancy system transformed our dining service. Zero order mistakes and fast billing.",
-      tag: "SaaS & ERP",
-    },
-  ],
-};
 
 export default function AdminProductsPage() {
   const [products, setProducts] = useState<any[]>([]);
@@ -301,78 +232,40 @@ export default function AdminProductsPage() {
     setForm((prev) => ({ ...prev, thumbnail: imgUrl }));
   };
 
-  // Reviews management helpers
-  const addReview = () => {
-    setForm((prev) => ({
-      ...prev,
-      reviews: [
-        ...prev.reviews,
-        {
-          name: "New Client",
-          designation: "Managing Director",
-          company: "Enterprise Company Ltd.",
-          location: "Dhaka",
-          rating: 5,
-          comment: "Client feedback highlighting key benefits, speed, and business ROI...",
-          tag: form.category !== "Custom" ? form.category : "Verified Deployment",
-        },
-      ],
-    }));
-  };
+  // Reviews & Pricing plan helpers
+  const addReview = () => setForm((prev) => ({
+    ...prev,
+    reviews: [...prev.reviews, {
+      name: "New Client", designation: "Managing Director", company: "Enterprise Company Ltd.",
+      location: "Dhaka", rating: 5, comment: "Client feedback highlighting key benefits, speed, and business ROI...",
+      tag: form.category !== "Custom" ? form.category : "Verified Deployment",
+    }]
+  }));
+  const updateReview = (index: number, field: keyof ProductReviewForm, value: any) => setForm((prev) => {
+    const updated = [...prev.reviews];
+    updated[index] = { ...updated[index], [field]: value };
+    return { ...prev, reviews: updated };
+  });
+  const removeReview = (index: number) => setForm((prev) => ({
+    ...prev, reviews: prev.reviews.filter((_, idx) => idx !== index)
+  }));
 
-  const updateReview = (index: number, field: keyof ProductReviewForm, value: any) => {
-    setForm((prev) => {
-      const updated = [...prev.reviews];
-      updated[index] = { ...updated[index], [field]: value };
-      return { ...prev, reviews: updated };
-    });
-  };
-
-  const removeReview = (index: number) => {
-    setForm((prev) => ({
-      ...prev,
-      reviews: prev.reviews.filter((_, idx) => idx !== index),
-    }));
-  };
-
-  // Pricing plans helpers
-  const addPricingPlan = () => {
-    setForm((prev) => ({
-      ...prev,
-      pricingPlans: [
-        ...prev.pricingPlans,
-        {
-          name: "New Tier Plan",
-          price: 20000,
-          discountPrice: 25000,
-          period: "One-Time Setup",
-          badge: "",
-          description: "Plan description & target audience",
-          featuresText: "Core Feature 1\nCore Feature 2\nDedicated Support",
-          isPopular: false,
-        },
-      ],
-    }));
-  };
-
-  const updatePricingPlan = (
-    index: number,
-    field: keyof PricingPlanForm,
-    value: any
-  ) => {
-    setForm((prev) => {
-      const updated = [...prev.pricingPlans];
-      updated[index] = { ...updated[index], [field]: value };
-      return { ...prev, pricingPlans: updated };
-    });
-  };
-
-  const removePricingPlan = (index: number) => {
-    setForm((prev) => ({
-      ...prev,
-      pricingPlans: prev.pricingPlans.filter((_, idx) => idx !== index),
-    }));
-  };
+  const addPricingPlan = () => setForm((prev) => ({
+    ...prev,
+    pricingPlans: [...prev.pricingPlans, {
+      name: "New Tier Plan", price: 20000, discountPrice: 25000, period: "One-Time Setup",
+      badge: "", description: "Plan description & target audience",
+      featuresText: "Core Feature 1\nCore Feature 2\nDedicated Support", isPopular: false,
+    }]
+  }));
+  const updatePricingPlan = (index: number, field: keyof PricingPlanForm, value: any) => setForm((prev) => {
+    const updated = [...prev.pricingPlans];
+    updated[index] = { ...updated[index], [field]: value };
+    return { ...prev, pricingPlans: updated };
+  });
+  const removePricingPlan = (index: number) => setForm((prev) => ({
+    ...prev, pricingPlans: prev.pricingPlans.filter((_, idx) => idx !== index)
+  }));
 
   // Save product
   const handleSaveProduct = async (e: React.FormEvent) => {
@@ -549,17 +442,17 @@ export default function AdminProductsPage() {
   return (
     <div className="space-y-6">
       {/* Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-gray-800">
         <div>
           <div className="flex items-center gap-2">
-            <h1 className="text-xl sm:text-2xl font-extrabold text-white">
+            <h1 className="text-xl sm:text-2xl font-extrabold text-slate-900 dark:text-white">
               Finished Products & SaaS Systems
             </h1>
-            <span className="text-xs px-2.5 py-0.5 rounded-full bg-blue-900/30 text-[#3368B2] border border-blue-800/40 font-bold">
+            <span className="text-xs px-2.5 py-0.5 rounded-[4px] bg-blue-50 text-[#0167D6] border border-blue-200 dark:bg-blue-900/30 dark:text-[#3368B2] dark:border-blue-800/40 font-bold">
               {products.length} Items
             </span>
           </div>
-          <p className="text-xs sm:text-sm text-gray-400 mt-1">
+          <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400 mt-1">
             Showcase, sell, and configure finished software products with multiple
             screenshots, front videos, rich text descriptions, and editable
             pricing plans.
@@ -568,7 +461,7 @@ export default function AdminProductsPage() {
 
         <button
           onClick={openCreate}
-          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-[#0167D6] text-white text-xs font-bold transition shadow-lg shadow-blue-900/30"
+          className="inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold transition shadow-md shadow-blue-500/20 cursor-pointer"
         >
           <Plus size={16} />
           <span>Add New Product</span>
@@ -576,11 +469,11 @@ export default function AdminProductsPage() {
       </div>
 
       {/* Filter and Search Bar */}
-      <div className="bg-[#15171C] border border-gray-800 rounded-xl p-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-sm">
+      <div className="bg-white dark:bg-[#15171C] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 flex flex-col md:flex-row items-center justify-between gap-3 shadow-xs">
         <div className="relative w-full md:w-80">
           <Search
             size={16}
-            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-gray-500"
+            className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500"
           />
           <input
             type="text"
@@ -590,7 +483,7 @@ export default function AdminProductsPage() {
               setSearch(e.target.value);
               setCurrentPage(1);
             }}
-            className="w-full pl-9 pr-3 py-2 bg-[#0E0F12] border border-gray-800 rounded-[4px] text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+            className="w-full pl-9 pr-3 py-2 bg-slate-50 dark:bg-[#0E0F12] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
           />
         </div>
 
@@ -602,10 +495,10 @@ export default function AdminProductsPage() {
                 setSelectedCategory(cat);
                 setCurrentPage(1);
               }}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-[4px] transition ${
+              className={`text-xs font-semibold px-3 py-1.5 rounded-[4px] transition cursor-pointer ${
                 selectedCategory === cat
-                  ? "bg-[#3368B2] text-white"
-                  : "bg-[#0E0F12] text-gray-400 hover:text-white border border-gray-800"
+                  ? "bg-[#0167D6] text-white text-white-always shadow-xs"
+                  : "bg-slate-100 dark:bg-[#0E0F12] text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-800 border border-slate-200 dark:border-gray-800"
               }`}
             >
               {cat}
@@ -617,14 +510,14 @@ export default function AdminProductsPage() {
       {/* Products Table */}
       {loading ? (
         <div className="py-24 text-center">
-          <Loader2 className="w-8 h-8 text-[#3368B2] animate-spin mx-auto mb-2" />
-          <p className="text-xs text-gray-400">Loading products catalog...</p>
+          <Loader2 className="w-8 h-8 text-[#0167D6] dark:text-[#3368B2] animate-spin mx-auto mb-2" />
+          <p className="text-xs text-slate-500 dark:text-gray-400">Loading products catalog...</p>
         </div>
       ) : filtered.length === 0 ? (
-        <div className="py-20 text-center bg-[#15171C] rounded-xl border border-gray-800">
-          <Package className="w-12 h-12 text-gray-600 mx-auto mb-3" />
-          <h3 className="text-sm font-bold text-gray-300">No products found</h3>
-          <p className="text-xs text-gray-500 mt-1 max-w-sm mx-auto">
+        <div className="py-20 text-center bg-white dark:bg-[#15171C] rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-xs">
+          <Package className="w-12 h-12 text-slate-400 dark:text-gray-600 mx-auto mb-3" />
+          <h3 className="text-sm font-bold text-slate-900 dark:text-gray-300">No products found</h3>
+          <p className="text-xs text-slate-500 dark:text-gray-500 mt-1 max-w-sm mx-auto">
             {search
               ? "No products matched your search query."
               : "You haven't added any products yet. Click 'Add New Product' to get started."}

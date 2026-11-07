@@ -55,7 +55,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
   };
 
   return (
-    <aside className="w-64 bg-[#111216] border-r border-gray-800/80 flex flex-col h-screen shrink-0">
+    <aside className="w-64 bg-[#111216] border-r border-gray-800/80 flex flex-col h-screen shrink-0 transition-colors duration-200">
       {/* Brand Header */}
       <div className="p-5 border-b border-gray-800/80 flex items-center justify-between">
         <Link href="/dashboard" className="flex items-center gap-2">
@@ -102,7 +102,7 @@ export default function Sidebar({ onClose }: SidebarProps) {
 
       {/* User profile footer */}
       <div className="p-3 border-t border-gray-800/80 bg-[#0E0F12]">
-        <div className="flex items-center justify-between p-2 rounded-[4px] bg-white/5">
+        <div className="flex items-center justify-between p-2 rounded-[4px] bg-white/5 border border-white/5">
           <div className="flex items-center gap-2.5 overflow-hidden">
             <div className="w-8 h-8 rounded-[4px] bg-[#3368B2] text-white flex items-center justify-center font-bold text-xs shrink-0">
               A

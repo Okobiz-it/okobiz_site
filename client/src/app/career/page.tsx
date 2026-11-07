@@ -75,7 +75,7 @@ export default function CareerPage() {
   };
 
   return (
-    <div className="min-h-screen bg-[#000000] text-gray-200 selection:bg-[#3368B2] selection:text-white">
+    <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#000000] text-slate-800 dark:text-gray-200 selection:bg-[#3368B2] selection:text-white">
       {/* 1. Hero */}
       <CareerHero
         jobCount={jobs.length}

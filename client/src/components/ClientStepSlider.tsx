@@ -14,17 +14,23 @@ export default function ClientStepSlider() {
     });
   }, []);
 
-  // Duplicate clients array to enable seamless infinite scroll
-  const duplicatedClients = [...clients, ...clients];
+  // Ensure enough client logos to smoothly loop on any screen width without any gap
+  const minRequiredClients = 10;
+  const repeatMultiplier = clients.length > 0 ? Math.max(2, Math.ceil(minRequiredClients / clients.length)) : 0;
+  const baseClients = Array.from({ length: repeatMultiplier }).flatMap(() => clients);
+  const duplicatedClients = [...baseClients, ...baseClients];
 
   return (
     <div className="relative w-full max-w-6xl mx-auto overflow-hidden py-6 select-none group">
       {/* Subtle edge fade overlays for premium look */}
-      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 z-20 pointer-events-none bg-gradient-to-r from-[#131417] to-transparent" />
-      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 z-20 pointer-events-none bg-gradient-to-l from-[#131417] to-transparent" />
+      <div className="absolute left-0 top-0 bottom-0 w-16 sm:w-24 z-20 pointer-events-none bg-gradient-to-r dark:from-[#131417] from-white to-transparent" />
+      <div className="absolute right-0 top-0 bottom-0 w-16 sm:w-24 z-20 pointer-events-none bg-gradient-to-l dark:from-[#131417] from-white to-transparent" />
 
       {/* Marquee track: glides smoothly, freezes immediately on hover */}
-      <div className="flex w-max items-center animate-client-track group-hover:[animation-play-state:paused]">
+      <div
+        className="flex w-max items-center animate-client-track group-hover:[animation-play-state:paused]"
+        style={{ animationDuration: `${Math.max(30, baseClients.length * 3.5)}s` }}
+      >
         {duplicatedClients.map((client, idx) => (
           <div
             key={`${client.name}-${idx}`}

@@ -14,19 +14,19 @@ export default function PreviewModal({ isOpen, onClose, url, title }: PreviewMod
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/85 backdrop-blur-md">
-      <div className="relative w-full h-[90vh] max-w-6xl bg-[#141416] border border-gray-700 rounded-xl overflow-hidden flex flex-col shadow-2xl">
+    <div className="fixed inset-0 z-50 flex items-center justify-center p-2 sm:p-4 bg-black/80 backdrop-blur-md">
+      <div className="relative w-full h-[90vh] max-w-6xl bg-white dark:bg-[#141416] border border-slate-200 dark:border-gray-700 rounded-[4px] overflow-hidden flex flex-col shadow-2xl">
         {/* Header */}
-        <div className="flex items-center justify-between px-4 py-3 bg-[#1A1A1C] border-b border-gray-700">
+        <div className="flex items-center justify-between px-4 py-3 bg-slate-50 dark:bg-[#1A1A1C] border-b border-slate-200 dark:border-gray-700">
           <div className="flex items-center space-x-3">
-            <h3 className="text-white font-semibold text-sm sm:text-base truncate max-w-md">
+            <h3 className="text-slate-900 dark:text-white font-bold text-sm sm:text-base truncate max-w-md">
               {title}
             </h3>
             <a
               href={url}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-[#0167D6] hover:underline text-xs flex items-center gap-1"
+              className="text-[#0167D6] hover:underline text-xs font-semibold flex items-center gap-1"
             >
               Open in new tab <ExternalLink className="w-3 h-3" />
             </a>
@@ -34,7 +34,7 @@ export default function PreviewModal({ isOpen, onClose, url, title }: PreviewMod
 
           <button
             onClick={onClose}
-            className="p-1 rounded-md text-gray-400 hover:text-white hover:bg-gray-800 transition-colors"
+            className="p-1 rounded-[4px] text-slate-500 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-800 transition-colors"
           >
             <X className="w-5 h-5" />
           </button>

@@ -194,7 +194,8 @@ export default function BlogsPage() {
                   <div className="flex items-center gap-1.5">
                     <button
                       onClick={() => openEdit(blog)}
-                      className="p-1.5 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition"
+                      className="p-1.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white border border-slate-200 dark:border-transparent transition"
+                      title="Edit Post"
                     >
                       <Edit2 size={13} />
                     </button>
@@ -214,21 +215,21 @@ export default function BlogsPage() {
 
       {/* Blog Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#131417] border border-gray-800 rounded-[4px] w-full max-w-4xl p-6 relative max-h-[92vh] overflow-y-auto">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] w-full max-w-4xl p-6 relative max-h-[92vh] overflow-y-auto shadow-2xl">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white"
             >
               <X size={20} />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
               {editItem ? "Edit Blog Article" : "Write New Blog Article"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Article Title *</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Article Title *</label>
                 <input
                   type="text"
                   required
@@ -242,30 +243,30 @@ export default function BlogsPage() {
                     }));
                   }}
                   placeholder="e.g. Modern UI/UX Trends for Web Applications"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5 flex items-center justify-between">
-                  <span className="text-[11px] text-[#3368B2] font-mono">/blogs/{form.slug || "..."}</span>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5 flex items-center justify-between">
+                  <span className="text-[11px] text-[#0167D6] font-mono">/blogs/{form.slug || "..."}</span>
                 </label>
                 <input
                   type="text"
                   value={form.slug}
                   onChange={e => setForm({ ...form, slug: createSlug(e.target.value) })}
                   placeholder="modern-ui-ux-trends-for-web-applications"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white font-mono placeholder-gray-600 focus:outline-none focus:border-[#3368B2]"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white font-mono placeholder-slate-400 dark:placeholder-gray-600 focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">Category</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Category</label>
                   <select
                     value={form.category}
                     onChange={e => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                   >
                     <option value="Web Development">Web Development</option>
                     <option value="Digital Marketing">Digital Marketing</option>
@@ -275,21 +276,21 @@ export default function BlogsPage() {
                   </select>
                 </div>
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1.5">Author Name</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Author Name</label>
                   <input
                     type="text"
                     value={form.author}
                     onChange={e => setForm({ ...form, author: e.target.value })}
-                    className="w-full bg-[#181A1F] border border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
                   />
                 </div>
               </div>
 
               {/* Cover Image Upload (No URL input field) */}
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Cover Image</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Cover Image</label>
                 <div className="flex items-center gap-2 mb-3">
-                  <label className="cursor-pointer px-4 py-2 bg-[#3368B2] hover:bg-blue-600 text-white rounded-[4px] text-xs font-semibold inline-flex items-center justify-center gap-2 transition shadow-sm">
+                  <label className="cursor-pointer px-4 py-2 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold inline-flex items-center justify-center gap-2 transition shadow-sm">
                     {uploading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
@@ -302,14 +303,14 @@ export default function BlogsPage() {
                     <button
                       type="button"
                       onClick={() => setForm(f => ({ ...f, photo: "" }))}
-                      className="px-3 py-2 bg-white/5 hover:bg-white/10 text-gray-400 hover:text-white rounded-[4px] text-xs transition"
+                      className="px-3 py-2 bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-400 dark:hover:text-white dark:border-transparent rounded-[4px] text-xs transition"
                     >
                       Remove
                     </button>
                   )}
                 </div>
                 {form.photo && (
-                  <div className="h-44 w-full rounded-[4px] overflow-hidden bg-black/50 border border-gray-800 relative">
+                  <div className="h-44 w-full rounded-[4px] overflow-hidden bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-gray-800 relative">
                     <img src={form.photo} alt="Preview" className="w-full h-full object-cover" />
                   </div>
                 )}
@@ -317,7 +318,7 @@ export default function BlogsPage() {
 
               {/* Large Article Content with RichTextEditor */}
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1.5">Article Content</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Article Content</label>
                 <RichTextEditor
                   value={form.content}
                   onChange={val => setForm({ ...form, content: val })}
@@ -332,24 +333,24 @@ export default function BlogsPage() {
                   id="published"
                   checked={form.isPublished}
                   onChange={e => setForm({ ...form, isPublished: e.target.checked })}
-                  className="w-4 h-4 rounded text-[#3368B2] bg-gray-800 border-gray-700"
+                  className="w-4 h-4 rounded text-[#0167D6] border-slate-300 focus:ring-0"
                 />
-                <label htmlFor="published" className="text-xs font-semibold text-gray-300 cursor-pointer">
+                <label htmlFor="published" className="text-xs font-semibold text-slate-700 dark:text-gray-300 cursor-pointer">
                   Publish article live
                 </label>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-800">
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-gray-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-[4px] bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold transition"
+                  className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold transition shadow-lg shadow-blue-900/30"
+                  className="px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold transition shadow-lg shadow-blue-500/20"
                 >
                   {editItem ? "Save Changes" : "Publish Article"}
                 </button>

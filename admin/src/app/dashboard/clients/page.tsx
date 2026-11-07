@@ -172,17 +172,17 @@ export default function ClientsPage() {
                 )}
               </div>
 
-              <div className="flex items-center gap-2 mt-4 pt-3 border-t border-gray-800/80 w-full justify-center">
+              <div className="flex items-center gap-2 mt-4 pt-3 border-t border-slate-100 dark:border-gray-800/80 w-full justify-center">
                 <button
                   onClick={() => openEdit(client)}
-                  className="p-1.5 rounded-lg bg-white/5 hover:bg-white/10 text-gray-300 hover:text-white transition"
+                  className="p-1.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white border border-slate-200 dark:border-transparent transition"
                   title="Edit"
                 >
                   <Edit2 size={13} />
                 </button>
                 <button
                   onClick={() => handleDelete(client._id)}
-                  className="p-1.5 rounded-lg bg-red-500/10 hover:bg-red-500/20 text-red-400 transition"
+                  className="p-1.5 rounded-[4px] bg-red-50 hover:bg-red-100 dark:bg-red-500/10 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 transition"
                   title="Delete"
                 >
                   <Trash2 size={13} />
@@ -195,33 +195,33 @@ export default function ClientsPage() {
 
       {/* Client Partner Modal */}
       {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/70 backdrop-blur-sm">
-          <div className="bg-[#131417] border border-gray-800 rounded-2xl w-full max-w-md p-6 relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-sm">
+          <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] w-full max-w-md p-6 relative shadow-2xl">
             <button
               onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-gray-400 hover:text-white"
+              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white"
             >
               <X size={20} />
             </button>
-            <h2 className="text-lg font-bold text-white mb-4">
+            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-4">
               {editItem ? "Edit Client Partner" : "Add Client Partner"}
             </h2>
 
             <form onSubmit={handleSubmit} className="space-y-4">
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Partner / Brand Name</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Partner / Brand Name</label>
                 <input
                   type="text"
                   required
                   value={form.name}
                   onChange={e => setForm({ ...form, name: e.target.value })}
                   placeholder="e.g. Nitol Niloy"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2.5 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Logo Image</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Logo Image</label>
                 <div className="flex gap-2 mb-2">
                   <input
                     type="text"
@@ -229,9 +229,9 @@ export default function ClientsPage() {
                     value={form.image}
                     onChange={e => setForm({ ...form, image: e.target.value })}
                     placeholder="/assets/logo.png or uploaded URL"
-                    className="flex-1 bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                    className="flex-1 bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                   />
-                  <label className="cursor-pointer px-3 py-2 bg-white/10 hover:bg-white/15 text-white rounded-xl text-xs font-semibold flex items-center justify-center gap-1.5 shrink-0 min-w-[80px] h-[34px]">
+                  <label className="cursor-pointer px-3.5 py-2 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold flex items-center justify-center gap-1.5 shrink-0 min-w-[85px] h-[34px] shadow-sm transition">
                     {uploading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
@@ -244,31 +244,31 @@ export default function ClientsPage() {
                   </label>
                 </div>
                 {form.image && (
-                  <div className="w-20 h-20 mx-auto rounded-full bg-white flex items-center justify-center p-3 shadow-inner">
+                  <div className="w-20 h-20 mx-auto rounded-[4px] bg-white border border-slate-200 dark:border-gray-800 flex items-center justify-center p-3 shadow-sm">
                     <img src={form.image} alt="Preview" className="max-h-12 max-w-[60px] object-contain" />
                   </div>
                 )}
               </div>
 
               <div>
-                <label className="block text-xs font-semibold text-gray-300 mb-1">Website URL (Optional)</label>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Website URL (Optional)</label>
                 <input
                   type="url"
                   value={form.websiteLink}
                   onChange={e => setForm({ ...form, websiteLink: e.target.value })}
                   placeholder="https://clientwebsite.com"
-                  className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                 />
               </div>
 
               <div className="grid grid-cols-2 gap-4">
                 <div>
-                  <label className="block text-xs font-semibold text-gray-300 mb-1">Order</label>
+                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Order</label>
                   <input
                     type="number"
                     value={form.order}
                     onChange={e => setForm({ ...form, order: Number(e.target.value) })}
-                    className="w-full bg-[#181A1F] border border-gray-800 rounded-xl px-3.5 py-2 text-xs text-white focus:outline-none focus:border-[#3368B2]"
+                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                   />
                 </div>
                 <div className="flex items-center gap-2 pt-6">
@@ -277,25 +277,25 @@ export default function ClientsPage() {
                     id="clientActive"
                     checked={form.isActive}
                     onChange={e => setForm({ ...form, isActive: e.target.checked })}
-                    className="w-4 h-4 rounded text-[#3368B2] focus:ring-0 bg-gray-800 border-gray-700"
+                    className="w-4 h-4 rounded text-[#0167D6] focus:ring-0 border-slate-300"
                   />
-                  <label htmlFor="clientActive" className="text-xs font-semibold text-gray-300 cursor-pointer">
+                  <label htmlFor="clientActive" className="text-xs font-semibold text-slate-700 dark:text-gray-300 cursor-pointer">
                     Active Partner
                   </label>
                 </div>
               </div>
 
-              <div className="flex justify-end gap-2 pt-4 border-t border-gray-800">
+              <div className="flex justify-end gap-2 pt-4 border-t border-slate-200 dark:border-gray-800">
                 <button
                   type="button"
                   onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-xl bg-white/5 hover:bg-white/10 text-gray-300 text-xs font-semibold"
+                  className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 text-slate-700 border border-slate-300 dark:bg-white/5 dark:hover:bg-white/10 dark:text-gray-300 dark:border-transparent text-xs font-semibold transition"
                 >
                   Cancel
                 </button>
                 <button
                   type="submit"
-                  className="px-5 py-2 rounded-xl bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold"
+                  className="px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition"
                 >
                   {editItem ? "Save Changes" : "Add Partner"}
                 </button>

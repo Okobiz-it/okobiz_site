@@ -102,17 +102,17 @@ export default function CareerDashboardPage() {
   return (
     <div className="p-4 sm:p-6 lg:p-8 space-y-6 max-w-7xl mx-auto text-gray-200">
       {/* Page Header */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-gray-800">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-gray-800">
         <div>
           <div className="flex items-center gap-2">
-            <div className="w-8 h-8 rounded-[4px] bg-[#3368B2]/20 text-[#3368B2] flex items-center justify-center">
+            <div className="w-8 h-8 rounded-[4px] bg-blue-100 dark:bg-[#3368B2]/20 text-[#0167D6] dark:text-[#3368B2] flex items-center justify-center">
               <GraduationCap size={18} />
             </div>
-            <h1 className="text-xl sm:text-2xl font-black text-white tracking-tight">
+            <h1 className="text-xl sm:text-2xl font-black text-slate-900 dark:text-white tracking-tight">
               Career &amp; Talent Hub
             </h1>
           </div>
-          <p className="text-xs text-gray-400 mt-1">
+          <p className="text-xs text-slate-600 dark:text-gray-400 mt-1">
             Manage job postings, review applicant resumes, edit rich-text email templates, and reply via SMTP.
           </p>
         </div>
@@ -121,7 +121,7 @@ export default function CareerDashboardPage() {
           <Link
             href="/career"
             target="_blank"
-            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-gray-400 hover:text-white transition px-3 py-2 rounded-[4px] bg-[#141518] border border-gray-800"
+            className="hidden sm:inline-flex items-center gap-1.5 text-xs text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white transition px-3 py-2 rounded-[4px] bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800 shadow-sm"
           >
             <span>Live Site</span>
             <ExternalLink size={12} />
@@ -130,7 +130,7 @@ export default function CareerDashboardPage() {
           {activeTab === "templates" ? (
             <button
               onClick={templatesHook.handleOpenCreateTemplate}
-              className="flex items-center gap-2 bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-[4px] shadow-lg shadow-blue-900/30 transition cursor-pointer"
+              className="flex items-center gap-2 bg-[#0167D6] hover:bg-blue-700 text-white text-white-always text-xs font-bold px-4 py-2.5 rounded-[4px] shadow-md shadow-blue-500/20 transition cursor-pointer"
             >
               <Plus size={16} />
               <span>New Email Template</span>
@@ -138,7 +138,7 @@ export default function CareerDashboardPage() {
           ) : (
             <button
               onClick={jobsHook.handleOpenCreateJob}
-              className="flex items-center gap-2 bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold px-4 py-2.5 rounded-[4px] shadow-lg shadow-blue-900/30 transition cursor-pointer"
+              className="flex items-center gap-2 bg-[#0167D6] hover:bg-blue-700 text-white text-white-always text-xs font-bold px-4 py-2.5 rounded-[4px] shadow-md shadow-blue-500/20 transition cursor-pointer"
             >
               <Plus size={16} />
               <span>Post New Job Opening</span>
@@ -155,7 +155,7 @@ export default function CareerDashboardPage() {
       />
 
       {/* Main Navigation Tabs */}
-      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-gray-800 pb-3 gap-3">
+      <div className="flex flex-col sm:flex-row sm:items-center justify-between border-b border-slate-200 dark:border-gray-800 pb-3 gap-3">
         <div className="flex flex-wrap items-center gap-2">
           <button
             onClick={() => {
@@ -164,8 +164,8 @@ export default function CareerDashboardPage() {
             }}
             className={`flex items-center gap-2 px-4 py-2 rounded-[4px] text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
               activeTab === "jobs"
-                ? "bg-[#3368B2] text-white shadow-md shadow-blue-900/30"
-                : "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
+                ? "bg-[#0167D6] text-white text-white-always shadow-md shadow-blue-500/20"
+                : "bg-slate-100 dark:bg-gray-800/60 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 border border-slate-200 dark:border-transparent"
             }`}
           >
             <Briefcase size={14} />
@@ -179,8 +179,8 @@ export default function CareerDashboardPage() {
             }}
             className={`flex items-center gap-2 px-4 py-2 rounded-[4px] text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
               activeTab === "applications"
-                ? "bg-[#3368B2] text-white shadow-md shadow-blue-900/30"
-                : "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
+                ? "bg-[#0167D6] text-white text-white-always shadow-md shadow-blue-500/20"
+                : "bg-slate-100 dark:bg-gray-800/60 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 border border-slate-200 dark:border-transparent"
             }`}
           >
             <Users size={14} />
@@ -194,8 +194,8 @@ export default function CareerDashboardPage() {
             }}
             className={`flex items-center gap-2 px-4 py-2 rounded-[4px] text-xs font-bold uppercase tracking-wider transition cursor-pointer ${
               activeTab === "templates"
-                ? "bg-[#3368B2] text-white shadow-md shadow-blue-900/30"
-                : "bg-gray-800/60 text-gray-400 hover:text-white hover:bg-gray-800"
+                ? "bg-[#0167D6] text-white text-white-always shadow-md shadow-blue-500/20"
+                : "bg-slate-100 dark:bg-gray-800/60 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 border border-slate-200 dark:border-transparent"
             }`}
           >
             <Layers size={14} />
@@ -205,7 +205,7 @@ export default function CareerDashboardPage() {
 
         {/* Global Search Bar */}
         <div className="relative w-full sm:w-64">
-          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-gray-500" />
+          <Search className="w-3.5 h-3.5 absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500" />
           <input
             type="text"
             placeholder={
@@ -217,7 +217,7 @@ export default function CareerDashboardPage() {
             }
             value={searchQuery}
             onChange={e => setSearchQuery(e.target.value)}
-            className="w-full pl-9 pr-3 py-2 bg-[#141518] border border-gray-800 rounded-[4px] text-xs text-white placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+            className="w-full pl-9 pr-3 py-2 bg-white dark:bg-[#141518] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
           />
         </div>
       </div>

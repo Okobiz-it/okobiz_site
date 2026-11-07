@@ -5,6 +5,29 @@
 :root {
   --background: #0B0C0E;
   --foreground: #F3F4F6;
+  --bg-canvas: #0B0C0E;
+  --bg-card: #131417;
+  --bg-elevated: #111216;
+  --bg-subtle: #0E0F12;
+  --text-main: #FFFFFF;
+  --text-sub: #D1D5DB;
+  --text-dim: #9CA3AF;
+  --border-line: #1F2937;
+  --border-card: #202227;
+}
+
+html.light {
+  --background: #F4F6F9;
+  --foreground: #0F172A;
+  --bg-canvas: #F4F6F9;
+  --bg-card: #FFFFFF;
+  --bg-elevated: #FFFFFF;
+  --bg-subtle: #EDF2F7;
+  --text-main: #0F172A;
+  --text-sub: #334155;
+  --text-dim: #64748B;
+  --border-line: #E2E8F0;
+  --border-card: #E2E8F0;
 }
 
 body {
@@ -12,6 +35,7 @@ body {
   background: var(--background);
   font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
   overflow-x: hidden;
+  transition: background-color 0.25s ease, color 0.25s ease;
 }
 
 /* Custom scrollbars */
@@ -30,10 +54,27 @@ body {
   background: #3368B2;
 }
 
+html.light ::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+html.light ::-webkit-scrollbar-thumb {
+  background: #CBD5E1;
+  border-radius: 3px;
+}
+html.light ::-webkit-scrollbar-thumb:hover {
+  background: #94A3B8;
+}
+
 .glass-panel {
   background: rgba(19, 20, 23, 0.85);
   backdrop-filter: blur(12px);
   border: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+html.light .glass-panel {
+  background: rgba(255, 255, 255, 0.95) !important;
+  border: 1px solid #E2E8F0 !important;
+  box-shadow: 0 10px 25px -5px rgba(15, 23, 42, 0.08) !important;
 }
 
 /* Ensure all buttons, inputs, selects, textareas, and components in the admin panel get 4px border radius */
@@ -57,31 +98,595 @@ textarea,
   border-radius: 4px !important;
 }
 
-/* WYSIWYG Editor In-Place Typography Styles (MS Word style) */
+/* =========================================================
+   LIGHT MODE: HIGH-FIDELITY ARCHITECTURAL SYSTEM FOR ADMIN
+   Titanium porcelain canvas, pure white cards, & executive anchors
+   ========================================================= */
+
+/* 1. Canvas & Layout Backgrounds */
+html.light body,
+html.light .bg-\[\#0B0C0E\],
+html.light .bg-black {
+  background-color: #F4F6F9 !important;
+  color: #0F172A !important;
+}
+
+/* 2. Elevated Admin Surfaces, Cards, & Sidebar */
+html.light aside,
+html.light header,
+html.light .bg-\[\#111216\],
+html.light .bg-\[\#121316\],
+html.light .bg-\[\#131417\],
+html.light .bg-\[\#141518\],
+html.light .bg-\[\#141519\],
+html.light .bg-\[\#15161A\],
+html.light .bg-\[\#15171C\],
+html.light .bg-\[\#17191E\],
+html.light .bg-\[\#181A1D\],
+html.light .bg-\[\#181A1E\],
+html.light .bg-\[\#181A1F\],
+html.light .bg-\[\#1C2029\],
+html.light [class*="bg-\[\#181A1F\]"],
+html.light [class*="bg-\[\#181A1E\]"],
+html.light [class*="bg-\[\#131417\]"],
+html.light [class*="bg-\[\#141518\]"],
+html.light [class*="bg-\[\#141519\]"],
+html.light [class*="bg-\[\#121316\]"] {
+  background-color: #FFFFFF !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 1px 3px rgba(15, 23, 42, 0.04), 0 10px 15px -3px rgba(15, 23, 42, 0.02) !important;
+}
+
+/* Inset containers, dark bars, and search backgrounds */
+html.light .bg-\[\#0E0F12\],
+html.light .bg-\[\#111215\] {
+  background-color: #F8FAFC !important;
+  border-color: #E2E8F0 !important;
+}
+
+/* Slug pills, code badges, and inline tags */
+html.light .bg-\[\#0d0e11\],
+html.light span.bg-\[\#0d0e11\],
+html.light code.bg-\[\#0d0e11\] {
+  background-color: #F1F5F9 !important;
+  border-color: #CBD5E1 !important;
+  color: #334155 !important;
+}
+
+/* Secondary Button / Pill Backgrounds */
+html.light .bg-white\/5,
+html.light .bg-white\/10 {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-color: #CBD5E1 !important;
+}
+
+html.light .bg-white\/5:hover,
+html.light .bg-white\/10:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  border-color: #CBD5E1 !important;
+}
+
+/* Hairline Borders */
+html.light .border-gray-800,
+html.light .border-gray-800\/80,
+html.light .border-gray-800\/60,
+html.light .border-gray-800\/40,
+html.light .border-gray-700,
+html.light .border-gray-700\/80,
+html.light .border-white\/5,
+html.light .border-white\/10 {
+  border-color: #E2E8F0 !important;
+}
+
+/* =========================================================
+   PROTECTED EXECUTIVE DASHBOARD WELCOME BANNER
+   Must stay prestigious, authoritative, and radiant!
+   ========================================================= */
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\],
+html.light .admin-welcome-banner {
+  background: linear-gradient(135deg, #132D54 0%, #1A3E74 50%, #2659A4 100%) !important;
+  border-color: rgba(51, 104, 178, 0.45) !important;
+  box-shadow: 0 8px 25px -5px rgba(19, 45, 84, 0.22) !important;
+}
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] h1,
+html.light .admin-welcome-banner h1,
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] .text-white,
+html.light .admin-welcome-banner .text-white {
+  color: #FFFFFF !important;
+}
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] p,
+html.light .admin-welcome-banner p,
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] .text-gray-400,
+html.light .admin-welcome-banner .text-gray-400 {
+  color: #E2E8F0 !important;
+}
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] .bg-blue-900\/30,
+html.light .admin-welcome-banner .bg-blue-900\/30 {
+  background-color: rgba(255, 255, 255, 0.2) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.3) !important;
+}
+html.light .rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] .bg-white\/10,
+html.light .admin-welcome-banner .bg-white\/10 {
+  background-color: rgba(255, 255, 255, 0.15) !important;
+  color: #FFFFFF !important;
+  border-color: rgba(255, 255, 255, 0.25) !important;
+}
+
+/* =========================================================
+   ADMIN COMPONENT SPECIFIC COLOR VARIATIONS
+   ========================================================= */
+
+/* Filter Pills & Department Buttons */
+html.light button.bg-\[\#141518\],
+html.light button.bg-gray-800 {
+  background-color: #F1F5F9 !important;
+  border: 1px solid #CBD5E1 !important;
+  color: #334155 !important;
+}
+html.light button.bg-\[\#141518\]:hover,
+html.light button.bg-gray-800:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+/* Soft Tint Status Badges in Light Mode */
+html.light .bg-\[\#3368B2\]\/20,
+html.light .bg-\[\#3368B2\]\/15,
+html.light .bg-blue-900\/20,
+html.light .bg-blue-900\/30 {
+  background-color: #EFF6FF !important;
+  color: #1D4ED8 !important;
+  border-color: #BFDBFE !important;
+}
+
+html.light .bg-emerald-500\/20,
+html.light .bg-emerald-500\/15 {
+  background-color: #ECFDF5 !important;
+  color: #047857 !important;
+  border-color: #A7F3D0 !important;
+}
+
+html.light .bg-rose-500\/20 {
+  background-color: #FFF1F2 !important;
+  color: #E11D48 !important;
+  border-color: #FECDD3 !important;
+}
+
+html.light .bg-amber-500\/20 {
+  background-color: #FFFBEB !important;
+  color: #B45309 !important;
+  border-color: #FDE68A !important;
+}
+
+/* Typography Hierarchy in Light Mode */
+html.light h1:not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] h1),
+html.light h2:not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] h2),
+html.light h3:not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] h3),
+html.light h4 {
+  color: #0F172A;
+}
+
+html.light .text-white:not(button):not(button *):not(.btn):not(.btn *):not(.bg-\[\#3368B2\] *):not(.bg-\[\#0167D6\] *):not(.bg-blue-600 *):not(.bg-red-600 *):not(.bg-rose-600 *):not(.bg-emerald-600 *):not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] *):not(.text-white-always) {
+  color: #0F172A;
+}
+
+html.light .text-gray-100,
+html.light .text-gray-200,
+html.light .text-gray-300:not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] *) {
+  color: #334155;
+}
+
+html.light .text-gray-400:not(.rounded-2xl.bg-gradient-to-r.from-\[\#18263D\] *) {
+  color: #475569;
+}
+
+html.light .text-gray-500 {
+  color: #64748B;
+}
+
+/* Maintain crisp white text on colored action buttons, badges, image overlays, and avatars */
+html.light .bg-\[\#3368B2\],
+html.light .bg-\[\#3368B2\] *,
+html.light .bg-\[\#0167D6\],
+html.light .bg-\[\#0167D6\] *,
+html.light .bg-blue-600,
+html.light .bg-blue-600 *,
+html.light .bg-red-600,
+html.light .bg-red-600 *,
+html.light .bg-rose-600,
+html.light .bg-rose-600 *,
+html.light .bg-emerald-600,
+html.light .bg-emerald-600 *,
+html.light .bg-green-600,
+html.light .bg-green-600 *,
+html.light [class*="bg-emerald-500/80"],
+html.light [class*="bg-emerald-500/80"] *,
+html.light [class*="bg-red-500/80"],
+html.light [class*="bg-red-500/80"] *,
+html.light .text-white-always,
+html.light [style*="color: #FFFFFF"],
+html.light [style*="color:#FFFFFF"] {
+  color: #FFFFFF !important;
+}
+
+/* Modal Tab Contrast in Light Mode: ensure active tabs have prominent brand blue text and soft blue tint */
+html.light button.border-\[\#3368B2\],
+html.light button.border-\[\#0167D6\],
+html.light button[class*="border-\[\#3368B2\]"].text-white,
+html.light button[class*="border-\[\#0167D6\]"].text-white {
+  color: #0167D6 !important;
+  background-color: #EFF6FF !important;
+}
+
+/* Form Labels in Light Mode - Guaranteed Bold High Contrast */
+html.light label:not(.text-white-always):not([class*="bg-"]):not([class*="text-emerald"]):not([class*="text-red"]):not([class*="text-rose"]):not([class*="text-blue"]):not([class*="text-amber"]) {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+/* Inputs, textareas, selects in Light Mode */
+html.light input:not([type="submit"]):not([type="button"]):not([type="checkbox"]):not([type="radio"]):not([type="color"]):not([type="file"]),
+html.light textarea,
+html.light select {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+html.light input::placeholder,
+html.light textarea::placeholder {
+  color: #94A3B8 !important;
+}
+
+html.light input:focus,
+html.light textarea:focus,
+html.light select:focus {
+  border-color: #0167D6 !important;
+  outline: none !important;
+  box-shadow: 0 0 0 2px rgba(1, 103, 214, 0.2) !important;
+}
+
+/* Secondary & Cancel Buttons in Light Mode */
+html.light button.bg-white\/5,
+html.light button.bg-white\/10,
+html.light button[class*="bg-white/5"],
+html.light button[class*="bg-white/10"],
+html.light button.bg-gray-800,
+html.light button.bg-slate-100 {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border: 1px solid #CBD5E1 !important;
+  font-weight: 600 !important;
+}
+
+html.light button.bg-white\/5:hover,
+html.light button.bg-white\/10:hover,
+html.light button[class*="bg-white/5"]:hover,
+html.light button[class*="bg-white/10"]:hover,
+html.light button.bg-gray-800:hover,
+html.light button.bg-slate-100:hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+  border-color: #94A3B8 !important;
+}
+
+html.light button.bg-white\/5:hover *,
+html.light button.bg-white\/10:hover *,
+html.light button[class*="bg-white/5"]:hover *,
+html.light button[class*="bg-white/10"]:hover *,
+html.light button.bg-gray-800:hover *,
+html.light button.bg-slate-100:hover * {
+  color: #0F172A !important;
+}
+
+/* Tables in Light Mode */
+html.light table th {
+  background-color: #F8FAFC !important;
+  color: #475569 !important;
+  border-bottom-color: #E2E8F0 !important;
+}
+
+html.light table td {
+  border-bottom-color: #E2E8F0 !important;
+  color: #1E293B !important;
+}
+
+html.light table tbody tr:hover {
+  background-color: #F8FAFC !important;
+}
+
+/* =========================================================
+   MODALS & DIALOG OVERLAYS IN LIGHT MODE (System-Wide)
+   ========================================================= */
+html.light .fixed.inset-0.bg-black\/60,
+html.light .fixed.inset-0.bg-black\/70,
+html.light .fixed.inset-0.bg-black\/80 {
+  background-color: rgba(15, 23, 42, 0.65) !important;
+}
+
+/* Modal Inner Container / Card */
+html.light .fixed.inset-0 > div,
+html.light .fixed.inset-0 .bg-\[\#131417\],
+html.light .fixed.inset-0 .bg-\[\#141518\],
+html.light .fixed.inset-0 .bg-\[\#141519\],
+html.light .fixed.inset-0 .bg-\[\#111215\],
+html.light .fixed.inset-0 [class*="bg-\[\#131417\]"],
+html.light .fixed.inset-0 [class*="bg-\[\#141518\]"],
+html.light .fixed.inset-0 [class*="bg-\[\#141519\]"] {
+  background-color: #FFFFFF !important;
+  color: #0F172A !important;
+  border-color: #E2E8F0 !important;
+  box-shadow: 0 25px 50px -12px rgba(15, 23, 42, 0.22) !important;
+}
+
+/* Modal Headers & Titles */
+html.light .fixed.inset-0 h1,
+html.light .fixed.inset-0 h2,
+html.light .fixed.inset-0 h3,
+html.light .fixed.inset-0 h4 {
+  color: #0F172A !important;
+}
+
+/* Modal Descriptions & Paragraphs */
+html.light .fixed.inset-0 p:not(.text-white-always):not([class*="text-emerald"]):not([class*="text-red"]):not([class*="text-rose"]):not([class*="text-blue"]) {
+  color: #475569 !important;
+}
+
+html.light .fixed.inset-0 .text-slate-500,
+html.light .fixed.inset-0 .text-gray-400,
+html.light .fixed.inset-0 .text-gray-500 {
+  color: #64748B !important;
+}
+
+/* Modal Close Button */
+html.light .fixed.inset-0 button:has(svg.lucide-x) {
+  color: #64748B !important;
+}
+html.light .fixed.inset-0 button:has(svg.lucide-x):hover {
+  color: #0F172A !important;
+  background-color: #F1F5F9 !important;
+}
+
+/* Modal Tab Bar & Buttons (Tabs only - excluding action buttons, emerald buttons, submit buttons) */
+html.light .fixed.inset-0 > div > div > .flex.border-b button:not(.bg-emerald-600):not(.bg-\[\#0167D6\]):not(.bg-blue-600):not([type="submit"]),
+html.light .fixed.inset-0 .modal-tabs button:not(.bg-emerald-600):not(.bg-\[\#0167D6\]):not(.bg-blue-600):not([type="submit"]) {
+  color: #475569 !important;
+}
+
+html.light .fixed.inset-0 > div > div > .flex.border-b button:not(.bg-emerald-600):not(.bg-\[\#0167D6\]):not(.bg-blue-600):not([type="submit"]):hover,
+html.light .fixed.inset-0 .modal-tabs button:not(.bg-emerald-600):not(.bg-\[\#0167D6\]):not(.bg-blue-600):not([type="submit"]):hover {
+  color: #0F172A !important;
+  background-color: #F8FAFC !important;
+}
+
+html.light .fixed.inset-0 > div > div > .flex.border-b button[class*="border-\[\#"],
+html.light .fixed.inset-0 > div > div > .flex.border-b button[class*="border-blue"],
+html.light .fixed.inset-0 > div > div > .flex.border-b button.border-\[\#0167D6\],
+html.light .fixed.inset-0 > div > div > .flex.border-b button.border-\[\#3368B2\],
+html.light .fixed.inset-0 .modal-tabs button[class*="border-\[\#"],
+html.light .fixed.inset-0 .modal-tabs button[class*="border-blue"],
+html.light .fixed.inset-0 .modal-tabs button.border-\[\#0167D6\],
+html.light .fixed.inset-0 .modal-tabs button.border-\[\#3368B2\] {
+  color: #0167D6 !important;
+  background-color: #EFF6FF !important;
+  border-bottom-color: #0167D6 !important;
+}
+
+/* Modal Checkbox & Radio Labels */
+html.light .fixed.inset-0 label:has(input[type="checkbox"]),
+html.light .fixed.inset-0 label:has(input[type="radio"]),
+html.light .fixed.inset-0 label:has(input[type="checkbox"]) span,
+html.light .fixed.inset-0 label:has(input[type="radio"]) span {
+  color: #1E293B !important;
+  font-weight: 600 !important;
+}
+
+/* Modal Inset Sections & Sub-boxes */
+html.light .fixed.inset-0 div.bg-black\/40,
+html.light .fixed.inset-0 div.bg-black\/50,
+html.light .fixed.inset-0 div.bg-slate-50,
+html.light .fixed.inset-0 div[class*="bg-[#0E0F12]"],
+html.light .fixed.inset-0 div[class*="bg-[#181A1F]"]:not(button),
+html.light .fixed.inset-0 div[class*="bg-[#181A1E]"]:not(button) {
+  background-color: #F8FAFC !important;
+  border-color: #CBD5E1 !important;
+  color: #0F172A !important;
+}
+
+/* Action Buttons inside Modals: Emerald (Add Pricing Plan) */
+html.light button.bg-emerald-600,
+html.light .fixed.inset-0 button.bg-emerald-600 {
+  background-color: #059669 !important;
+  color: #FFFFFF !important;
+  border: 1px solid #047857 !important;
+}
+html.light button.bg-emerald-600:hover,
+html.light .fixed.inset-0 button.bg-emerald-600:hover {
+  background-color: #047857 !important;
+  color: #FFFFFF !important;
+  border-color: #065F46 !important;
+}
+html.light button.bg-emerald-600 *,
+html.light button.bg-emerald-600:hover *,
+html.light .fixed.inset-0 button.bg-emerald-600 *,
+html.light .fixed.inset-0 button.bg-emerald-600:hover * {
+  color: #FFFFFF !important;
+}
+
+/* Primary Action Buttons (Save, Update, Publish) inside Modals */
+html.light .fixed.inset-0 button[type="submit"],
+html.light .fixed.inset-0 button.bg-\[\#0167D6\],
+html.light .fixed.inset-0 button.bg-\[\#3368B2\],
+html.light .fixed.inset-0 button.bg-blue-600,
+html.light .fixed.inset-0 a.bg-\[\#0167D6\],
+html.light .fixed.inset-0 a.bg-\[\#3368B2\] {
+  background-color: #0167D6 !important;
+  color: #FFFFFF !important;
+  font-weight: 700 !important;
+}
+html.light .fixed.inset-0 button[type="submit"]:hover,
+html.light .fixed.inset-0 button.bg-\[\#0167D6\]:hover,
+html.light .fixed.inset-0 button.bg-\[\#3368B2\]:hover,
+html.light .fixed.inset-0 button.bg-blue-600:hover,
+html.light .fixed.inset-0 a.bg-\[\#0167D6\]:hover,
+html.light .fixed.inset-0 a.bg-\[\#3368B2\]:hover {
+  background-color: #0152AC !important;
+  color: #FFFFFF !important;
+}
+html.light .fixed.inset-0 button[type="submit"] *,
+html.light .fixed.inset-0 button.bg-\[\#0167D6\] *,
+html.light .fixed.inset-0 button.bg-\[\#3368B2\] *,
+html.light .fixed.inset-0 a.bg-\[\#0167D6\] *,
+html.light .fixed.inset-0 button[type="submit"]:hover *,
+html.light .fixed.inset-0 button.bg-\[\#0167D6\]:hover *,
+html.light .fixed.inset-0 button.bg-\[\#3368B2\]:hover *,
+html.light .fixed.inset-0 a.bg-\[\#0167D6\]:hover * {
+  color: #FFFFFF !important;
+}
+
+/* Card Elevation & Shadows */
+html.light .shadow-2xl,
+html.light .shadow-xl {
+  box-shadow: 0 20px 25px -5px rgba(15, 23, 42, 0.1), 0 8px 10px -6px rgba(15, 23, 42, 0.05) !important;
+}
+
+/* =========================================================
+   WYSIWYG RICH TEXT EDITOR (MS WORD STYLE) LIGHT & DARK
+   ========================================================= */
 .wysiwyg-editor {
   min-height: 200px;
   outline: none;
-  color: #e5e7eb;
+  color: #E2E8F0;
 }
-.wysiwyg-editor strong,
-.wysiwyg-editor b {
-  font-weight: 700;
+
+html.light .wysiwyg-editor {
+  color: #0F172A !important;
+  background-color: #FFFFFF !important;
 }
-.wysiwyg-editor em,
-.wysiwyg-editor i {
-  font-style: italic;
+
+html.light .wysiwyg-editor * {
+  color: #0F172A !important;
 }
-.wysiwyg-editor u {
-  text-decoration: underline;
-  text-decoration-thickness: 1.5px;
-  text-underline-offset: 3px;
+
+html.light .wysiwyg-editor p {
+  color: #0F172A !important;
+  margin-bottom: 0.5rem;
+  line-height: 1.6 !important;
 }
+
+html.light .wysiwyg-editor h1,
+html.light .wysiwyg-editor h2,
+html.light .wysiwyg-editor h3,
+html.light .wysiwyg-editor h4 {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+html.light .wysiwyg-editor ul,
+html.light .wysiwyg-editor ol,
+html.light .wysiwyg-editor li {
+  color: #0F172A !important;
+}
+
+html.light .wysiwyg-editor strong,
+html.light .wysiwyg-editor b {
+  color: #0F172A !important;
+  font-weight: 700 !important;
+}
+
+html.light .wysiwyg-editor blockquote {
+  background-color: #F1F5F9 !important;
+  color: #334155 !important;
+  border-left: 3px solid #0167D6 !important;
+  padding: 8px 14px !important;
+  margin: 8px 0 !important;
+}
+
+html.light .wysiwyg-editor code {
+  background-color: #F1F5F9 !important;
+  color: #B45309 !important;
+  border: 1px solid #CBD5E1 !important;
+}
+
+html.light .wysiwyg-editor a {
+  color: #0167D6 !important;
+  text-decoration: underline !important;
+}
+
+/* Rich Text Editor Toolbar in Light Mode */
+html.light .rich-text-toolbar,
+html.light div:has(> .wysiwyg-editor) > div:first-child {
+  background-color: #F8FAFC !important;
+  border-bottom: 1px solid #E2E8F0 !important;
+}
+
+html.light .rich-text-toolbar button,
+html.light div:has(> .wysiwyg-editor) > div:first-child button {
+  color: #334155 !important;
+  background-color: transparent;
+}
+
+html.light .rich-text-toolbar button svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button svg {
+  color: #334155 !important;
+  stroke: #334155 !important;
+}
+
+/* Inactive button hover */
+html.light .rich-text-toolbar button:not(.editor-btn-active):not([class*="bg-\[\#0167D6\]"]):hover,
+html.light div:has(> .wysiwyg-editor) > div:first-child button:not(.editor-btn-active):not([class*="bg-\[\#0167D6\]"]):hover {
+  background-color: #E2E8F0 !important;
+  color: #0F172A !important;
+}
+
+html.light .rich-text-toolbar button:not(.editor-btn-active):not([class*="bg-\[\#0167D6\]"]):hover svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button:not(.editor-btn-active):not([class*="bg-\[\#0167D6\]"]):hover svg {
+  color: #0F172A !important;
+  stroke: #0F172A !important;
+}
+
+/* Active clicked button state (and active button hovered state) */
+html.light .rich-text-toolbar button.editor-btn-active,
+html.light .rich-text-toolbar button[class*="bg-\[\#0167D6\]"],
+html.light div:has(> .wysiwyg-editor) > div:first-child button.editor-btn-active,
+html.light div:has(> .wysiwyg-editor) > div:first-child button[class*="bg-\[\#0167D6\]"],
+html.light .rich-text-toolbar button.editor-btn-active:hover,
+html.light .rich-text-toolbar button[class*="bg-\[\#0167D6\]"]:hover,
+html.light div:has(> .wysiwyg-editor) > div:first-child button.editor-btn-active:hover,
+html.light div:has(> .wysiwyg-editor) > div:first-child button[class*="bg-\[\#0167D6\]"]:hover {
+  background-color: #0167D6 !important;
+  color: #FFFFFF !important;
+}
+
+html.light .rich-text-toolbar button.editor-btn-active svg,
+html.light .rich-text-toolbar button[class*="bg-\[\#0167D6\]"] svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button.editor-btn-active svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button[class*="bg-\[\#0167D6\]"] svg,
+html.light .rich-text-toolbar button.editor-btn-active:hover svg,
+html.light .rich-text-toolbar button[class*="bg-\[\#0167D6\]"]:hover svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button.editor-btn-active:hover svg,
+html.light div:has(> .wysiwyg-editor) > div:first-child button[class*="bg-\[\#0167D6\]"]:hover svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
+}
+
+.wysiwyg-editor h1 {
+  font-size: 1.6rem;
+  font-weight: 800;
+  margin-top: 1rem;
+  margin-bottom: 0.5rem;
+}
+
 .wysiwyg-editor h2 {
   font-size: 1.35rem;
   font-weight: 700;
   margin-top: 0.75rem;
   margin-bottom: 0.35rem;
 }
+
 .wysiwyg-editor h3 {
   font-size: 1.15rem;
   font-weight: 600;
@@ -97,6 +702,13 @@ textarea,
   color: #d1d5db;
   border-radius: 0 4px 4px 0;
 }
+
+html.light .wysiwyg-editor blockquote {
+  background: #F1F5F9 !important;
+  color: #334155 !important;
+  border-left-color: #3368B2 !important;
+}
+
 .wysiwyg-editor ul {
   list-style-type: disc !important;
   margin-left: 1.5rem !important;
@@ -123,6 +735,13 @@ textarea,
   font-size: 0.9em !important;
   border: 1px solid rgba(75, 85, 99, 0.6) !important;
 }
+
+html.light .wysiwyg-editor code {
+  background: #F1F5F9 !important;
+  color: #B45309 !important;
+  border: 1px solid #E2E8F0 !important;
+}
+
 .wysiwyg-editor a {
   color: #3368B2 !important;
   text-decoration: underline !important;
@@ -131,6 +750,7 @@ textarea,
 .wysiwyg-editor a:hover {
   color: #60a5fa !important;
 }
+
 .wysiwyg-editor:empty:before {
   content: attr(data-placeholder);
   color: #6b7280;
@@ -138,3 +758,6 @@ textarea,
   display: block;
 }
 
+html.light .wysiwyg-editor:empty:before {
+  color: #94A3B8 !important;
+}
