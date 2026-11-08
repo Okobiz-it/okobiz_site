@@ -1,7 +1,7 @@
 "use client";
 
 import React, { useEffect, useState } from "react";
-import { Plus, Search, Package, Loader2 } from "lucide-react";
+import { Plus, Search, Package, Loader2, Filter, ChevronDown } from "lucide-react";
 import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import {
   ProductFormState,
@@ -85,6 +85,9 @@ export default function AdminProductsPage() {
       status: item.status || "active",
       description: item.description || "",
       featuresText: Array.isArray(item.features) ? item.features.join("\n") : "",
+      techStack: Array.isArray(item.techStack) && item.techStack.length > 0
+        ? item.techStack
+        : (DEFAULT_FORM.techStack || ["Next.js", "React", "Node.js", "PostgreSQL", "Tailwind CSS"]),
       pricingPlans:
         Array.isArray(item.pricingPlans) && item.pricingPlans.length > 0
           ? item.pricingPlans.map((p: any) => ({
@@ -345,6 +348,7 @@ export default function AdminProductsPage() {
           .split("\n")
           .map((f) => f.trim())
           .filter(Boolean),
+        techStack: form.techStack || [],
         pricingPlans: form.pricingPlans.map((p) => ({
           name: p.name,
           price: Number(p.price) || 0,
@@ -429,7 +433,7 @@ export default function AdminProductsPage() {
     currentPage * ITEMS_PER_PAGE
   );
 
-  const categories = [
+  const predefinedCategories = [
     "All",
     "SaaS & ERP",
     "Healthcare & Pharmacy",
@@ -438,6 +442,18 @@ export default function AdminProductsPage() {
     "Education & School",
     "Accounting & Billing",
   ];
+
+  const extraCategories = Array.from(
+    new Set(
+      products
+        .map((p) => p.category?.trim())
+        .filter(
+          (cat): cat is string =>
+            Boolean(cat) && !predefinedCategories.includes(cat)
+        )
+    )
+  );
+  const categories = [...predefinedCategories, ...extraCategories];
 
   return (
     <div className="space-y-6">
@@ -487,23 +503,50 @@ export default function AdminProductsPage() {
           />
         </div>
 
-        <div className="flex flex-wrap items-center gap-1.5 w-full md:w-auto">
-          {categories.map((cat) => (
-            <button
-              key={cat}
-              onClick={() => {
-                setSelectedCategory(cat);
+        {/* Category Dropdown */}
+        <div className="flex items-center gap-2 w-full md:w-auto">
+          <div className="relative w-full md:w-64">
+            <Filter
+              size={14}
+              className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 pointer-events-none"
+            />
+            <select
+              value={selectedCategory}
+              onChange={(e) => {
+                setSelectedCategory(e.target.value);
                 setCurrentPage(1);
               }}
-              className={`text-xs font-semibold px-3 py-1.5 rounded-[4px] transition cursor-pointer ${
-                selectedCategory === cat
-                  ? "bg-[#0167D6] text-white text-white-always shadow-xs"
-                  : "bg-slate-100 dark:bg-[#0E0F12] text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-800 border border-slate-200 dark:border-gray-800"
-              }`}
+              className="w-full appearance-none pl-8 pr-8 py-2 bg-slate-50 dark:bg-[#0E0F12] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs font-medium text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6] cursor-pointer transition shadow-xs"
             >
-              {cat}
+              {categories.map((cat) => (
+                <option
+                  key={cat}
+                  value={cat}
+                  className="bg-white dark:bg-[#131417] text-slate-900 dark:text-white"
+                >
+                  {cat === "All" ? "All Categories" : cat}
+                </option>
+              ))}
+            </select>
+            <ChevronDown
+              size={14}
+              className="absolute right-2.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 pointer-events-none"
+            />
+          </div>
+
+          {(selectedCategory !== "All" || search) && (
+            <button
+              onClick={() => {
+                setSelectedCategory("All");
+                setSearch("");
+                setCurrentPage(1);
+              }}
+              className="text-xs font-semibold px-2.5 py-2 rounded-[4px] text-slate-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-slate-100 dark:hover:bg-gray-800 transition cursor-pointer shrink-0"
+              title="Reset all filters"
+            >
+              Reset
             </button>
-          ))}
+          )}
         </div>
       </div>
 

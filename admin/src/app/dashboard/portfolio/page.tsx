@@ -24,6 +24,7 @@ import {
   RefreshCw
 } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
+import TechnologyIconPicker from "@/components/TechnologyIconPicker";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { cleanSnippet } from "@/lib/richText";
 import { createSlug } from "@/lib/slug";
@@ -58,6 +59,7 @@ export default function PortfolioThemesPage() {
     challenge: "",
     solution: "",
     featuresText: "",
+    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
   });
 
   const [uploadingImage, setUploadingImage] = useState(false);
@@ -207,6 +209,7 @@ export default function PortfolioThemesPage() {
       challenge: "",
       solution: "",
       featuresText: "",
+      techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
     });
     setModalOpen(true);
   };
@@ -234,6 +237,9 @@ export default function PortfolioThemesPage() {
       challenge: item.challenge || "",
       solution: item.solution || "",
       featuresText: Array.isArray(item.features) ? item.features.join("\n") : "",
+      techStack: Array.isArray(item.techStack) && item.techStack.length > 0
+        ? item.techStack
+        : ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
     });
     setModalOpen(true);
   };
@@ -557,7 +563,7 @@ export default function PortfolioThemesPage() {
               No portfolio projects found matching your search.
             </div>
           ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
               {paginatedItems.map((item) => {
                 const hasVideo = item.mediaType === "video" || !!item.video;
                 const isYt = isYouTubeUrl(item.video);
@@ -1129,6 +1135,18 @@ export default function PortfolioThemesPage() {
                   onChange={(e) => setForm({ ...form, featuresText: e.target.value })}
                   placeholder="e.g.&#10;Custom responsive UI/UX architecture&#10;Instant Payment Gateway IPN Integration&#10;Sub-second Edge SSR Caching"
                   className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 font-mono focus:outline-none focus:border-[#0167D6]"
+                />
+              </div>
+
+              {/* Technology Frameworks & Tools Icon Picker */}
+              <div>
+                <TechnologyIconPicker
+                  selected={form.techStack || []}
+                  onChange={(newStack) =>
+                    setForm((prev) => ({ ...prev, techStack: newStack }))
+                  }
+                  label="Technology Frameworks & Tools"
+                  helperText="Select technology stack icons for this portfolio project. Icons display uniformly in the case study."
                 />
               </div>
 

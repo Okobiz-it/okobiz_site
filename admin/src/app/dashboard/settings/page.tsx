@@ -50,7 +50,7 @@ export default function SettingsPage() {
   };
 
   return (
-    <div className="space-y-6 max-w-4xl">
+    <div className="space-y-6 w-full max-w-6xl">
       <div>
         <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
           <Settings className="text-[#0167D6]" size={24} />

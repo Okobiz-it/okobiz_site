@@ -19,6 +19,7 @@ export interface IThemeItem {
   challenge?: string;
   solution?: string;
   features: string[];
+  techStack?: string[];
   createdAt: Date;
 }
 
@@ -41,6 +42,7 @@ const ThemeItemSchema = new Schema<IThemeItem>({
   challenge: { type: String, default: "" },
   solution: { type: String, default: "" },
   features: [{ type: String }],
+  techStack: [{ type: String }],
   createdAt: { type: Date, default: Date.now }
 });
 

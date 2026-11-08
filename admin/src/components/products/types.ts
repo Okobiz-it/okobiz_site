@@ -39,6 +39,7 @@ export interface ProductFormState {
   status: "active" | "draft";
   description: string;
   featuresText: string;
+  techStack: string[];
   pricingPlans: PricingPlanForm[];
   reviews: ProductReviewForm[];
 }
@@ -67,6 +68,7 @@ export const DEFAULT_PRODUCT_FORM: ProductFormState = {
     "<h2>Overview</h2><p>Provide a comprehensive overview of your SaaS solution and its core modules.</p><h3>Key Features:</h3><ul><li>Feature item 1</li><li>Feature item 2</li></ul>",
   featuresText:
     "Cloud-Based SaaS Architecture\nRole-Based Access Control\nAutomated Cloud Backups\nFast Responsive Performance",
+  techStack: ["Next.js", "React", "Node.js", "PostgreSQL", "Tailwind CSS"],
   pricingPlans: [
     {
       name: "Standard Package",

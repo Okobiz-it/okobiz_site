@@ -46,6 +46,9 @@ export async function POST(req: Request) {
       features: Array.isArray(body.features)
         ? body.features
         : (body.features ? body.features.split("\n").map((f: string) => f.trim()).filter(Boolean) : []),
+      techStack: Array.isArray(body.techStack)
+        ? body.techStack
+        : (body.techStack ? body.techStack.split(",").map((t: string) => t.trim()).filter(Boolean) : []),
       createdAt: new Date().toISOString()
     };
 
@@ -81,6 +84,9 @@ export async function PUT(req: Request) {
     }
     if (updates.features && typeof updates.features === "string") {
       updates.features = updates.features.split("\n").map((f: string) => f.trim()).filter(Boolean);
+    }
+    if (updates.techStack && typeof updates.techStack === "string") {
+      updates.techStack = updates.techStack.split(",").map((t: string) => t.trim()).filter(Boolean);
     }
     if (updates.price !== undefined) updates.price = Number(updates.price);
     if (updates.discountPrice !== undefined) updates.discountPrice = Number(updates.discountPrice);

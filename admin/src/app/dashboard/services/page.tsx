@@ -21,6 +21,7 @@ import {
   Tag
 } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
+import TechnologyIconPicker from "@/components/TechnologyIconPicker";
 import { cleanSnippet } from "@/lib/richText";
 import { createSlug } from "@/lib/slug";
 
@@ -51,6 +52,7 @@ interface ServiceFormState {
   featuresText: string;
   whyChooseUs: WhyChooseItem[];
   techStackText: string;
+  techStack: string[];
   pricingPlans: PricingPlanForm[];
   order: number;
 }
@@ -68,7 +70,8 @@ const INITIAL_FORM: ServiceFormState = {
     { title: "Expert Team", desc: "Highly skilled developers and domain specialists." },
     { title: "Customized Solutions", desc: "Tailored directly to your target audience and conversion goals." }
   ],
-  techStackText: "",
+  techStackText: "React, Next.js, TypeScript, Node.js, Tailwind CSS",
+  techStack: ["React", "Next.js", "TypeScript", "Node.js", "Tailwind CSS"],
   pricingPlans: [],
   order: 1
 };
@@ -137,6 +140,9 @@ export default function ServicesPage() {
 
   const openEdit = (srv: any) => {
     setEditItem(srv);
+    const srvTechStack = Array.isArray(srv.techStack)
+      ? srv.techStack
+      : (srv.techStack ? srv.techStack.split(",").map((t: string) => t.trim()).filter(Boolean) : []);
     setForm({
       title: srv.title || "",
       slug: srv.slug || "",
@@ -152,7 +158,8 @@ export default function ServicesPage() {
             { title: "Expert Team", desc: "Highly skilled developers and domain specialists." },
             { title: "Customized Solutions", desc: "Tailored directly to your target audience." }
           ],
-      techStackText: Array.isArray(srv.techStack) ? srv.techStack.join(", ") : (srv.techStack || ""),
+      techStackText: srvTechStack.join(", "),
+      techStack: srvTechStack,
       pricingPlans: Array.isArray(srv.pricingPlans)
         ? srv.pricingPlans.map((p: any) => ({
             name: p.name || "",
@@ -295,7 +302,9 @@ export default function ServicesPage() {
       fullDesc: form.fullDesc,
       features: form.featuresText.split("\n").map(f => f.trim()).filter(Boolean),
       whyChooseUs: form.whyChooseUs.filter(w => w.title.trim() || w.desc.trim()),
-      techStack: form.techStackText.split(",").map(t => t.trim()).filter(Boolean),
+      techStack: form.techStack && form.techStack.length > 0
+        ? form.techStack
+        : form.techStackText.split(",").map(t => t.trim()).filter(Boolean),
       pricingPlans: form.pricingPlans.map(p => ({
         name: p.name.trim() || "Standard Plan",
         price: Number(p.price) || 0,
@@ -388,7 +397,7 @@ export default function ServicesPage() {
           </button>
         </div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {services.map((srv) => (
             <div
               key={srv._id}
@@ -889,16 +898,18 @@ export default function ServicesPage() {
                       />
                     </div>
 
-                    <div>
-                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
-                        Frameworks, Tools & Technologies (Comma-separated)
-                      </label>
-                      <textarea
-                        rows={4}
-                        value={form.techStackText}
-                        onChange={e => setForm({ ...form, techStackText: e.target.value })}
-                        placeholder="e.g. React, Next.js, TypeScript, Node.js, Express, Tailwind CSS, PostgreSQL, Docker"
-                        className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] p-3 text-xs text-slate-900 dark:text-white leading-relaxed focus:outline-none focus:border-[#0167D6]"
+                    <div className="md:col-span-2">
+                      <TechnologyIconPicker
+                        selected={form.techStack || []}
+                        onChange={(newStack) =>
+                          setForm(prev => ({
+                            ...prev,
+                            techStack: newStack,
+                            techStackText: newStack.join(", ")
+                          }))
+                        }
+                        label="Technology Frameworks & Tools"
+                        helperText="Pick technology icons for this service. Displayed uniformly in the Technology Frameworks & Tools section."
                       />
                     </div>
                   </div>

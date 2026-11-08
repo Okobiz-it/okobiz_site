@@ -34,6 +34,7 @@ export interface IProductItem {
   videoThumbnail?: string;
   description: string;
   features: string[];
+  techStack?: string[];
   pricingPlans: IPricingPlan[];
   reviews?: IProductReview[];
   liveUrl?: string;
@@ -87,6 +88,7 @@ const ProductItemSchema = new Schema<IProductItem>(
     videoThumbnail: { type: String, default: "" },
     description: { type: String, default: "" },
     features: [{ type: String }],
+    techStack: [{ type: String }],
     pricingPlans: [PricingPlanSchema],
     reviews: [ProductReviewSchema],
     liveUrl: { type: String, default: "" },

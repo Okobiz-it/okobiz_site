@@ -104,7 +104,7 @@ export default function JobOpeningsTab({
               key={job._id}
               className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800/80 hover:border-slate-300 dark:hover:border-gray-700 rounded-[4px] p-5 transition flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-sm"
             >
-              <div className="space-y-2 max-w-3xl">
+              <div className="space-y-2 flex-1 min-w-0">
                 <div className="flex flex-wrap items-center gap-2">
                   <span className="text-[11px] font-bold px-2.5 py-0.5 rounded-[4px] bg-blue-50 text-[#0167D6] border border-blue-200 dark:bg-[#3368B2]/20 dark:text-[#3368B2] dark:border-[#3368B2]/30">
                     {job.department}

@@ -130,7 +130,7 @@ export default function HeroSlidesPage() {
       {loading ? (
         <div className="text-center py-20 text-slate-400 dark:text-gray-500 text-xs">Loading slides...</div>
       ) : (
-        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {slides.map((slide, i) => (
             <div
               key={slide._id || i}

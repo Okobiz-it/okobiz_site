@@ -3,6 +3,7 @@
 import React from "react";
 import { Link2, AlertCircle, CheckCircle2, Sparkles } from "lucide-react";
 import { ProductFormState } from "./types";
+import TechnologyIconPicker from "@/components/TechnologyIconPicker";
 
 interface ProductBasicsTabProps {
   form: ProductFormState;
@@ -178,6 +179,18 @@ export default function ProductBasicsTab({
           value={form.featuresText}
           onChange={(e) => setForm((prev) => ({ ...prev, featuresText: e.target.value }))}
           className="w-full px-3.5 py-2.5 bg-white dark:bg-[#0E0F12] border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] leading-relaxed"
+        />
+      </div>
+
+      {/* Technology Frameworks & Tools Icon Picker */}
+      <div className="pt-2">
+        <TechnologyIconPicker
+          selected={form.techStack || []}
+          onChange={(newStack) =>
+            setForm((prev) => ({ ...prev, techStack: newStack }))
+          }
+          label="Technology Frameworks & Tools"
+          helperText="Select technology icons for this SaaS product. Displayed uniformly with the exact same color styling in the product specifications."
         />
       </div>
 
