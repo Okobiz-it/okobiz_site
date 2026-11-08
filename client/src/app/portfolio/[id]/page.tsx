@@ -13,7 +13,8 @@ import {
   Layers,
   Sparkles,
   TrendingUp,
-  Share2
+  Share2,
+  Cpu
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
@@ -22,6 +23,7 @@ import { PortfolioProject } from "@/data/mockData";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { renderRichText } from "@/lib/richText";
 import { createSlug } from "@/lib/slug";
+import { getTechIcon } from "@/lib/techIcons";
 
 function PortfolioDetailContent() {
   const params = useParams();
@@ -71,7 +73,9 @@ function PortfolioDetailContent() {
               challenge: match.challenge || "",
               solution: match.solution || "",
               features: match.features || [],
-              techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
+              techStack: (Array.isArray(match.techStack) && match.techStack.length > 0)
+                ? match.techStack
+                : ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
               results: ["High Performance Scalability", "99.9% Uptime Verified"]
             });
           }
@@ -301,17 +305,20 @@ function PortfolioDetailContent() {
             {project.techStack && project.techStack.length > 0 && (
               <div className="pt-6 border-t border-slate-200 dark:border-gray-800">
                 <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-3 flex items-center gap-2">
-                  <Layers size={18} className="text-[#0167D6] dark:text-[#3368B2]" />
-                  Technology Frameworks & Infrastructure
+                  <Cpu size={18} className="text-[#0167D6]" />
+                  Technology Frameworks & Tools
                 </h3>
-                <div className="flex flex-wrap gap-2 pt-1">
+                <div className="flex flex-wrap gap-2.5 pt-1">
                   {project.techStack.map((tech: string, idx: number) => (
-                    <span
+                    <div
                       key={idx}
-                      className="px-3.5 py-1.5 rounded-[4px] bg-slate-100 dark:bg-[#16171B] border border-slate-200 dark:border-gray-700 text-xs font-bold text-slate-800 dark:text-gray-200"
+                      className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-slate-50 dark:bg-[#16171B] border border-slate-200 dark:border-gray-800 text-xs font-semibold text-slate-800 dark:text-gray-200 shadow-2xs hover:border-[#0167D6] hover:text-[#0167D6] transition group"
                     >
-                      {tech}
-                    </span>
+                      <span className="text-[#0167D6] shrink-0 group-hover:scale-110 transition-transform">
+                        {getTechIcon(tech, "w-4 h-4 text-[#0167D6]")}
+                      </span>
+                      <span>{tech}</span>
+                    </div>
                   ))}
                 </div>
               </div>

@@ -72,6 +72,7 @@ export interface ProductItem {
   videoThumbnail?: string;
   description: string;
   features?: string[];
+  techStack?: string[];
   pricingPlans: PricingPlan[];
   reviews?: ProductReview[];
   liveUrl?: string;

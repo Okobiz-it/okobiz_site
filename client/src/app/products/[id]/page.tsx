@@ -11,7 +11,8 @@ import {
   Sparkles,
   Check,
   ChevronLeft,
-  ChevronRight
+  ChevronRight,
+  Cpu
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
@@ -22,6 +23,7 @@ import { ProductItem } from "@/data/mockData";
 import { getProductById, getProductWhatsAppUrl } from "@/lib/api";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { renderRichText } from "@/lib/richText";
+import { getTechIcon } from "@/lib/techIcons";
 
 function ProductDetailContent() {
   const params = useParams();
@@ -434,6 +436,36 @@ function ProductDetailContent() {
                 className="prose dark:prose-invert max-w-none text-slate-700 dark:text-gray-300 leading-relaxed text-sm sm:text-base space-y-4 rich-text-content [&_strong]:text-slate-900 dark:[&_strong]:text-white [&_h2]:text-slate-900 dark:[&_h2]:text-white [&_h3]:text-slate-900 dark:[&_h3]:text-white [&_li]:text-slate-700 dark:[&_li]:text-gray-300 [&_a]:text-[#0167D6]"
                 dangerouslySetInnerHTML={{ __html: renderRichText(product.description) }}
               />
+            </div>
+          </div>
+        </section>
+      )}
+
+      {/* FULL SCREEN SECTION: TECHNOLOGY FRAMEWORKS & TOOLS */}
+      {product.techStack && product.techStack.length > 0 && (
+        <section className="py-12 bg-white dark:bg-[#141518] border-t border-slate-200 dark:border-gray-800">
+          <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20">
+            <div className="bg-slate-50 dark:bg-[#0E0F12] border border-slate-200 dark:border-gray-800 rounded-[4px] p-6 sm:p-8 shadow-sm">
+              <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-2 uppercase tracking-wider flex items-center gap-2.5">
+                <Cpu className="w-5 h-5 text-[#0167D6]" />
+                <span>Technology Frameworks & Tools</span>
+              </h3>
+              <p className="text-xs text-slate-600 dark:text-gray-400 mb-5">
+                Underlying technical infrastructure, languages, databases, and deployment frameworks powering this system.
+              </p>
+              <div className="flex flex-wrap gap-2.5">
+                {product.techStack.map((tech, idx) => (
+                  <div
+                    key={idx}
+                    className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-white dark:bg-[#181A1F] border border-slate-200 dark:border-gray-800 text-xs font-semibold text-slate-800 dark:text-gray-200 shadow-2xs hover:border-[#0167D6] hover:text-[#0167D6] transition group"
+                  >
+                    <span className="text-[#0167D6] shrink-0 group-hover:scale-110 transition-transform">
+                      {getTechIcon(tech, "w-4 h-4 text-[#0167D6]")}
+                    </span>
+                    <span>{tech}</span>
+                  </div>
+                ))}
+              </div>
             </div>
           </div>
         </section>

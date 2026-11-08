@@ -7,12 +7,13 @@ import {
   ArrowRight,
   CheckCircle2,
   Cpu,
-  Sparkles,
+  ShieldCheck,
   MessageSquare
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import { getTechIcon } from "@/lib/techIcons";
 import {
   ServiceClientItem,
   getServices,
@@ -178,17 +179,6 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
                   </a>
                 </div>
               </div>
-
-              {/* Satisfaction Guarantee note */}
-              <div className="bg-white dark:bg-[#1A1A1C] border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-300 p-5 rounded-[4px] shadow-sm">
-                <div className="flex items-center gap-2 mb-2 text-slate-900 dark:text-white font-bold text-xs sm:text-sm">
-                  <Sparkles className="w-4 h-4 text-[#0167D6]" />
-                  <span>Quality & Satisfaction Guarantee</span>
-                </div>
-                <p className="text-xs text-slate-600 dark:text-gray-400 leading-relaxed">
-                  We guarantee verified code standards, rapid turnaround, and dedicated milestone tracking for every client project.
-                </p>
-              </div>
             </aside>
 
             {/* Right Main Content - Reduced spacing & rounded-[4px] */}
@@ -255,7 +245,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
               {activeService.whyChooseUs && activeService.whyChooseUs.length > 0 && (
                 <div className="bg-white dark:bg-[#181A1D] border border-slate-200 dark:border-gray-800 rounded-[4px] p-5 sm:p-6 mb-5 shadow-sm">
                   <h3 className="text-base sm:text-lg font-bold text-slate-900 dark:text-white mb-4 flex items-center gap-2.5">
-                    <Sparkles className="w-5 h-5 text-[#0167D6]" />
+                    <ShieldCheck className="w-5 h-5 text-[#0167D6]" />
                     <span>Why Choose Us?</span>
                   </h3>
                   <ul className="space-y-3 text-xs sm:text-sm text-slate-700 dark:text-gray-300">
@@ -282,14 +272,17 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
                   <p className="text-xs text-slate-600 dark:text-gray-400 mb-4">
                     Industry-leading tools and architectures leveraged to build high-performance solutions.
                   </p>
-                  <div className="flex flex-wrap gap-2">
+                  <div className="flex flex-wrap gap-2.5">
                     {activeService.techStack.map((tech, idx) => (
-                      <span
+                      <div
                         key={idx}
-                        className="px-3 py-1.5 rounded-[4px] bg-slate-100 dark:bg-[#141416] border border-slate-200 dark:border-gray-700/80 text-slate-800 dark:text-gray-200 text-xs font-semibold hover:border-[#0167D6] hover:text-[#0167D6] transition"
+                        className="inline-flex items-center gap-2 px-3.5 py-2 rounded-[4px] bg-slate-50 dark:bg-[#141416] border border-slate-200 dark:border-gray-800 text-slate-800 dark:text-gray-200 text-xs font-semibold shadow-2xs hover:border-[#0167D6] hover:text-[#0167D6] transition group"
                       >
-                        {tech}
-                      </span>
+                        <span className="text-[#0167D6] shrink-0 group-hover:scale-110 transition-transform">
+                          {getTechIcon(tech, "w-4 h-4 text-[#0167D6]")}
+                        </span>
+                        <span>{tech}</span>
+                      </div>
                     ))}
                   </div>
                 </div>
