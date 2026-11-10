@@ -24,8 +24,13 @@ export interface IServiceItem {
   fullDesc: string;
   icon: string;
   image?: string;
+  thumbnail?: string;
   bannerImage?: string;
   bannerSubtitle?: string;
+  mediaType?: "image" | "video";
+  images?: string[];
+  video?: string;
+  videoThumbnail?: string;
   features: string[];
   whyChooseUs?: IWhyChooseUsItem[];
   techStack?: string[];
@@ -55,8 +60,13 @@ const ServiceItemSchema = new Schema<IServiceItem>({
   fullDesc: { type: String, default: "" },
   icon: { type: String, default: "Monitor" },
   image: { type: String, default: "" },
+  thumbnail: { type: String, default: "" },
   bannerImage: { type: String, default: "" },
   bannerSubtitle: { type: String, default: "" },
+  mediaType: { type: String, enum: ["image", "video"], default: "image" },
+  images: [{ type: String }],
+  video: { type: String, default: "" },
+  videoThumbnail: { type: String, default: "" },
   features: [{ type: String }],
   whyChooseUs: [
     {

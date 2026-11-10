@@ -72,7 +72,7 @@ export default function EmailTemplatesTab({
         <div>
           <h3 className="text-sm font-bold text-slate-900 dark:text-white flex items-center gap-2">
             <Layers size={16} className="text-[#0167D6]" />
-            Job Email Templates (Rich Text Editor)
+            Job Email Templates
           </h3>
           <p className="text-xs text-slate-600 dark:text-gray-400 mt-0.5">
             Edit, create, and manage the email responses sent to candidates. You can use placeholder tokens:{" "}

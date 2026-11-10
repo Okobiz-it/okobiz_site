@@ -24,8 +24,8 @@ export function verifyToken(token: string): AdminPayload | null {
   }
 }
 
-export function getAdminSession(): AdminPayload | null {
-  const cookieStore = cookies();
+export async function getAdminSession(): Promise<AdminPayload | null> {
+  const cookieStore = await cookies();
   const token = cookieStore.get("admin_token")?.value;
   if (!token) return null;
   return verifyToken(token);

@@ -236,7 +236,7 @@ export default function JobFormModal({
           <div className="space-y-1">
             <div className="flex items-center justify-between mb-1">
               <label className="text-xs font-semibold text-slate-700 dark:text-gray-300">
-                Job Description &amp; Specifications (Rich Text Editor) *
+                Job Description &amp; Specifications *
               </label>
               <span className="text-[11px] text-[#0167D6] font-semibold">
                 Overview, Responsibilities, Requirements &amp; Perks

@@ -6,17 +6,38 @@ import ThemeItem from "@/models/ThemeItem";
 import { deleteFromCloudinary } from "@/lib/cloudinary";
 import { createSlug } from "@/lib/slug";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  const slug = searchParams.get("slug");
+  const target = id || slug;
+
   try {
     const db = await connectDB();
     if (db) {
-      const themes = await ThemeItem.find().sort({ createdAt: -1 });
-      return NextResponse.json({ success: true, data: themes });
+      if (target) {
+        const found = await ThemeItem.findOne({
+          $or: [{ _id: target }, { slug: target.toLowerCase() }]
+        });
+        if (found) return NextResponse.json({ success: true, data: found });
+      } else {
+        const themes = await ThemeItem.find().sort({ createdAt: -1 });
+        return NextResponse.json({ success: true, data: themes });
+      }
     }
   } catch (err: any) {
     console.warn("MongoDB GET themes error:", err.message);
   }
+
   const store = getDataStore();
+  if (target) {
+    const found = (store.themes || []).find(
+      t => t._id === target || (t.slug && t.slug.toLowerCase() === target.toLowerCase())
+    );
+    if (found) return NextResponse.json({ success: true, data: found });
+    return NextResponse.json({ success: false, message: "Theme not found" }, { status: 404 });
+  }
+
   return NextResponse.json({ success: true, data: store.themes || [] });
 }
 

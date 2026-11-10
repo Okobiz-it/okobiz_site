@@ -13,7 +13,6 @@ const NAV_LINKS = [
   { title: "Products", link: "/products" },
   { title: "Blogs", link: "/blog" },
   { title: "Gallery", link: "/gallery" },
-  { title: "Amazing Team", link: "/amazing_team" },
   { title: "Contact Us", link: "/contact-us" },
 ];
 

@@ -2,12 +2,16 @@
 import React, { useState, useEffect } from "react";
 import Sidebar from "@/components/Sidebar";
 import Header from "@/components/Header";
+import { Toaster } from "@/components/ui/toaster";
+import { usePathname } from "next/navigation";
 
 export default function DashboardLayout({
   children,
 }: {
   children: React.ReactNode;
 }) {
+  const pathname = usePathname();
+  const isPrintPage = pathname?.includes("/print");
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -34,10 +38,10 @@ export default function DashboardLayout({
   };
 
   return (
-    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0C0E] transition-colors duration-200">
+    <div className="flex h-screen overflow-hidden bg-slate-50 dark:bg-[#0B0C0E] transition-colors duration-200 print:h-auto print:overflow-visible print:bg-white print:block">
       {/* Desktop Sidebar (Collapsible) */}
       <div
-        className={`hidden lg:block shrink-0 transition-all duration-300 ease-in-out ${
+        className={`hidden lg:block shrink-0 transition-all duration-300 ease-in-out no-print print:hidden ${
           isCollapsed ? "w-20" : "w-64"
         }`}
       >
@@ -46,7 +50,7 @@ export default function DashboardLayout({
 
       {/* Mobile Drawer */}
       {mobileMenuOpen && (
-        <div className="fixed inset-0 z-50 lg:hidden flex">
+        <div className="fixed inset-0 z-50 lg:hidden flex no-print print:hidden">
           <div
             className="fixed inset-0 bg-black/70 backdrop-blur-sm"
             onClick={() => setMobileMenuOpen(false)}
@@ -58,12 +62,19 @@ export default function DashboardLayout({
       )}
 
       {/* Main Content Area */}
-      <div className="flex-1 flex flex-col min-w-0 overflow-hidden">
-        <Header onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
-        <main className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-8 2xl:px-10 bg-slate-50 dark:bg-[#0B0C0E] transition-colors duration-200">
-          <div className="w-full">{children}</div>
+      <div className="flex-1 flex flex-col min-w-0 overflow-hidden print:overflow-visible print:h-auto print:block">
+        <div className="no-print print:hidden">
+          <Header onMenuToggle={() => setMobileMenuOpen(!mobileMenuOpen)} />
+        </div>
+        <main
+          className={`flex-1 overflow-y-auto ${
+            isPrintPage ? "p-0" : "p-4 sm:p-6 lg:p-8 2xl:px-10"
+          } bg-slate-50 dark:bg-[#0B0C0E] transition-colors duration-200 print:overflow-visible print:h-auto print:p-0 print:m-0 print:bg-white print:block`}
+        >
+          <div className="w-full print:w-full print:p-0 print:m-0">{children}</div>
         </main>
       </div>
+      <Toaster />
     </div>
   );
 }

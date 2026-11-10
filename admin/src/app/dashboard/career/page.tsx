@@ -14,7 +14,6 @@ import {
 import { JobOpening, JobApplication, EmailTemplateItem } from "./types";
 import CareerStatsHeader from "./components/CareerStatsHeader";
 import JobOpeningsTab from "./components/JobOpeningsTab";
-import JobFormModal from "./components/JobFormModal";
 import CandidateApplicationsTab from "./components/CandidateApplicationsTab";
 import ApplicationDetailsModal from "./components/ApplicationDetailsModal";
 import EmailReplyModal from "./components/EmailReplyModal";
@@ -100,7 +99,7 @@ export default function CareerDashboardPage() {
   }, []);
 
   return (
-    <div className="space-y-6 text-gray-200">
+    <div className="w-full space-y-6 text-gray-200">
       {/* Page Header */}
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4 pb-4 border-b border-slate-200 dark:border-gray-800">
         <div>
@@ -136,13 +135,13 @@ export default function CareerDashboardPage() {
               <span>New Email Template</span>
             </button>
           ) : (
-            <button
-              onClick={jobsHook.handleOpenCreateJob}
+            <Link
+              href="/dashboard/career/create"
               className="flex items-center gap-2 bg-[#0167D6] hover:bg-blue-700 text-white text-white-always text-xs font-bold px-4 py-2.5 rounded-[4px] shadow-md shadow-blue-500/20 transition cursor-pointer"
             >
               <Plus size={16} />
               <span>Post New Job Opening</span>
-            </button>
+            </Link>
           )}
         </div>
       </div>
@@ -290,21 +289,6 @@ export default function CareerDashboardPage() {
           onSaveTemplate={templatesHook.handleSaveTemplate}
         />
       )}
-
-      {/* MODAL 1: POST / EDIT JOB OPENING */}
-      <JobFormModal
-        isOpen={jobsHook.isJobModalOpen}
-        onClose={() => jobsHook.setIsJobModalOpen(false)}
-        editingJob={jobsHook.editingJob}
-        jobForm={jobsHook.jobForm}
-        setJobForm={jobsHook.setJobForm}
-        isCustomDept={jobsHook.isCustomDept}
-        setIsCustomDept={jobsHook.setIsCustomDept}
-        customDeptInput={jobsHook.customDeptInput}
-        setCustomDeptInput={jobsHook.setCustomDeptInput}
-        onSaveJob={jobsHook.handleSaveJob}
-        jobSaving={jobsHook.jobSaving}
-      />
 
       {/* MODAL 2: REPLY VIA EMAIL WITH RICH TEXT & DYNAMIC TEMPLATES */}
       <EmailReplyModal

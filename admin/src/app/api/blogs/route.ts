@@ -5,24 +5,56 @@ import { connectDB } from "@/lib/mongodb";
 import BlogItem from "@/models/BlogItem";
 import { createSlug } from "@/lib/slug";
 
-export async function GET() {
+export async function GET(req: Request) {
+  const { searchParams } = new URL(req.url);
+  const id = searchParams.get("id");
+  const slug = searchParams.get("slug");
+  const target = id || slug;
+
   try {
     const db = await connectDB();
     if (db) {
-      const blogs = await BlogItem.find().sort({ createdAt: -1 });
-      const mapped = blogs.map((b: any) => {
-        const obj = b.toObject ? b.toObject() : b;
-        return {
-          ...obj,
-          slug: obj.slug || createSlug(obj.title)
-        };
-      });
-      return NextResponse.json({ success: true, data: mapped });
+      if (target) {
+        const found = await BlogItem.findOne({
+          $or: [{ _id: target }, { slug: target.toLowerCase() }]
+        });
+        if (found) {
+          const obj = found.toObject ? found.toObject() : found;
+          return NextResponse.json({
+            success: true,
+            data: { ...obj, slug: obj.slug || createSlug(obj.title) }
+          });
+        }
+      } else {
+        const blogs = await BlogItem.find().sort({ createdAt: -1 });
+        const mapped = blogs.map((b: any) => {
+          const obj = b.toObject ? b.toObject() : b;
+          return {
+            ...obj,
+            slug: obj.slug || createSlug(obj.title)
+          };
+        });
+        return NextResponse.json({ success: true, data: mapped });
+      }
     }
   } catch (err: any) {
     console.warn("MongoDB GET blogs error:", err.message);
   }
+
   const store = getDataStore();
+  if (target) {
+    const found = (store.blogs || []).find(
+      (b: any) => b._id === target || (b.slug && b.slug.toLowerCase() === target.toLowerCase())
+    );
+    if (found) {
+      return NextResponse.json({
+        success: true,
+        data: { ...found, slug: found.slug || createSlug(found.title) }
+      });
+    }
+    return NextResponse.json({ success: false, message: "Blog not found" }, { status: 404 });
+  }
+
   const blogs = (store.blogs || []).map((b: any) => ({
     ...b,
     slug: b.slug || createSlug(b.title)

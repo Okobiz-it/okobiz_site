@@ -14,6 +14,7 @@ import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
 import { getTechIcon } from "@/lib/techIcons";
+import { isYouTubeUrl, getYouTubeEmbedUrl } from "@/lib/youtube";
 import {
   ServiceClientItem,
   getServices,
@@ -31,6 +32,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
   const [service, setService] = useState<ServiceClientItem | null>(initialService || null);
   const [allServices, setAllServices] = useState<ServiceClientItem[]>(DEFAULT_SERVICES);
   const [loading, setLoading] = useState(!initialService);
+  const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
   useEffect(() => {
     let isMounted = true;
@@ -183,14 +185,55 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
 
             {/* Right Main Content - Reduced spacing & rounded-[4px] */}
             <main className="w-full lg:w-[68%] min-w-0">
-              {/* Cover Hero Banner Image */}
-              <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm mb-5 bg-white dark:bg-[#181A1D]">
-                <img
-                  src={heroImage}
-                  alt={activeService.title}
-                  className="w-full h-auto max-h-[420px] object-cover rounded-[4px]"
-                />
-              </div>
+              {/* Cover Hero Banner Image / Video Showcase */}
+              {activeService.mediaType === "video" && activeService.video ? (
+                <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm mb-5 bg-black aspect-video">
+                  {isYouTubeUrl(activeService.video) ? (
+                    <iframe
+                      src={getYouTubeEmbedUrl(activeService.video) || ""}
+                      title={activeService.title}
+                      className="w-full h-full border-0"
+                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                      allowFullScreen
+                    />
+                  ) : (
+                    <video src={activeService.video} controls className="w-full h-full object-cover" />
+                  )}
+                </div>
+              ) : (
+                <div className="mb-5 space-y-2.5">
+                  <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#181A1D]">
+                    <img
+                      src={selectedImage || activeService.thumbnail || activeService.image || heroImage}
+                      alt={activeService.title}
+                      className="w-full h-auto max-h-[420px] object-cover rounded-[4px]"
+                    />
+                  </div>
+
+                  {/* Thumbnail Row if multiple images uploaded */}
+                  {Array.isArray(activeService.images) && activeService.images.length > 1 && (
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
+                      {activeService.images.map((imgUrl, i) => {
+                        const isCurrent = (selectedImage || activeService.thumbnail || activeService.image || heroImage) === imgUrl;
+                        return (
+                          <button
+                            key={i}
+                            type="button"
+                            onClick={() => setSelectedImage(imgUrl)}
+                            className={`w-16 h-12 rounded-[4px] overflow-hidden border shrink-0 transition ${
+                              isCurrent
+                                ? "border-[#0167D6] ring-2 ring-[#0167D6]/40"
+                                : "border-slate-200 dark:border-gray-800 opacity-70 hover:opacity-100"
+                            }`}
+                          >
+                            <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                          </button>
+                        );
+                      })}
+                    </div>
+                  )}
+                </div>
+              )}
 
               {/* Service Full Narrative Description */}
               <div className="mb-5">

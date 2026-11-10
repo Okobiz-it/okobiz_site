@@ -3,7 +3,7 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import TalkCta from "@/components/TalkCta";
-import { Play, ArrowRight, Monitor, PenTool, BarChart, Plus, Minus } from "lucide-react";
+import { Play, ArrowRight, Monitor, PenTool, BarChart, Plus, Minus, Phone } from "lucide-react";
 import ClientStepSlider from "@/components/ClientStepSlider";
 import { getHeroSlides, getFaqs, HeroSlideItem, FaqItemType } from "@/lib/api";
 
@@ -168,21 +168,21 @@ export default function HomePage() {
       {/* 2. Stats Section */}
       <section className="bg-[#181A1D] py-16 border-b border-gray-800">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417]">
-            <span className="text-4xl font-bold text-white mb-2">2018</span>
-            <span className="text-gray-400 text-sm font-medium">Journey Started</span>
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+            <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">2018</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold">Journey Started</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417]">
-            <span className="text-4xl font-bold text-white mb-2">150</span>
-            <span className="text-gray-400 text-sm font-medium">Happy Clients</span>
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+            <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">150</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold">Happy Clients</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417]">
-            <span className="text-4xl font-bold text-white mb-2">20</span>
-            <span className="text-gray-400 text-sm font-medium">Team Members</span>
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+            <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">20</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold">Team Members</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417]">
-            <span className="text-4xl font-bold text-white mb-2">6+</span>
-            <span className="text-gray-400 text-sm font-medium">Years of Excellence</span>
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+            <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">6+</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold">Years of Excellence</span>
           </div>
         </div>
       </section>
@@ -226,8 +226,8 @@ export default function HomePage() {
             <div key={i} className="bg-[#18191D] border border-gray-800 p-10 rounded-lg hover:-translate-y-2 transition-transform duration-300 group flex flex-col justify-between h-full">
               <div>
                 <srv.icon size={48} className="text-[#3368B2] mb-6 group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold mb-4 line-clamp-2">{srv.title}</h3>
-                <p className="text-gray-400 mb-8 leading-relaxed text-sm line-clamp-3 overflow-hidden text-ellipsis">{srv.desc}</p>
+                <h3 className="text-2xl font-bold mb-4 line-clamp-2 text-white">{srv.title}</h3>
+                <p className="text-slate-300 mb-8 leading-relaxed text-[15px] sm:text-base line-clamp-3 overflow-hidden text-ellipsis font-normal">{srv.desc}</p>
               </div>
               <Link href={srv.link} className="inline-block bg-[#222327] hover:bg-[#3368B2] text-white px-6 py-2 rounded font-semibold text-sm transition-colors border border-gray-700 hover:border-[#3368B2] self-start">
                 READ MORE <span className="text-[#3368B2] group-hover:text-white ml-1">+</span>
@@ -237,50 +237,66 @@ export default function HomePage() {
         </div>
       </section>
 
-      {/* 5. Feature Showcase + Discount Banner */}
-      <section className="py-20 bg-[#18191D] relative overflow-hidden">
-        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative flex items-center justify-between">
-          <div className="bg-white rounded-lg p-10 md:p-12 md:w-1/2 relative z-10 shadow-xl">
-            <h2 className="text-3xl font-bold text-gray-900 mb-4">Website & Apps<br/>Development</h2>
-            <p className="text-gray-600 mb-8 leading-relaxed">
-              To provide a consistent user experience, our team of skilled developers guarantees that your website works perfectly across all devices and platforms. Whether it's an online store, an app page, or a business website, we use the newest technology.
-            </p>
-            <Link href="/services" className="inline-block bg-[#3368B2] text-white px-8 py-3 font-semibold uppercase tracking-wider rounded shadow-lg hover:bg-blue-700 transition">
-              Explore Services
-            </Link>
-          </div>
-          <div className="hidden md:flex absolute -right-6 lg:right-0 top-1/2 -translate-y-1/2 z-0 pointer-events-none select-none items-center justify-end">
-            <img
-              src="/assets/tech-hud-vector.png"
-              alt="Tech Vector Graphic"
-              className="w-[420px] lg:w-[480px] xl:w-[530px] h-auto object-contain opacity-80"
-            />
-          </div>
-        </div>
-      </section>
+      {/* 5. Special Discount For Your First Project - Web Design & Development */}
+      <section className="py-20 lg:py-24 bg-[#111215] relative overflow-hidden border-y border-gray-800/80">
+        {/* Subtle geometric/hex backdrop vectors on left and right */}
+        <div
+          className="absolute left-0 top-0 bottom-0 w-80 opacity-20 pointer-events-none bg-no-repeat bg-left-center select-none"
+          style={{ backgroundImage: "url('/assets/pattern-000-DD9OVOOk.png')" }}
+        />
+        <div
+          className="absolute right-0 top-0 bottom-0 w-80 opacity-20 pointer-events-none bg-no-repeat bg-right-center select-none"
+          style={{ backgroundImage: "url('/assets/pattern-000-DD9OVOOk.png')" }}
+        />
 
-      {/* Special Discount */}
-      <section className="bg-gradient-to-r dark:from-[#0d1829] dark:to-[#18191D] from-[#102B54] to-[#1E4C8A] py-16 border-y dark:border-[#3368B2]/20 border-blue-400/30 relative overflow-hidden">
-        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10 grid grid-cols-1 md:grid-cols-2 items-center gap-10">
-          <div>
-            <div className="flex items-center gap-3 mb-4">
-              <div className="w-10 h-10 bg-[#3368B2] rounded-[4px] flex items-center justify-center shadow-md">
-                <Monitor size={20} className="text-white" />
-              </div>
-              <h3 className="text-sky-300 dark:text-[#3368B2] font-bold text-base sm:text-lg tracking-wide">
-                Special Discount for your first Project
-              </h3>
+        <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-14">
+          {/* Left Column: Icon, Header, Paragraph, Slanted Contact Us Button */}
+          <div className="lg:col-span-7 flex flex-col items-start">
+            {/* Vector Selection Icon from design */}
+            <div className="w-12 h-12 bg-[#1A3A6B] rounded-[8px] border border-blue-500/40 flex items-center justify-center mb-6 shadow-md shadow-blue-900/40">
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <rect x="4" y="4" width="13" height="13" rx="1.5" stroke="#60A5FA" strokeWidth="1.5" strokeDasharray="3 2" />
+                <rect x="3" y="3" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
+                <rect x="14.5" y="3" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
+                <rect x="3" y="14.5" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
+                <rect x="14.5" y="14.5" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
+                <path d="M7 17L12 12M12 12V15M12 12H9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
+                <path d="M12 12L19 19L16 20L19 22L17.5 23L14.5 21L13 23L12 12Z" fill="white" />
+              </svg>
             </div>
-            <h2 className="text-3xl sm:text-4xl font-black text-white mb-6">Web Design & Development.</h2>
-            <p className="text-slate-200 dark:text-gray-400 mb-8 leading-relaxed text-sm sm:text-base">
-              Get your custom website and app development at a special rate. Our expert team designs user-friendly interfaces, responsive layouts, and practical features to enhance digital interactions and maximize your growth.
+
+            <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-white leading-[1.25] mb-6 tracking-tight">
+              Special Discount For your frist Project<br />
+              <span className="text-white">Web Design &amp; Development.</span>
+            </h2>
+
+            <p className="text-slate-300 text-sm sm:text-base leading-relaxed mb-8 max-w-2xl font-normal">
+              Our commitment to your success goes beyond words—it's reflected in our actions. From personalized strategies tailored to your objectives to ongoing support and optimization efforts, we are fully invested in helping you achieve your goals and maximizing the value of our partnership.
             </p>
-            <Link href="/contact-us" className="inline-flex items-center gap-2 bg-[#3368B2] hover:bg-blue-600 text-white px-8 py-3 rounded-[4px] font-bold uppercase tracking-wider transition shadow-lg shadow-blue-900/40">
-              Order Now <ArrowRight size={18} />
+
+            {/* Chamfered/Slanted Parallelogram Contact Us Button matching design */}
+            <Link href="/contact-us" className="inline-block relative group select-none">
+              <div
+                className="bg-[#0167D6] hover:bg-blue-600 transition-all duration-200 px-8 sm:px-10 py-3.5 shadow-lg shadow-blue-600/30 flex items-center gap-2.5 text-white font-bold text-sm sm:text-base tracking-wider uppercase group-hover:brightness-110"
+                style={{
+                  clipPath: "polygon(14px 0, 100% 0, calc(100% - 14px) 100%, 0 100%)",
+                }}
+              >
+                <span>CONTACT US</span>
+                <Phone size={17} className="inline ml-1" />
+              </div>
             </Link>
           </div>
-          <div className="relative flex justify-center">
-            <img src="https://res.cloudinary.com/dccui8s58/image/upload/v1790853402/okobiz/assets/discount-banner-_i19yyC6.png" alt="Discount 35%" className="max-w-full h-auto animate-float" />
+
+          {/* Right Column: 3D Smartphone & UI/UX 35% OFF graphic */}
+          <div className="lg:col-span-5 flex items-center justify-center relative">
+            <div className="relative max-w-[460px] lg:max-w-[500px] w-full">
+              <img
+                src="https://res.cloudinary.com/dccui8s58/image/upload/v1790853402/okobiz/assets/discount-banner-_i19yyC6.png"
+                alt="Special Discount 35% Off Web Design & Development"
+                className="w-full h-auto object-contain drop-shadow-[0_20px_50px_rgba(1,103,214,0.35)] animate-float"
+              />
+            </div>
           </div>
         </div>
       </section>
@@ -302,8 +318,8 @@ export default function HomePage() {
                 <div className="w-16 h-16 bg-[#222327] rounded-[4px] flex items-center justify-center mb-6 group-hover:bg-[#0167D6] transition-colors">
                   <PenTool className="text-white" size={28} />
                 </div>
-                <h3 className="text-xl font-bold mb-4">{f.t}</h3>
-                <p className="text-gray-400 text-sm leading-relaxed">{f.d}</p>
+                <h3 className="text-xl font-bold mb-4 text-white">{f.t}</h3>
+                <p className="text-slate-300 text-[15px] sm:text-base leading-relaxed font-normal">{f.d}</p>
               </div>
             ))}
           </div>
@@ -329,8 +345,8 @@ export default function HomePage() {
                   <div className="w-16 h-16 mb-6">
                     <BarChart size={48} className="text-[#3368B2] group-hover:text-white transition-colors" />
                   </div>
-                  <h3 className="text-2xl font-bold mb-4 group-hover:text-white">{m.t}</h3>
-                  <p className="text-gray-400 group-hover:text-white/90 leading-relaxed text-sm">{m.d}</p>
+                  <h3 className="text-2xl font-bold mb-4 text-white">{m.t}</h3>
+                  <p className="text-slate-300 group-hover:text-white/95 leading-relaxed text-[15px] sm:text-base font-normal">{m.d}</p>
                 </div>
               </div>
             ))}
@@ -351,7 +367,7 @@ export default function HomePage() {
                       {activeFaq === idx ? <Minus size={18} /> : <Plus size={18} />}
                     </button>
                     {activeFaq === idx && (
-                      <div className="px-6 py-5 bg-[#18191D] text-gray-400 text-sm leading-relaxed">
+                      <div className="px-6 py-5 bg-[#18191D] text-slate-300 text-[15px] sm:text-base leading-relaxed font-normal">
                         {faq.answer}
                       </div>
                     )}

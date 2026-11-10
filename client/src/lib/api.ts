@@ -1,4 +1,4 @@
-import { ThemeItem, BlogItem, ClientPartner, TeamMember, GalleryItem, ProductItem, PricingPlan } from "../data/mockData";
+import { ThemeItem, BlogItem, ClientPartner, GalleryItem, ProductItem, PricingPlan } from "../data/mockData";
 import { createSlug } from "./slug";
 
 const API_BASE = typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001");
@@ -130,19 +130,6 @@ export async function getClients(): Promise<ClientPartner[]> {
   return [];
 }
 
-export async function getTeam(): Promise<TeamMember[]> {
-  try {
-    const res = await fetch(`${API_BASE}/api/team`, { cache: "no-store" });
-    if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
-    const json = await res.json();
-    if (json.success && Array.isArray(json.data)) {
-      return json.data;
-    }
-  } catch (err) {
-    console.warn("Failed to fetch team from MongoDB:", err);
-  }
-  return [];
-}
 
 export async function getGallery(): Promise<GalleryItem[]> {
   try {
@@ -292,8 +279,13 @@ export interface ServiceClientItem {
   title: string;
   slug: string;
   image?: string;
+  thumbnail?: string;
   bannerImage?: string;
   bannerSubtitle?: string;
+  mediaType?: "image" | "video";
+  images?: string[];
+  video?: string;
+  videoThumbnail?: string;
   shortDesc: string;
   fullDesc: string;
   features: string[];

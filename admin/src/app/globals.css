@@ -298,6 +298,10 @@ html.light .bg-red-600,
 html.light .bg-red-600 *,
 html.light .bg-rose-600,
 html.light .bg-rose-600 *,
+html.light .bg-amber-500,
+html.light .bg-amber-500 *,
+html.light .bg-amber-600,
+html.light .bg-amber-600 *,
 html.light .bg-emerald-600,
 html.light .bg-emerald-600 *,
 html.light .bg-green-600,
@@ -306,9 +310,17 @@ html.light [class*="bg-emerald-500/80"],
 html.light [class*="bg-emerald-500/80"] *,
 html.light [class*="bg-red-500/80"],
 html.light [class*="bg-red-500/80"] *,
+html.light .bg-\[\#1E65B8\],
+html.light .bg-\[\#1E65B8\] *,
+html.light .quotation-footer,
+html.light .quotation-footer *,
+html.light .quotation-footer span,
+html.light .quotation-footer svg,
 html.light .text-white-always,
 html.light [style*="color: #FFFFFF"],
-html.light [style*="color:#FFFFFF"] {
+html.light [style*="color:#FFFFFF"],
+html.light [style*="color: #ffffff"],
+html.light [style*="color:#ffffff"] {
   color: #FFFFFF !important;
 }
 
@@ -383,19 +395,47 @@ html.light button.bg-slate-100:hover * {
 }
 
 /* Tables in Light Mode */
-html.light table th {
+html.light table:not(.quotation-table) th {
   background-color: #F8FAFC !important;
   color: #475569 !important;
   border-bottom-color: #E2E8F0 !important;
 }
 
-html.light table td {
+html.light table:not(.quotation-table) td {
   border-bottom-color: #E2E8F0 !important;
   color: #1E293B !important;
 }
 
-html.light table tbody tr:hover {
+html.light table:not(.quotation-table) tbody tr:hover {
   background-color: #F8FAFC !important;
+}
+
+/* Official Quotation Document Table Protection - High Specificity */
+.quotation-table,
+.quotation-document table {
+  border-collapse: collapse !important;
+  width: 100% !important;
+}
+
+html.light .quotation-table thead,
+html.light .quotation-document thead,
+.quotation-table thead,
+.quotation-document thead,
+html.light .quotation-table th,
+html.light .quotation-document th,
+.quotation-table th,
+.quotation-document th {
+  background-color: #1E65B8 !important;
+  color: #FFFFFF !important;
+  -webkit-print-color-adjust: exact !important;
+  print-color-adjust: exact !important;
+}
+
+html.light .quotation-table th *,
+html.light .quotation-document th *,
+.quotation-table th *,
+.quotation-document th * {
+  color: #FFFFFF !important;
 }
 
 /* =========================================================
@@ -761,3 +801,143 @@ html.light .wysiwyg-editor code {
 html.light .wysiwyg-editor:empty:before {
   color: #94A3B8 !important;
 }
+
+/* =========================================================
+   OFFICIAL QUOTATION & LETTERHEAD PURE WHITE ASSETS
+   Guaranteed pure white (#FFFFFF) in screen preview & print
+   ========================================================= */
+html.light .quotation-footer,
+html.light .quotation-footer *,
+html.light .bg-\[\#1E65B8\],
+html.light .bg-\[\#1E65B8\] *,
+.quotation-footer,
+.quotation-footer *,
+.text-white-always {
+  color: #FFFFFF !important;
+}
+
+.quotation-footer svg:not(.globe-icon) {
+  color: #FFFFFF !important;
+  fill: #FFFFFF !important;
+}
+.quotation-footer svg.fill-white {
+  fill: #FFFFFF !important;
+}
+.quotation-footer svg.stroke-white,
+.quotation-footer svg:not(.globe-icon) path,
+.quotation-footer svg:not(.globe-icon) circle,
+.quotation-footer svg line {
+  stroke: #FFFFFF !important;
+}
+.quotation-footer svg.globe-icon {
+  fill: none !important;
+}
+.quotation-footer svg.globe-icon circle,
+.quotation-footer svg.globe-icon path.globe-line {
+  fill: none !important;
+  stroke: #FFFFFF !important;
+  stroke-width: 1.6px !important;
+}
+.quotation-footer svg.globe-icon path.globe-cursor {
+  fill: #FFFFFF !important;
+  stroke: #1E65B8 !important;
+  stroke-width: 0.8px !important;
+}
+
+/* =========================================================
+   GLOBAL A4 PRINT ENGINE (Zero Margins, Full Bleed Edge-to-Edge)
+   ========================================================= */
+@page {
+  size: A4 portrait;
+  margin: 0;
+}
+
+@media print {
+  *,
+  *::before,
+  *::after {
+    -webkit-print-color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  html,
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    background: #ffffff !important;
+    color: #000000 !important;
+    overflow: visible !important;
+  }
+
+  /* Hide all non-printable UI chrome */
+  .no-print,
+  aside,
+  header,
+  nav,
+  [data-sonner-toaster],
+  [data-sonner-toast],
+  [aria-live="polite"],
+  [role="status"] {
+    display: none !important;
+  }
+
+  /* Reset layout flex wrappers to pure block containers */
+  #__next,
+  body > div,
+  main,
+  main > div {
+    display: block !important;
+    width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    overflow: visible !important;
+    background: #ffffff !important;
+    border: none !important;
+    box-shadow: none !important;
+  }
+
+  .quotation-document {
+    display: block !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    background: #ffffff !important;
+  }
+
+  .quotation-page {
+    box-sizing: border-box !important;
+    width: 210mm !important;
+    min-width: 210mm !important;
+    max-width: 210mm !important;
+    height: 297mm !important;
+    min-height: 297mm !important;
+    max-height: 297mm !important;
+    margin: 0 !important;
+    padding: 0 !important;
+    border: none !important;
+    box-shadow: none !important;
+    background: #ffffff !important;
+    overflow: hidden !important;
+    position: relative !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: space-between !important;
+    page-break-inside: avoid !important;
+    break-inside: avoid !important;
+    page-break-after: always !important;
+    break-after: page !important;
+  }
+
+  .quotation-page:last-child {
+    page-break-after: auto !important;
+    break-after: auto !important;
+  }
+}
+
+

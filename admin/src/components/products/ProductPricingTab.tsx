@@ -1,6 +1,6 @@
 "use client";
 
-import React from "react";
+import React, { useRef } from "react";
 import { Plus, Trash } from "lucide-react";
 import { ProductFormState, PricingPlanForm } from "./types";
 
@@ -17,12 +17,21 @@ export default function ProductPricingTab({
   updatePricingPlan,
   removePricingPlan,
 }: ProductPricingTabProps) {
+  const plansBottomRef = useRef<HTMLDivElement>(null);
+
+  const handleAddPlan = () => {
+    addPricingPlan();
+    setTimeout(() => {
+      plansBottomRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+    }, 120);
+  };
+
   return (
     <div className="space-y-6">
       <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-3 border-b border-slate-200 dark:border-gray-800">
         <div>
           <h3 className="text-xs font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-            Editable Pricing Packages & Feature Comparison
+            Editable Pricing Packages &amp; Feature Comparison
           </h3>
           <p className="text-xs text-slate-600 dark:text-gray-400 mt-0.5">
             Build lucrative pricing tiers (Starter, Business, Enterprise) with customizable features for each package.
@@ -31,8 +40,8 @@ export default function ProductPricingTab({
 
         <button
           type="button"
-          onClick={addPricingPlan}
-          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-emerald-600 hover:bg-emerald-500 text-white text-white-always text-xs font-bold transition shadow shrink-0"
+          onClick={handleAddPlan}
+          className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-emerald-600 hover:bg-emerald-500 text-white text-white-always text-xs font-bold transition shadow shrink-0 cursor-pointer"
         >
           <Plus size={14} />
           <span>Add Another Pricing Plan</span>
@@ -44,8 +53,8 @@ export default function ProductPricingTab({
           <p className="text-xs text-slate-600 dark:text-gray-400">No pricing plans defined yet.</p>
           <button
             type="button"
-            onClick={addPricingPlan}
-            className="mt-3 px-4 py-2 bg-[#0167D6] hover:bg-blue-700 text-white text-white-always text-xs font-bold rounded-[4px]"
+            onClick={handleAddPlan}
+            className="mt-3 px-4 py-2 bg-[#0167D6] hover:bg-blue-700 text-white text-white-always text-xs font-bold rounded-[4px] cursor-pointer"
           >
             Add Starter Pricing Plan
           </button>
@@ -77,7 +86,7 @@ export default function ProductPricingTab({
                 <button
                   type="button"
                   onClick={() => removePricingPlan(idx)}
-                  className="text-slate-400 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-1 rounded transition"
+                  className="text-slate-400 hover:text-red-500 dark:text-gray-400 dark:hover:text-red-400 p-1 rounded transition cursor-pointer"
                   title="Delete this plan"
                 >
                   <Trash size={15} />
@@ -154,18 +163,18 @@ export default function ProductPricingTab({
                 </div>
               </div>
 
-              {/* Features textarea */}
-              <div className="space-y-1">
+              {/* Features textarea - 2X BIGGER AS REQUESTED */}
+              <div className="space-y-1.5">
                 <label className="text-[11px] font-bold text-slate-600 dark:text-gray-400 flex items-center justify-between">
                   <span>Included Features (1 feature per line)</span>
-                  <span className="text-[10px] text-slate-500 dark:text-gray-500">Will display as checkmarked items</span>
+                  <span className="text-[10px] text-slate-500 dark:text-gray-500">Will display as checkmarked items on product page</span>
                 </label>
                 <textarea
-                  rows={3}
+                  rows={7}
                   value={plan.featuresText}
-                  placeholder="Single Counter POS Terminal&#10;Unlimited Medicines & Batches&#10;Batch & Expiry Date Tracking&#10;Thermal Receipt Printing"
+                  placeholder="Single Counter POS Terminal&#10;Unlimited Medicines & Batches&#10;Batch & Expiry Date Tracking&#10;Thermal Receipt Printing&#10;Cloud Sync & Offline Mode&#10;Daily Profit & Loss Reports"
                   onChange={(e) => updatePricingPlan(idx, "featuresText", e.target.value)}
-                  className="w-full px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
+                  className="w-full px-3 py-2.5 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] min-h-[140px] leading-relaxed font-mono"
                 />
               </div>
 
@@ -178,12 +187,15 @@ export default function ProductPricingTab({
                     className="rounded border-slate-300 text-[#0167D6] focus:ring-0"
                   />
                   <span className="text-xs font-semibold">
-                    Highlight this plan as "Most Popular" on sales cards
+                    Highlight this plan as &ldquo;Most Popular&rdquo; on sales cards
                   </span>
                 </label>
               </div>
             </div>
           ))}
+
+          {/* Scroll anchor target when adding a new pricing plan */}
+          <div ref={plansBottomRef} className="h-2" />
         </div>
       )}
     </div>

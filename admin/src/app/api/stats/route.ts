@@ -5,7 +5,6 @@ import { connectDB } from "@/lib/mongodb";
 import ClientPartner from "@/models/ClientPartner";
 import ThemeItem from "@/models/ThemeItem";
 import BlogItem from "@/models/BlogItem";
-import TeamMember from "@/models/TeamMember";
 import MediaAsset from "@/models/MediaAsset";
 import Inquiry from "@/models/Inquiry";
 
@@ -19,7 +18,6 @@ export async function GET() {
       themes: store.themes.length,
       products: store.products?.length || 0,
       blogs: store.blogs.length,
-      team: store.team.length,
       media: store.media.length,
       inquiries: store.inquiries.length,
       newInquiries: store.inquiries.filter(i => i.status === "new").length,
@@ -30,12 +28,11 @@ export async function GET() {
     const db = await connectDB();
     if (db) {
       try {
-        const [c, t, p, b, tm, m, inq] = await Promise.all([
+        const [c, t, p, b, m, inq] = await Promise.all([
           ClientPartner.countDocuments(),
           ThemeItem.countDocuments(),
           ProductItem.countDocuments(),
           BlogItem.countDocuments(),
-          TeamMember.countDocuments(),
           MediaAsset.countDocuments(),
           Inquiry.countDocuments()
         ]);
@@ -43,7 +40,6 @@ export async function GET() {
         if (t > 0) stats.themes = t;
         if (p > 0) stats.products = p;
         if (b > 0) stats.blogs = b;
-        if (tm > 0) stats.team = tm;
         if (m > 0) stats.media = m;
         if (inq > 0) stats.inquiries = inq;
       } catch (e) {}

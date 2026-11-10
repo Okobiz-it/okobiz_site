@@ -43,9 +43,45 @@ html.light {
 body {
   color: var(--text-main);
   background-color: var(--bg-canvas);
-  font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-family: var(--font-outfit), var(--font-inter), -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif;
+  font-size: 16px;
+  line-height: 1.6;
+  letter-spacing: -0.011em;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
   overflow-x: hidden;
   transition: background-color 0.25s ease, color 0.25s ease;
+}
+
+/* Typography Hierarchy & Contrast Harmony */
+h1, h2, h3, h4, h5, h6 {
+  font-family: var(--font-outfit), var(--font-inter), sans-serif;
+  letter-spacing: -0.025em;
+  font-weight: 700;
+}
+
+/* Elevate readability for muted body and card text in dark mode */
+html.dark p.text-gray-400,
+html.dark span.text-gray-400,
+html.dark div.text-gray-400 {
+  color: #CBD5E1; /* slate-300: crisp, vibrant legibility on dark surfaces */
+}
+
+html.dark p.text-gray-500,
+html.dark span.text-gray-500 {
+  color: #94A3B8; /* slate-400 */
+}
+
+/* Balanced text sizes so small text isn't microscopic or dull */
+.text-xs {
+  font-size: 0.8125rem !important; /* 13px */
+  line-height: 1.4 !important;
+}
+
+.text-sm {
+  font-size: 0.9375rem !important; /* 15px */
+  line-height: 1.55 !important;
 }
 
 /* =========================================================

@@ -23,7 +23,6 @@ export default function DashboardPage() {
     themes: 0,
     products: 0,
     blogs: 0,
-    team: 0,
     media: 0,
     inquiries: 0,
     newInquiries: 0,
@@ -67,7 +66,7 @@ export default function DashboardPage() {
             Welcome to okobiz Admin
           </h1>
           <p className="text-blue-100 dark:text-gray-400 text-sm mt-2 leading-relaxed">
-            Manage your corporate web presentation, client portfolio, blogs, team roster, and multimedia assets with instant live synchronization.
+            Manage your corporate web presentation, client portfolio, products, blogs, and multimedia assets with instant live synchronization.
           </p>
           <div className="mt-5 flex flex-wrap gap-3">
             <Link

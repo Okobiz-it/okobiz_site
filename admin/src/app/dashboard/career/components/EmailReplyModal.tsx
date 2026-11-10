@@ -126,7 +126,7 @@ export default function EmailReplyModal({
 
           {/* Rich Text Editor for Candidate Email Body */}
           <div className="space-y-1">
-            <label className="text-xs font-semibold text-slate-700 dark:text-gray-300">Message Body (Rich Text Editor) *</label>
+            <label className="text-xs font-semibold text-slate-700 dark:text-gray-300">Message Body *</label>
             <RichTextEditor
               value={emailBody}
               onChange={setEmailBody}

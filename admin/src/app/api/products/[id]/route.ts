@@ -6,14 +6,14 @@ import ProductItem from "@/models/ProductItem";
 
 export async function GET(
   req: Request,
-  { params }: { params: { id: string } }
+  { params }: { params: Promise<{ id: string }> }
 ) {
-  try {
-    const { id } = params;
-    if (!id) {
-      return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
-    }
+  const { id } = await params;
+  if (!id) {
+    return NextResponse.json({ success: false, message: "ID is required" }, { status: 400 });
+  }
 
+  try {
     const db = await connectDB();
     if (db) {
       const product = await ProductItem.findOne({
@@ -29,7 +29,7 @@ export async function GET(
 
   const store = getDataStore();
   const match = store.products?.find(
-    (p) => p._id === params.id || (p.slug && p.slug.toLowerCase() === params.id.toLowerCase())
+    (p) => p._id === id || (p.slug && p.slug.toLowerCase() === id.toLowerCase())
   );
   if (match) {
     return NextResponse.json({ success: true, data: match });

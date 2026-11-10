@@ -26,7 +26,7 @@ export default function ProductDescriptionTab({
       <div className="space-y-2">
         <div>
           <label className="text-xs font-bold text-slate-900 dark:text-white flex items-center gap-2 mb-1">
-            <Layers size={14} className="text-[#0167D6]" /> Complete Product Description (Rich Text Editor)
+            <Layers size={14} className="text-[#0167D6]" /> Complete Product Description *
           </label>
           <p className="text-[11px] text-slate-600 dark:text-gray-400 mb-3">
             Use headings, lists, bold text, blockquotes, and links to present your product professionally to prospective buyers.
@@ -42,7 +42,7 @@ export default function ProductDescriptionTab({
 
       {/* Reviews Management Section (Client Success Stories) */}
       <div className="pt-6 border-t border-slate-200 dark:border-gray-800 space-y-4">
-        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-[#0E0F12] p-4 rounded-[4px] border border-slate-200 dark:border-gray-800">
+        <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 bg-slate-50 dark:bg-[#0E0F12] p-4 rounded-[4px] border border-slate-200 dark:border-gray-800 max-w-3xl">
           <div>
             <div className="flex items-center gap-2">
               <Quote size={16} className="text-[#0167D6]" />
@@ -66,7 +66,7 @@ export default function ProductDescriptionTab({
         </div>
 
         {form.reviews.length === 0 ? (
-          <div className="text-center py-8 bg-slate-50 dark:bg-[#0E0F12] border border-slate-200 dark:border-gray-800 rounded-[4px] p-6 space-y-2">
+          <div className="text-center py-8 bg-slate-50 dark:bg-[#0E0F12] border border-slate-200 dark:border-gray-800 rounded-[4px] p-6 space-y-2 max-w-3xl">
             <Quote size={28} className="mx-auto text-slate-400 dark:text-gray-600 mb-1" />
             <p className="text-xs font-semibold text-slate-800 dark:text-gray-300">No client reviews added yet for this product</p>
             <p className="text-[11px] text-slate-500 dark:text-gray-500 max-w-sm mx-auto">
@@ -81,11 +81,11 @@ export default function ProductDescriptionTab({
             </button>
           </div>
         ) : (
-          <div className="space-y-4">
+          <div className="space-y-4 max-w-3xl">
             {form.reviews.map((rev, revIdx) => (
               <div
                 key={revIdx}
-                className="bg-slate-50 dark:bg-[#0E0F12] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 sm:p-5 space-y-3.5 relative group hover:border-slate-300 dark:hover:border-gray-700 transition"
+                className="bg-slate-50 dark:bg-[#0E0F12] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 sm:p-5 space-y-3.5 relative group hover:border-slate-300 dark:hover:border-gray-700 transition shadow-xs"
               >
                 {/* Card Top: Numbering, Rating Picker, and Delete */}
                 <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800/80">

@@ -1,19 +1,13 @@
 // Data models & types - All live data is persisted in MongoDB Atlas and served from Cloudinary CDN.
 // All static mock data has been cleared per system architecture specifications.
 
-export interface TeamMember {
-  _id?: string;
-  name: string;
-  designation: string;
-  image: string;
-  category?: string;
-}
-
 export interface ClientPartner {
   _id?: string;
   name: string;
   image: string;
+  websiteLink?: string;
   order?: number;
+  isActive?: boolean;
 }
 
 export interface ThemeItem {
@@ -129,8 +123,6 @@ export interface GalleryItem {
 }
 
 // All static data arrays are emptied - system operates 100% online from MongoDB Atlas & Cloudinary CDN
-export const TEAM_MEMBERS: TeamMember[] = [];
-export const LEGAL_ADVISORS: TeamMember[] = [];
 export const CLIENT_PARTNERS: ClientPartner[] = [];
 export const SAMPLE_THEMES: ThemeItem[] = [];
 export const SAMPLE_BLOGS: BlogItem[] = [];

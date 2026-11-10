@@ -228,6 +228,7 @@ export interface DataStoreSchema {
     createdAt: string;
     updatedAt?: string;
   }>;
+  quotations?: Array<any>;
   settings: {
     siteName: string;
     contactPhone: string;
@@ -1582,6 +1583,9 @@ export function getDataStore(): DataStoreSchema {
           prod.slug = createSlug(prod.title || "product");
         }
       });
+    }
+    if (!store.quotations || !Array.isArray(store.quotations)) {
+      store.quotations = [];
     }
     return store;
   } catch (err) {

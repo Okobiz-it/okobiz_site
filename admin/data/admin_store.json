@@ -2679,5 +2679,286 @@
       "createdAt": "2024-01-01T00:00:00.000Z",
       "updatedAt": "2024-01-01T00:00:00.000Z"
     }
+  ],
+  "quotations": [
+    {
+      "_id": "quote-1794227132865",
+      "ref_no": "okobiz/bizpos/002/09/26",
+      "quote_date": "2026-11-09T00:00:00.000Z",
+      "client_name": "Masfik Taludkar",
+      "organization_name": "",
+      "address": "",
+      "phone": "",
+      "email": "",
+      "subject": "Quotation for Web & Software Solution",
+      "software_columns": [
+        {
+          "key": "sl",
+          "label": "SL",
+          "width": "7%"
+        },
+        {
+          "key": "scope",
+          "label": "Scope of Work",
+          "width": "28%"
+        },
+        {
+          "key": "particulars",
+          "label": "PARTICULARS",
+          "width": "51%"
+        },
+        {
+          "key": "amount",
+          "label": "AMOUNT",
+          "width": "14%"
+        }
+      ],
+      "software_rows": [
+        {
+          "sl": 1,
+          "scope": "Dynamic Homepage & Pages",
+          "particulars": "Homepage with Export & Import sections, About Us, Mission & Vision, Contact Us"
+        },
+        {
+          "sl": 2,
+          "scope": "Product Management System",
+          "particulars": "Admin can add, update & delete products under Export & Import categories"
+        },
+        {
+          "sl": 3,
+          "scope": "Category Management",
+          "particulars": "Two main categories: Export & Import (both include jute & leather products)"
+        },
+        {
+          "sl": 4,
+          "scope": "Product Display System",
+          "particulars": "Users can browse products under Export & Import with details"
+        },
+        {
+          "sl": 5,
+          "scope": "Request for Quote System",
+          "particulars": "Users can request quotes for both Export & Import products"
+        },
+        {
+          "sl": 6,
+          "scope": "Admin Dashboard",
+          "particulars": "Full control over products, categories, quotes, users & website content"
+        },
+        {
+          "sl": 7,
+          "scope": "Quote Management",
+          "particulars": "Admin can view, respond & manage all Export & Import quote requests"
+        },
+        {
+          "sl": 8,
+          "scope": "Banner Management",
+          "particulars": "Admin can add & manage promotional banners"
+        },
+        {
+          "sl": 9,
+          "scope": "Partner / Client Management",
+          "particulars": "Add & display international partners/clients"
+        },
+        {
+          "sl": 10,
+          "scope": "Content Management System",
+          "particulars": "Manage About Us, Mission, Vision & other content pages"
+        },
+        {
+          "sl": 11,
+          "scope": "Security & System Support",
+          "particulars": "SSL, data protection & basic maintenance support"
+        },
+        {
+          "sl": 12,
+          "scope": "test",
+          "particulars": "test"
+        },
+        {
+          "sl": 13,
+          "scope": "test",
+          "particulars": "test"
+        },
+        {
+          "sl": 14,
+          "scope": "test",
+          "particulars": "test"
+        },
+        {
+          "sl": 15,
+          "scope": "test",
+          "particulars": "test"
+        },
+        {
+          "sl": 16,
+          "scope": "tes",
+          "particulars": "sdf"
+        },
+        {
+          "sl": 17,
+          "scope": "ste",
+          "particulars": "dfa"
+        },
+        {
+          "sl": 18,
+          "scope": "sdf",
+          "particulars": "asdfs"
+        },
+        {
+          "sl": 19,
+          "scope": "asdf",
+          "particulars": "asdf"
+        },
+        {
+          "sl": 20,
+          "scope": "asdf",
+          "particulars": "asdf"
+        },
+        {
+          "sl": 21,
+          "scope": "asdf",
+          "particulars": "asdf"
+        }
+      ],
+      "software_amount": 30000,
+      "plan_name": "",
+      "billing_cycle": "",
+      "license_fee_title": "",
+      "license_fee_amount": 0,
+      "subscription_amount": 0,
+      "recurring_note": "",
+      "has_hardware": false,
+      "hardware_columns": [],
+      "hardware_rows": [],
+      "hardware_amount": 0,
+      "grand_total": 30000,
+      "in_words": "Thirty Thousand Only",
+      "project_breakdown": null,
+      "terms_conditions": "<h1>15 Days' Time Breakdown (Export/Import / POS Solution)</h1><h2>Step 1: Planning &amp; Core Setup (Day 1–2)</h2><p>Project planning, requirement analysis, UI/UX design, and basic system setup. This phase includes understanding business operations, identifying the primary user requirements, defining the system architecture, and preparing the initial development environment.</p><ul><li><p>Analyze business requirements and workflow.</p></li><li><p>Design the database architecture and relationships.</p></li><li><p>Prepare the development environment and project structure.</p></li><li><p>Design the initial user interface and navigation system.</p></li><li><p>Configure authentication and basic application security.</p></li><li><p>Establish the core layout and reusable components.</p></li></ul><h2>Step 2: Core Features Development (Day 3–7)</h2><p>Development of the main application functionalities, including product management, category management, inventory tracking, display systems, and interactive modules.</p><ul><li><p>Product creation, editing, deletion, and detailed information management.</p></li><li><p>Product category and subcategory configuration.</p></li><li><p>Inventory management with stock availability tracking.</p></li><li><p>Product pricing, discounts, and variation management.</p></li><li><p>Import and export functionality for product information.</p></li><li><p>Responsive product listing and detailed product display pages.</p></li><li><p>Search, filtering, sorting, and pagination functionality.</p></li><li><p>Interactive modules for managing products and business information.</p></li><li><p>Basic reporting functionality for inventory and product records.</p></li></ul><h2>Step 3: Admin Panel &amp; User System (Day 8–11)</h2><p>Backend and control system development. This phase focuses on building a centralized administration panel that allows authorized users to manage the entire application efficiently.</p><ul><li><p>Admin dashboard with business statistics and essential information.</p></li><li><p>User registration, login, logout, and account management.</p></li><li><p>Role-based access control for different types of users.</p></li><li><p>Quote and order management system.</p></li><li><p>Customer information and contact management.</p></li><li><p>Order status updates and transaction history.</p></li><li><p>Content management for website pages and sections.</p></li><li><p>Admin controls for managing products, categories, and inventory.</p></li><li><p>Basic notification and activity tracking functionality.</p></li><li><p>Secure authentication and authorization implementation.</p></li></ul><h2>Step 4: Testing, Finalization &amp; Launch (Day 12–15)</h2><p>Final testing, optimization, deployment, and production launch. All major features will be reviewed to ensure the system operates correctly across supported devices and browsers.</p><ul><li><p>Functional testing of all developed modules.</p></li><li><p>Bug identification, troubleshooting, and resolution.</p></li><li><p>Responsive design testing across desktop, tablet, and mobile devices.</p></li><li><p>Security configuration, including SSL implementation.</p></li><li><p>Performance optimization and database query improvements.</p></li><li><p>Final UI/UX adjustments and content verification.</p></li><li><p>Production server configuration and deployment.</p></li><li><p>Domain and hosting configuration.</p></li><li><p>Final system handover with basic operational guidance.</p></li></ul><h2>Programming Stack</h2><p>Modern Next.js, React, Node.js, Express, MongoDB/PostgreSQL, Tailwind CSS, Nodemailer, Cloudinary API, and other technologies as required by the project specifications.</p><p><strong>Note:</strong> The following goods and services must be purchased from you if required: mobile OTP bundle pack, Android Track API, Cloudinary API, server storage, SSL licenses for e-commerce, your domain and hosting. We will inform you before purchasing any additional third-party services or subscriptions.</p><div><hr></div><h1>Terms &amp; Conditions</h1><ol start=\"1\"><li><p>This budget does not include VAT or any other additional government charges, taxes, or transaction fees that may apply during the project.</p></li><li><p>The customer will provide all necessary content, images, written company information, product details, business documents, and other required materials before or during the agreed development period.</p></li><li><p>To commence operations, an advance payment of 50% is required. Another 25% needs to be paid after completing 50% of the work, and the remaining 25% must be paid at the time of final delivery. Within 01 month, the order will be cancelled if milestone payments are delayed.</p></li><li><p>Delivery must be completed within 07 days from the delivery date. If delivery is not collected within this period, the client agrees to standard handover procedures and the project will be considered ready for delivery.</p></li><li><p>This quotation will remain valid for 10 days from the issue date. After this period, the pricing, terms, and scope may be subject to revision based on project requirements and market conditions.</p></li><li><p>An additional charge will apply for each extra page or feature that exceeds the agreed scope after final submission. Any such changes must be discussed and approved by both parties before implementation.</p></li><li><p>A basic maintenance price (starting from a flexible monthly rate) is available if you require continuous website or system maintenance after project completion.</p></li><li><p>The company will provide the first three months of basic maintenance free of charge, subject to the agreed maintenance scope and service limitations.</p></li><li><p>A 10% service fee will apply if we need to involve any third-party services, integrations, or external service providers.</p></li><li><p>The website/system language will be developed in English. Any additional language version will incur extra charges depending on the number of pages and translation requirements.</p></li><li><p>Any major changes to the project requirements, system architecture, or approved design after development has started may require additional time and budget.</p></li><li><p>The client must review and approve the delivered milestones within a reasonable timeframe to ensure that the project stays on schedule.</p></li><li><p>Delays caused by unavailable third-party APIs, hosting providers, payment gateways, or other external dependencies may affect the final delivery timeline.</p></li><li><p>All project-related communication, approvals, and additional requirements should be documented through the agreed communication channels.</p></li><li><p>Final source code and administrative access will be handed over after the agreed payment obligations have been completed.</p></li></ol><div><hr></div><h1>12. What Will You Provide Us?</h1><p>To ensure smooth development and avoid unnecessary delays, the following information and resources must be provided by your company:</p><ul><li><p><strong>a. Company Logo:</strong> Your official company logo in PNG format without background or in vector format (SVG/AI).</p></li><li><p><strong>b. Domain &amp; Hosting:</strong> Your domain name and hosting access, if applicable. If you do not have these, we can assist you with purchasing and configuring them.</p></li><li><p><strong>c. Contact Information:</strong> Business phone number, email address, company address, Google Maps location, and other relevant contact details.</p></li><li><p><strong>d. Social Media Links:</strong> Official Facebook, Instagram, YouTube, LinkedIn, and other social media profile links.</p></li><li><p><strong>e. Courier / Delivery API:</strong> Required courier or delivery service API credentials, if applicable.</p></li><li><p><strong>f. Payment Gateway API:</strong> Payment gateway access credentials and merchant account information, if you have them.</p></li><li><p><strong>g. Bulk SMS API:</strong> SMS gateway credentials and sender ID information for OTP and notification services.</p></li><li><p><strong>h. Website Content:</strong> All required content for policy pages, about pages, homepage sections, product descriptions, and other website sections.</p></li><li><p><strong>i. Product Information:</strong> Product names, descriptions, pricing, images, categories, stock information, and other relevant product details.</p></li><li><p><strong>j. Business Documents:</strong> Any necessary business registration information, legal documents, or verification details required for third-party integrations.</p></li><li><p><strong>k. Email Service Access:</strong> SMTP or transactional email service credentials for sending automated notifications and account-related emails.</p></li><li><p><strong>l. Reference Websites:</strong> Links to websites, designs, or platforms that represent your preferred layout, features, or overall business requirements.</p></li></ul><div><hr></div><h1>13. What Access Will You Get from Okobiz?</h1><p>Upon successful project completion and payment confirmation, Okobiz will provide the following deliverables and support:</p><ul><li><p><strong>a. Admin Panel Access:</strong> You will receive the admin panel login link along with your registered email address and password. You can change your password whenever necessary.</p></li><li><p><strong>b. System Documentation:</strong> Basic documentation explaining the main system functionalities, dashboard sections, and administrative operations.</p></li><li><p><strong>c. Operational Guidance:</strong> Our team will provide guidance on how to operate the system effectively, including product management, order processing, and basic administrative tasks.</p></li><li><p><strong>d. Security &amp; Privacy:</strong> Okobiz always ensures that the privacy of your business information and customer data remains protected through appropriate security practices.</p></li><li><p><strong>e. Responsive Platform:</strong> Your website/system will be accessible across supported desktop, tablet, and mobile devices.</p></li><li><p><strong>f. Technical Handover:</strong> Relevant project files, configuration information, and agreed technical resources will be provided according to the project handover terms.</p></li><li><p><strong>g. Initial Support:</strong> We will assist you with basic questions and operational issues during the agreed initial support period.</p></li><li><p><strong>h. Future Scalability:</strong> The system will be structured to support future improvements, additional modules, and business expansion where technically feasible.</p></li><li><p><strong>i. Maintenance Options:</strong> You can request ongoing technical maintenance, updates, and troubleshooting services under a separate maintenance agreement.</p></li><li><p><strong>j. Deployment Confirmation:</strong> We will confirm successful deployment and provide the necessary website and administrative access details.</p></li></ul><div><hr></div><h1>14. Project Communication &amp; Support</h1><p>We believe that clear communication is essential for successful project delivery. Throughout the development process, our team will maintain communication with your assigned representative.</p><ul><li><p>Regular progress updates will be shared during the development period.</p></li><li><p>Important design and functionality decisions will require client approval.</p></li><li><p>Any unexpected technical issues will be communicated as soon as possible.</p></li><li><p>Additional requirements will be evaluated before implementation.</p></li><li><p>Final testing and client feedback will be completed before the official handover.</p></li></ul><div><hr></div><h1>15. Project Delivery &amp; Final Approval</h1><p>After completing all agreed development activities, the project will enter the final review and delivery stage.</p><p>The client will receive an opportunity to review the implemented features and report any issues related to the originally agreed project scope. Our development team will address identified bugs and make necessary adjustments before final handover.</p><p>Once the project is approved, all agreed credentials, documentation, and administrative access will be delivered according to the payment and handover conditions.</p><p><strong>Our Commitment:</strong> Okobiz aims to deliver a reliable, secure, user-friendly, and scalable digital solution that supports your business operations and provides a strong foundation for future growth.</p><div><hr></div><p><strong>Okobiz — Leading the Digital Revolution</strong></p><p>Phone: +880 1973590937<br>Email: <a href=\"mailto:info@okobiz.com\">info@okobiz.com</a><br>Website: <a href=\"http://www.okobiz.com/\">www.okobiz.com</a></p>",
+      "client_requirements": null,
+      "deliverables": null,
+      "company_signatory_name": "Md. Sorower Jahan",
+      "company_signatory_title": "CEO, okobiz",
+      "company_phone": "+880 1973590937",
+      "email_sent_at": null,
+      "created_at": "2026-11-09T12:25:32.865Z",
+      "updated_at": "2026-11-09T12:52:53.708Z"
+    },
+    {
+      "_id": "quote-1794223721754",
+      "ref_no": "okobiz/bizpos/001/09/26",
+      "quote_date": "2026-11-09T00:00:00.000Z",
+      "client_name": "Uttam kumar debsharma",
+      "organization_name": "",
+      "address": "",
+      "phone": "",
+      "email": "",
+      "subject": "Quotation for Web & Software Solution",
+      "software_columns": [
+        {
+          "key": "sl",
+          "label": "SL",
+          "width": "7%"
+        },
+        {
+          "key": "scope",
+          "label": "Scope of Work",
+          "width": "28%"
+        },
+        {
+          "key": "particulars",
+          "label": "PARTICULARS",
+          "width": "51%"
+        },
+        {
+          "key": "amount",
+          "label": "AMOUNT",
+          "width": "14%"
+        }
+      ],
+      "software_rows": [
+        {
+          "sl": 1,
+          "scope": "Dynamic Homepage & Pages",
+          "particulars": "Homepage with Export & Import sections, About Us, Mission & Vision, Contact Us"
+        },
+        {
+          "sl": 2,
+          "scope": "Product Management System",
+          "particulars": "Admin can add, update & delete products under Export & Import categories"
+        },
+        {
+          "sl": 3,
+          "scope": "Category Management",
+          "particulars": "Two main categories: Export & Import (both include jute & leather products)"
+        },
+        {
+          "sl": 4,
+          "scope": "Product Display System",
+          "particulars": "Users can browse products under Export & Import with details"
+        },
+        {
+          "sl": 5,
+          "scope": "Request for Quote System",
+          "particulars": "Users can request quotes for both Export & Import products"
+        },
+        {
+          "sl": 6,
+          "scope": "Admin Dashboard",
+          "particulars": "Full control over products, categories, quotes, users & website content"
+        },
+        {
+          "sl": 7,
+          "scope": "Quote Management",
+          "particulars": "Admin can view, respond & manage all Export & Import quote requests"
+        },
+        {
+          "sl": 8,
+          "scope": "Banner Management",
+          "particulars": "Admin can add & manage promotional banners"
+        },
+        {
+          "sl": 9,
+          "scope": "Partner / Client Management",
+          "particulars": "Add & display international partners/clients"
+        },
+        {
+          "sl": 10,
+          "scope": "Content Management System",
+          "particulars": "Manage About Us, Mission, Vision & other content pages"
+        },
+        {
+          "sl": 11,
+          "scope": "Security & System Support",
+          "particulars": "SSL, data protection & basic maintenance support"
+        }
+      ],
+      "software_amount": 30000,
+      "plan_name": "Starter",
+      "billing_cycle": "MONTHLY",
+      "license_fee_title": "One-time Setup & License Fee",
+      "license_fee_amount": 0,
+      "subscription_amount": 0,
+      "recurring_note": "",
+      "has_hardware": false,
+      "hardware_columns": [],
+      "hardware_rows": [],
+      "hardware_amount": 0,
+      "grand_total": 30000,
+      "in_words": "Thirty Thousand Only",
+      "project_breakdown": "",
+      "terms_conditions": "<h1>15 Days' Time Breakdown (Export/Import / POS Solution)</h1><h2>Step 1: Planning &amp; Core Setup (Day 1–2)</h2><p>Project planning, requirement analysis, UI/UX design, and basic system setup. This phase includes understanding business operations, identifying the primary user requirements, defining the system architecture, and preparing the initial development environment.</p><ul><li><p>Analyze business requirements and workflow.</p></li><li><p>Design the database architecture and relationships.</p></li><li><p>Prepare the development environment and project structure.</p></li><li><p>Design the initial user interface and navigation system.</p></li><li><p>Configure authentication and basic application security.</p></li><li><p>Establish the core layout and reusable components.</p></li></ul><h2>Step 2: Core Features Development (Day 3–7)</h2><p>Development of the main application functionalities, including product management, category management, inventory tracking, display systems, and interactive modules.</p><ul><li><p>Product creation, editing, deletion, and detailed information management.</p></li><li><p>Product category and subcategory configuration.</p></li><li><p>Inventory management with stock availability tracking.</p></li><li><p>Product pricing, discounts, and variation management.</p></li><li><p>Import and export functionality for product information.</p></li><li><p>Responsive product listing and detailed product display pages.</p></li><li><p>Search, filtering, sorting, and pagination functionality.</p></li><li><p>Interactive modules for managing products and business information.</p></li><li><p>Basic reporting functionality for inventory and product records.</p></li></ul><h2>Step 3: Admin Panel &amp; User System (Day 8–11)</h2><p>Backend and control system development. This phase focuses on building a centralized administration panel that allows authorized users to manage the entire application efficiently.</p><ul><li><p>Admin dashboard with business statistics and essential information.</p></li><li><p>User registration, login, logout, and account management.</p></li><li><p>Role-based access control for different types of users.</p></li><li><p>Quote and order management system.</p></li><li><p>Customer information and contact management.</p></li><li><p>Order status updates and transaction history.</p></li><li><p>Content management for website pages and sections.</p></li><li><p>Admin controls for managing products, categories, and inventory.</p></li><li><p>Basic notification and activity tracking functionality.</p></li><li><p>Secure authentication and authorization implementation.</p></li></ul><h2>Step 4: Testing, Finalization &amp; Launch (Day 12–15)</h2><p>Final testing, optimization, deployment, and production launch. All major features will be reviewed to ensure the system operates correctly across supported devices and browsers.</p><ul><li><p>Functional testing of all developed modules.</p></li><li><p>Bug identification, troubleshooting, and resolution.</p></li><li><p>Responsive design testing across desktop, tablet, and mobile devices.</p></li><li><p>Security configuration, including SSL implementation.</p></li><li><p>Performance optimization and database query improvements.</p></li><li><p>Final UI/UX adjustments and content verification.</p></li><li><p>Production server configuration and deployment.</p></li><li><p>Domain and hosting configuration.</p></li><li><p>Final system handover with basic operational guidance.</p></li></ul><h2>Programming Stack</h2><p>Modern Next.js, React, Node.js, Express, MongoDB/PostgreSQL, Tailwind CSS, Nodemailer, Cloudinary API, and other technologies as required by the project specifications.</p><p><strong>Note:</strong> The following goods and services must be purchased from you if required: mobile OTP bundle pack, Android Track API, Cloudinary API, server storage, SSL licenses for e-commerce, your domain and hosting. We will inform you before purchasing any additional third-party services or subscriptions.</p><h1>Terms &amp; Conditions</h1><ol start=\"1\"><li><p>This budget does not include VAT or any other additional government charges, taxes, or transaction fees that may apply during the project.</p></li><li><p>The customer will provide all necessary content, images, written company information, product details, business documents, and other required materials before or during the agreed development period.</p></li><li><p>To commence operations, an advance payment of 50% is required. Another 25% needs to be paid after completing 50% of the work, and the remaining 25% must be paid at the time of final delivery. Within 01 month, the order will be cancelled if milestone payments are delayed.</p></li><li><p>Delivery must be completed within 07 days from the delivery date. If delivery is not collected within this period, the client agrees to standard handover procedures and the project will be considered ready for delivery.</p></li><li><p>This quotation will remain valid for 10 days from the issue date. After this period, the pricing, terms, and scope may be subject to revision based on project requirements and market conditions.</p></li><li><p>An additional charge will apply for each extra page or feature that exceeds the agreed scope after final submission. Any such changes must be discussed and approved by both parties before implementation.</p></li><li><p>A basic maintenance price (starting from a flexible monthly rate) is available if you require continuous website or system maintenance after project completion.</p></li><li><p>The company will provide the first three months of basic maintenance free of charge, subject to the agreed maintenance scope and service limitations.</p></li><li><p>A 10% service fee will apply if we need to involve any third-party services, integrations, or external service providers.</p></li><li><p>The website/system language will be developed in English. Any additional language version will incur extra charges depending on the number of pages and translation requirements.</p></li><li><p>Any major changes to the project requirements, system architecture, or approved design after development has started may require additional time and budget.</p></li><li><p>The client must review and approve the delivered milestones within a reasonable timeframe to ensure that the project stays on schedule.</p></li><li><p>Delays caused by unavailable third-party APIs, hosting providers, payment gateways, or other external dependencies may affect the final delivery timeline.</p></li><li><p>All project-related communication, approvals, and additional requirements should be documented through the agreed communication channels.</p></li><li><p>Final source code and administrative access will be handed over after the agreed payment obligations have been completed.</p></li></ol><h1>12. What Will You Provide Us?</h1><p>To ensure smooth development and avoid unnecessary delays, the following information and resources must be provided by your company:</p><ul><li><p><strong>a. Company Logo:</strong> Your official company logo in PNG format without background or in vector format (SVG/AI).</p></li><li><p><strong>b. Domain &amp; Hosting:</strong> Your domain name and hosting access, if applicable. If you do not have these, we can assist you with purchasing and configuring them.</p></li><li><p><strong>c. Contact Information:</strong> Business phone number, email address, company address, Google Maps location, and other relevant contact details.</p></li><li><p><strong>d. Social Media Links:</strong> Official Facebook, Instagram, YouTube, LinkedIn, and other social media profile links.</p></li><li><p><strong>e. Courier / Delivery API:</strong> Required courier or delivery service API credentials, if applicable.</p></li><li><p><strong>f. Payment Gateway API:</strong> Payment gateway access credentials and merchant account information, if you have them.</p></li><li><p><strong>g. Bulk SMS API:</strong> SMS gateway credentials and sender ID information for OTP and notification services.</p></li><li><p><strong>h. Website Content:</strong> All required content for policy pages, about pages, homepage sections, product descriptions, and other website sections.</p></li><li><p><strong>i. Product Information:</strong> Product names, descriptions, pricing, images, categories, stock information, and other relevant product details.</p></li><li><p><strong>j. Business Documents:</strong> Any necessary business registration information, legal documents, or verification details required for third-party integrations.</p></li><li><p><strong>k. Email Service Access:</strong> SMTP or transactional email service credentials for sending automated notifications and account-related emails.</p></li><li><p><strong>l. Reference Websites:</strong> Links to websites, designs, or platforms that represent your preferred layout, features, or overall business requirements.</p></li></ul><h1>13. What Access Will You Get from Okobiz?</h1><p>Upon successful project completion and payment confirmation, Okobiz will provide the following deliverables and support:</p><ul><li><p><strong>a. Admin Panel Access:</strong> You will receive the admin panel login link along with your registered email address and password. You can change your password whenever necessary.</p></li><li><p><strong>b. System Documentation:</strong> Basic documentation explaining the main system functionalities, dashboard sections, and administrative operations.</p></li><li><p><strong>c. Operational Guidance:</strong> Our team will provide guidance on how to operate the system effectively, including product management, order processing, and basic administrative tasks.</p></li><li><p><strong>d. Security &amp; Privacy:</strong> Okobiz always ensures that the privacy of your business information and customer data remains protected through appropriate security practices.</p></li><li><p><strong>e. Responsive Platform:</strong> Your website/system will be accessible across supported desktop, tablet, and mobile devices.</p></li><li><p><strong>f. Technical Handover:</strong> Relevant project files, configuration information, and agreed technical resources will be provided according to the project handover terms.</p></li><li><p><strong>g. Initial Support:</strong> We will assist you with basic questions and operational issues during the agreed initial support period.</p></li><li><p><strong>h. Future Scalability:</strong> The system will be structured to support future improvements, additional modules, and business expansion where technically feasible.</p></li><li><p><strong>i. Maintenance Options:</strong> You can request ongoing technical maintenance, updates, and troubleshooting services under a separate maintenance agreement.</p></li><li><p><strong>j. Deployment Confirmation:</strong> We will confirm successful deployment and provide the necessary website and administrative access details.</p></li></ul><h1>14. Project Communication &amp; Support</h1><p>We believe that clear communication is essential for successful project delivery. Throughout the development process, our team will maintain communication with your assigned representative.</p><ul><li><p>Regular progress updates will be shared during the development period.</p></li><li><p>Important design and functionality decisions will require client approval.</p></li><li><p>Any unexpected technical issues will be communicated as soon as possible.</p></li><li><p>Additional requirements will be evaluated before implementation.</p></li><li><p>Final testing and client feedback will be completed before the official handover.</p></li></ul><h1>15. Project Delivery &amp; Final Approval</h1><p>After completing all agreed development activities, the project will enter the final review and delivery stage.</p><p>The client will receive an opportunity to review the implemented features and report any issues related to the originally agreed project scope. Our development team will address identified bugs and make necessary adjustments before final handover.</p><p>Once the project is approved, all agreed credentials, documentation, and administrative access will be delivered according to the payment and handover conditions.</p><p><strong>Our Commitment:</strong> Okobiz aims to deliver a reliable, secure, user-friendly, and scalable digital solution that supports your business operations and provides a strong foundation for future growth.</p><div><hr></div><p><strong>Okobiz — Leading the Digital Revolution</strong></p><p>Phone: +880 1973590937<br>Email: <a href=\"mailto:info@okobiz.com\">info@okobiz.com</a><br>Website: <a href=\"http://www.okobiz.com/\">www.okobiz.com</a><br><br></p><h1>15 Days' Time Breakdown (Export/Import / POS Solution)</h1><h2>Step 1: Planning &amp; Core Setup (Day 1–2)</h2><p>Project planning, requirement analysis, UI/UX design, and basic system setup. This phase includes understanding business operations, identifying the primary user requirements, defining the system architecture, and preparing the initial development environment.</p><ul><li><p>Analyze business requirements and workflow.</p></li><li><p>Design the database architecture and relationships.</p></li><li><p>Prepare the development environment and project structure.</p></li><li><p>Design the initial user interface and navigation system.</p></li><li><p>Configure authentication and basic application security.</p></li><li><p>Establish the core layout and reusable components.</p></li></ul><h2>Step 2: Core Features Development (Day 3–7)</h2><p>Development of the main application functionalities, including product management, category management, inventory tracking, display systems, and interactive modules.</p><ul><li><p>Product creation, editing, deletion, and detailed information management.</p></li><li><p>Product category and subcategory configuration.</p></li><li><p>Inventory management with stock availability tracking.</p></li><li><p>Product pricing, discounts, and variation management.</p></li><li><p>Import and export functionality for product information.</p></li><li><p>Responsive product listing and detailed product display pages.</p></li><li><p>Search, filtering, sorting, and pagination functionality.</p></li><li><p>Interactive modules for managing products and business information.</p></li><li><p>Basic reporting functionality for inventory and product records.</p></li></ul><h2>Step 3: Admin Panel &amp; User System (Day 8–11)</h2><p>Backend and control system development. This phase focuses on building a centralized administration panel that allows authorized users to manage the entire application efficiently.</p><ul><li><p>Admin dashboard with business statistics and essential information.</p></li><li><p>User registration, login, logout, and account management.</p></li><li><p>Role-based access control for different types of users.</p></li><li><p>Quote and order management system.</p></li><li><p>Customer information and contact management.</p></li><li><p>Order status updates and transaction history.</p></li><li><p>Content management for website pages and sections.</p></li><li><p>Admin controls for managing products, categories, and inventory.</p></li><li><p>Basic notification and activity tracking functionality.</p></li><li><p>Secure authentication and authorization implementation.</p></li></ul><h2>Step 4: Testing, Finalization &amp; Launch (Day 12–15)</h2><p>Final testing, optimization, deployment, and production launch. All major features will be reviewed to ensure the system operates correctly across supported devices and browsers.</p><ul><li><p>Functional testing of all developed modules.</p></li><li><p>Bug identification, troubleshooting, and resolution.</p></li><li><p>Responsive design testing across desktop, tablet, and mobile devices.</p></li><li><p>Security configuration, including SSL implementation.</p></li><li><p>Performance optimization and database query improvements.</p></li><li><p>Final UI/UX adjustments and content verification.</p></li><li><p>Production server configuration and deployment.</p></li><li><p>Domain and hosting configuration.</p></li><li><p>Final system handover with basic operational guidance.</p></li></ul><h2>Programming Stack</h2><p>Modern Next.js, React, Node.js, Express, MongoDB/PostgreSQL, Tailwind CSS, Nodemailer, Cloudinary API, and other technologies as required by the project specifications.</p><p><strong>Note:</strong> The following goods and services must be purchased from you if required: mobile OTP bundle pack, Android Track API, Cloudinary API, server storage, SSL licenses for e-commerce, your domain and hosting. We will inform you before purchasing any additional third-party services or subscriptions.</p><h1>Terms &amp; Conditions</h1><ol start=\"1\"><li><p>This budget does not include VAT or any other additional government charges, taxes, or transaction fees that may apply during the project.</p></li><li><p>The customer will provide all necessary content, images, written company information, product details, business documents, and other required materials before or during the agreed development period.</p></li><li><p>To commence operations, an advance payment of 50% is required. Another 25% needs to be paid after completing 50% of the work, and the remaining 25% must be paid at the time of final delivery. Within 01 month, the order will be cancelled if milestone payments are delayed.</p></li><li><p>Delivery must be completed within 07 days from the delivery date. If delivery is not collected within this period, the client agrees to standard handover procedures and the project will be considered ready for delivery.</p></li><li><p>This quotation will remain valid for 10 days from the issue date. After this period, the pricing, terms, and scope may be subject to revision based on project requirements and market conditions.</p></li><li><p>An additional charge will apply for each extra page or feature that exceeds the agreed scope after final submission. Any such changes must be discussed and approved by both parties before implementation.</p></li><li><p>A basic maintenance price (starting from a flexible monthly rate) is available if you require continuous website or system maintenance after project completion.</p></li><li><p>The company will provide the first three months of basic maintenance free of charge, subject to the agreed maintenance scope and service limitations.</p></li><li><p>A 10% service fee will apply if we need to involve any third-party services, integrations, or external service providers.</p></li><li><p>The website/system language will be developed in English. Any additional language version will incur extra charges depending on the number of pages and translation requirements.</p></li><li><p>Any major changes to the project requirements, system architecture, or approved design after development has started may require additional time and budget.</p></li><li><p>The client must review and approve the delivered milestones within a reasonable timeframe to ensure that the project stays on schedule.</p></li><li><p>Delays caused by unavailable third-party APIs, hosting providers, payment gateways, or other external dependencies may affect the final delivery timeline.</p></li><li><p>All project-related communication, approvals, and additional requirements should be documented through the agreed communication channels.</p></li><li><p>Final source code and administrative access will be handed over after the agreed payment obligations have been completed.</p></li></ol><h1>12. What Will You Provide Us?</h1><p>To ensure smooth development and avoid unnecessary delays, the following information and resources must be provided by your company:</p><ul><li><p><strong>a. Company Logo:</strong> Your official company logo in PNG format without background or in vector format (SVG/AI).</p></li><li><p><strong>b. Domain &amp; Hosting:</strong> Your domain name and hosting access, if applicable. If you do not have these, we can assist you with purchasing and configuring them.</p></li><li><p><strong>c. Contact Information:</strong> Business phone number, email address, company address, Google Maps location, and other relevant contact details.</p></li><li><p><strong>d. Social Media Links:</strong> Official Facebook, Instagram, YouTube, LinkedIn, and other social media profile links.</p></li><li><p><strong>e. Courier / Delivery API:</strong> Required courier or delivery service API credentials, if applicable.</p></li><li><p><strong>f. Payment Gateway API:</strong> Payment gateway access credentials and merchant account information, if you have them.</p></li><li><p><strong>g. Bulk SMS API:</strong> SMS gateway credentials and sender ID information for OTP and notification services.</p></li><li><p><strong>h. Website Content:</strong> All required content for policy pages, about pages, homepage sections, product descriptions, and other website sections.</p></li><li><p><strong>i. Product Information:</strong> Product names, descriptions, pricing, images, categories, stock information, and other relevant product details.</p></li><li><p><strong>j. Business Documents:</strong> Any necessary business registration information, legal documents, or verification details required for third-party integrations.</p></li><li><p><strong>k. Email Service Access:</strong> SMTP or transactional email service credentials for sending automated notifications and account-related emails.</p></li><li><p><strong>l. Reference Websites:</strong> Links to websites, designs, or platforms that represent your preferred layout, features, or overall business requirements.</p></li></ul><h1>13. What Access Will You Get from Okobiz?</h1><p>Upon successful project completion and payment confirmation, Okobiz will provide the following deliverables and support:</p><ul><li><p><strong>a. Admin Panel Access:</strong> You will receive the admin panel login link along with your registered email address and password. You can change your password whenever necessary.</p></li><li><p><strong>b. System Documentation:</strong> Basic documentation explaining the main system functionalities, dashboard sections, and administrative operations.</p></li><li><p><strong>c. Operational Guidance:</strong> Our team will provide guidance on how to operate the system effectively, including product management, order processing, and basic administrative tasks.</p></li><li><p><strong>d. Security &amp; Privacy:</strong> Okobiz always ensures that the privacy of your business information and customer data remains protected through appropriate security practices.</p></li><li><p><strong>e. Responsive Platform:</strong> Your website/system will be accessible across supported desktop, tablet, and mobile devices.</p></li><li><p><strong>f. Technical Handover:</strong> Relevant project files, configuration information, and agreed technical resources will be provided according to the project handover terms.</p></li><li><p><strong>g. Initial Support:</strong> We will assist you with basic questions and operational issues during the agreed initial support period.</p></li><li><p><strong>h. Future Scalability:</strong> The system will be structured to support future improvements, additional modules, and business expansion where technically feasible.</p></li><li><p><strong>i. Maintenance Options:</strong> You can request ongoing technical maintenance, updates, and troubleshooting services under a separate maintenance agreement.</p></li><li><p><strong>j. Deployment Confirmation:</strong> We will confirm successful deployment and provide the necessary website and administrative access details.</p></li></ul><h1>14. Project Communication &amp; Support</h1><p>We believe that clear communication is essential for successful project delivery. Throughout the development process, our team will maintain communication with your assigned representative.</p><ul><li><p>Regular progress updates will be shared during the development period.</p></li><li><p>Important design and functionality decisions will require client approval.</p></li><li><p>Any unexpected technical issues will be communicated as soon as possible.</p></li><li><p>Additional requirements will be evaluated before implementation.</p></li><li><p>Final testing and client feedback will be completed before the official handover.</p></li></ul><h1>15. Project Delivery &amp; Final Approval</h1><p>After completing all agreed development activities, the project will enter the final review and delivery stage.</p><p>The client will receive an opportunity to review the implemented features and report any issues related to the originally agreed project scope. Our development team will address identified bugs and make necessary adjustments before final handover.</p><p>Once the project is approved, all agreed credentials, documentation, and administrative access will be delivered according to the payment and handover conditions.</p><p><strong>Our Commitment:</strong> Okobiz aims to deliver a reliable, secure, user-friendly, and scalable digital solution that supports your business operations and provides a strong foundation for future growth.</p><div><hr></div><p><strong>Okobiz — Leading the Digital Revolution</strong></p><p>Phone: +880 1973590937<br>Email: <a href=\"mailto:info@okobiz.com\">info@okobiz.com</a><br>Website: <a href=\"http://www.okobiz.com/\">www.okobiz.com</a></p>",
+      "client_requirements": "",
+      "deliverables": "",
+      "additional_notes": "",
+      "company_signatory_name": "Md. Sorower Jahan",
+      "company_signatory_title": "CEO, okobiz",
+      "company_phone": "+880 1973590937",
+      "company_email": "info@okobiz.com",
+      "status": "DRAFT",
+      "email_sent_at": null,
+      "created_at": "2026-11-09T11:28:41.754Z",
+      "updated_at": "2026-11-09T11:28:41.754Z"
+    }
   ]
 }

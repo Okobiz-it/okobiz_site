@@ -1,6 +1,6 @@
 "use client";
 import React, { useEffect, useState } from "react";
-import { Plus, Edit2, Trash2, Search, ImageIcon, X, Image as PhotoIcon, Check } from "lucide-react";
+import { Plus, Edit2, Trash2, Search, ImageIcon, X, Image as PhotoIcon, Check, UploadCloud } from "lucide-react";
 
 export default function GalleryAdminPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -314,33 +314,33 @@ export default function GalleryAdminPage() {
 
               {/* Image Upload */}
               <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Image File / URL *</label>
-                <div className="flex gap-2 mb-2">
-                  <input
-                    type="text"
-                    required
-                    value={form.imageUrl}
-                    onChange={(e) => setForm({ ...form, imageUrl: e.target.value })}
-                    placeholder="/assets/image.png or uploaded path"
-                    className="flex-1 bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-2 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-                  />
-                  <label className="cursor-pointer px-3.5 py-2 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold flex items-center justify-center gap-1.5 shrink-0 min-w-[100px] h-[34px] shadow-sm transition">
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">Gallery Photo *</label>
+                <div className="space-y-2">
+                  <label className="cursor-pointer w-full py-2.5 px-3 bg-[#0167D6] hover:bg-blue-600 text-white text-white-always rounded-[4px] text-xs font-bold flex items-center justify-center gap-2 shadow-sm transition">
                     {uploading ? (
                       <div className="w-4 h-4 border-2 border-white/30 border-t-white rounded-full animate-spin" />
                     ) : (
                       <>
-                        <ImageIcon size={14} />
-                        <span>Upload File</span>
+                        <UploadCloud size={15} />
+                        <span>{form.imageUrl ? "Change Photo" : "Upload Gallery Photo"}</span>
                       </>
                     )}
                     <input type="file" accept="image/*" onChange={handleUpload} className="hidden" />
                   </label>
+                  {form.imageUrl && (
+                    <div className="h-36 w-full rounded-[4px] overflow-hidden bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-gray-800 relative group">
+                      <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
+                      <button
+                        type="button"
+                        onClick={() => setForm({ ...form, imageUrl: "" })}
+                        className="absolute top-1.5 right-1.5 p-1 bg-red-600 text-white rounded text-[10px] opacity-0 group-hover:opacity-100 transition shadow"
+                        title="Remove photo"
+                      >
+                        <X size={12} />
+                      </button>
+                    </div>
+                  )}
                 </div>
-                {form.imageUrl && (
-                  <div className="h-36 w-full rounded-[4px] overflow-hidden bg-slate-100 dark:bg-black/50 border border-slate-200 dark:border-gray-800 relative">
-                    <img src={form.imageUrl} alt="Preview" className="w-full h-full object-cover" />
-                  </div>
-                )}
               </div>
 
               {/* Description */}

@@ -1,6 +1,7 @@
 "use client";
 
 import React, { useEffect, useState, useRef } from "react";
+import Link from "next/link";
 import {
   Plus,
   Edit2,
@@ -10,7 +11,6 @@ import {
   ExternalLink,
   ImageIcon,
   Video,
-  X,
   Star,
   Play,
   Check,
@@ -23,11 +23,8 @@ import {
   ChevronRight,
   RefreshCw
 } from "lucide-react";
-import RichTextEditor from "@/components/RichTextEditor";
-import TechnologyIconPicker from "@/components/TechnologyIconPicker";
-import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { cleanSnippet } from "@/lib/richText";
-import { createSlug } from "@/lib/slug";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -36,40 +33,6 @@ export default function PortfolioThemesPage() {
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
   const [currentPage, setCurrentPage] = useState(1);
-  const [modalOpen, setModalOpen] = useState(false);
-  const [editItem, setEditItem] = useState<any>(null);
-
-  // Form State (no default data for new projects)
-  const [form, setForm] = useState({
-    websiteTitle: "",
-    slug: "",
-    category: "Web Applications",
-    clientName: "",
-    mediaType: "image", // "image" | "video"
-    price: 0,
-    discountPrice: 0,
-    websiteLink: "",
-    photo: "",
-    video: "",
-    videoThumbnail: "",
-    youtubeUrl: "",
-    popularBadge: false,
-    featuredBadge: false,
-    description: "",
-    challenge: "",
-    solution: "",
-    featuresText: "",
-    techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
-  });
-
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [uploadingVideoThumb, setUploadingVideoThumb] = useState(false);
-
-  // Hidden file input refs for clean upload buttons
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
-  const videoInputRef = useRef<HTMLInputElement | null>(null);
-  const videoThumbInputRef = useRef<HTMLInputElement | null>(null);
 
   // Portfolio PDF Section State
   const [pdfForm, setPdfForm] = useState({
@@ -84,6 +47,20 @@ export default function PortfolioThemesPage() {
   const [pdfSavedSuccess, setPdfSavedSuccess] = useState(false);
   const pdfInputRef = useRef<HTMLInputElement | null>(null);
 
+  const fetchThemes = async () => {
+    try {
+      const res = await fetch("/api/themes");
+      const data = await res.json();
+      if (data.success && Array.isArray(data.data)) {
+        setThemes(data.data);
+      }
+    } catch (e) {
+      console.warn("Failed to fetch themes:", e);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const fetchPdfSettings = async () => {
     try {
       const res = await fetch("/api/portfolio-pdf");
@@ -93,7 +70,7 @@ export default function PortfolioThemesPage() {
           heading: data.data.heading || "okobiz Official Profile & Credentials 2024",
           subheading: data.data.subheading || "Corporate capabilities brochure, technology stack & verified client references • PDF (2.8 MB)",
           pdfUrl: data.data.pdfUrl || "/assets/okobiz_profile-DvU1SuUS.pdf",
-          badge: data.data.badge !== undefined ? data.data.badge : "",
+          badge: data.data.badge || "",
         });
       }
     } catch (e) {
@@ -103,40 +80,45 @@ export default function PortfolioThemesPage() {
     }
   };
 
-  const handlePdfUpload = async (file: File) => {
+  useEffect(() => {
+    fetchThemes();
+    fetchPdfSettings();
+  }, []);
+
+  const handlePdfUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
     if (!file) return;
-    if (!file.name.toLowerCase().endsWith(".pdf") && file.type !== "application/pdf") {
-      alert("Please upload a valid PDF document (.pdf)");
-      return;
-    }
-    if (file.size > 50 * 1024 * 1024) {
-      alert("PDF exceeds the 50MB upload limit.");
+
+    if (file.type !== "application/pdf") {
+      alert("Please upload a valid PDF document (.pdf only).");
       return;
     }
 
-    const previousPdfUrl = pdfForm.pdfUrl;
+    if (file.size > 20 * 1024 * 1024) {
+      alert("PDF file size must be less than 20MB.");
+      return;
+    }
 
     setUploadingPdf(true);
     try {
+      const previousPdfUrl = pdfForm.pdfUrl;
       const fd = new FormData();
       fd.append("file", file);
-      if (previousPdfUrl && !previousPdfUrl.includes("okobiz_profile-DvU1SuUS.pdf")) {
-        fd.append("previousUrl", previousPdfUrl);
-      }
       const res = await fetch("/api/upload", { method: "POST", body: fd });
       const data = await res.json();
+
       if (data.success && data.url) {
-        setPdfForm((prev) => ({ ...prev, pdfUrl: data.url }));
-        // Also send explicit DELETE call to guarantee old PDF removal
-        if (previousPdfUrl && previousPdfUrl !== data.url && !previousPdfUrl.includes("okobiz_profile-DvU1SuUS.pdf")) {
+        if (previousPdfUrl && previousPdfUrl.includes("res.cloudinary.com")) {
           fetch(`/api/upload?url=${encodeURIComponent(previousPdfUrl)}`, { method: "DELETE" }).catch(() => {});
         }
+        setPdfForm((prev) => ({ ...prev, pdfUrl: data.url }));
+        alert("PDF uploaded successfully! Click 'Save & Publish Live' below to commit changes.");
       } else {
-        alert(data.message || "Failed to upload PDF");
+        alert(data.error || "Failed to upload PDF. Please try again.");
       }
     } catch (err) {
       console.error("PDF upload error:", err);
-      alert("An error occurred while uploading the PDF.");
+      alert("Failed to upload PDF to cloud.");
     } finally {
       setUploadingPdf(false);
     }
@@ -146,6 +128,7 @@ export default function PortfolioThemesPage() {
     e.preventDefault();
     setSavingPdf(true);
     setPdfSavedSuccess(false);
+
     try {
       const res = await fetch("/api/portfolio-pdf", {
         method: "PUT",
@@ -153,197 +136,21 @@ export default function PortfolioThemesPage() {
         body: JSON.stringify(pdfForm),
       });
       const data = await res.json();
+
       if (data.success) {
         setPdfSavedSuccess(true);
-        setTimeout(() => setPdfSavedSuccess(false), 3500);
+        setTimeout(() => setPdfSavedSuccess(false), 5000);
       } else {
-        alert(data.message || "Failed to update Portfolio PDF settings.");
+        alert(data.message || "Failed to save portfolio PDF settings.");
       }
     } catch (err) {
-      console.error("Error saving portfolio PDF settings:", err);
-      alert("An error occurred while saving.");
+      console.error("PDF settings save error:", err);
+      alert("Failed to save PDF settings.");
     } finally {
       setSavingPdf(false);
     }
   };
 
-  const fetchThemes = async () => {
-    try {
-      const res = await fetch("/api/themes");
-      const data = await res.json();
-      if (data.success) setThemes(data.data);
-    } catch (e) {
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    fetchThemes();
-    fetchPdfSettings();
-  }, []);
-
-  useEffect(() => {
-    setCurrentPage(1);
-  }, [search]);
-
-  // Open Create Modal with NO default data
-  const openCreate = () => {
-    setEditItem(null);
-    setForm({
-      websiteTitle: "",
-      slug: "",
-      category: "Web Applications",
-      clientName: "",
-      mediaType: "image",
-      price: 0,
-      discountPrice: 0,
-      websiteLink: "",
-      photo: "",
-      video: "",
-      videoThumbnail: "",
-      youtubeUrl: "",
-      popularBadge: false,
-      featuredBadge: false,
-      description: "",
-      challenge: "",
-      solution: "",
-      featuresText: "",
-      techStack: ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
-    });
-    setModalOpen(true);
-  };
-
-  // Open Edit Modal with existing data
-  const openEdit = (item: any) => {
-    setEditItem(item);
-    const isYt = isYouTubeUrl(item.video);
-    setForm({
-      websiteTitle: item.websiteTitle || "",
-      slug: item.slug || createSlug(item.websiteTitle || ""),
-      category: item.category || "Web Applications",
-      clientName: item.clientName || "",
-      mediaType: item.mediaType || (item.video ? "video" : "image"),
-      price: item.price || 0,
-      discountPrice: item.discountPrice || 0,
-      websiteLink: item.websiteLink || "",
-      photo: item.photo || "",
-      video: isYt ? "" : (item.video || ""),
-      videoThumbnail: item.videoThumbnail || "",
-      youtubeUrl: isYt ? item.video : (item.youtubeUrl || ""),
-      popularBadge: Boolean(item.popularBadge),
-      featuredBadge: Boolean(item.featuredBadge),
-      description: item.description || "",
-      challenge: item.challenge || "",
-      solution: item.solution || "",
-      featuresText: Array.isArray(item.features) ? item.features.join("\n") : "",
-      techStack: Array.isArray(item.techStack) && item.techStack.length > 0
-        ? item.techStack
-        : ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
-    });
-    setModalOpen(true);
-  };
-
-  // File upload handler
-  const handleFileUpload = async (
-    file: File,
-    type: "photo" | "video" | "videoThumbnail"
-  ) => {
-    if (type === "video") {
-      if (file.size > 200 * 1024 * 1024) {
-        alert("Video exceeds the maximum upload limit of 200MB.");
-        return;
-      }
-    } else {
-      if (file.size > 5 * 1024 * 1024) {
-        alert("Image exceeds the maximum upload limit of 5MB.");
-        return;
-      }
-    }
-
-    const fd = new FormData();
-    fd.append("file", file);
-
-    if (type === "photo") setUploadingImage(true);
-    if (type === "video") setUploadingVideo(true);
-    if (type === "videoThumbnail") setUploadingVideoThumb(true);
-
-    try {
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (data.success && data.url) {
-        setForm((f) => ({ ...f, [type]: data.url }));
-      } else {
-        alert(data.message || "Upload failed");
-      }
-    } catch (err) {
-      console.error("Upload error:", err);
-      alert("An error occurred during upload.");
-    } finally {
-      if (type === "photo") setUploadingImage(false);
-      if (type === "video") setUploadingVideo(false);
-      if (type === "videoThumbnail") setUploadingVideoThumb(false);
-    }
-  };
-
-  const handleTitleChange = (val: string) => {
-    setForm((prev) => {
-      const updates: any = { websiteTitle: val };
-      if (!editItem || !prev.slug || prev.slug === createSlug(prev.websiteTitle)) {
-        updates.slug = createSlug(val);
-      }
-      return { ...prev, ...updates };
-    });
-  };
-
-  const handleSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-
-    // Determine the active video url
-    let activeVideo = "";
-    if (form.mediaType === "video") {
-      if (form.youtubeUrl && isYouTubeUrl(form.youtubeUrl)) {
-        activeVideo = form.youtubeUrl.trim();
-      } else if (form.video) {
-        activeVideo = form.video;
-      }
-    }
-
-    // Determine fallback thumbnail
-    let activeThumb = form.videoThumbnail;
-    if (form.mediaType === "video" && !activeThumb && isYouTubeUrl(activeVideo)) {
-      activeThumb = getYouTubeThumbnailUrl(activeVideo) || "";
-    }
-
-    const finalSlug = createSlug(form.slug || form.websiteTitle || "project");
-
-    const payload = {
-      ...form,
-      slug: finalSlug,
-      video: activeVideo,
-      videoThumbnail: activeThumb,
-      photo: form.mediaType === "video" ? (activeThumb || form.photo || "") : form.photo,
-      features: form.featuresText.split("\n").map((f) => f.trim()).filter(Boolean),
-    };
-
-    if (editItem) {
-      await fetch("/api/themes", {
-        method: "PUT",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ _id: editItem._id, ...payload }),
-      });
-    } else {
-      await fetch("/api/themes", {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(payload),
-      });
-    }
-    setModalOpen(false);
-    fetchThemes();
-  };
-
-  // Delete project and automatically purge its images and videos from Cloud storage
   const handleDelete = async (id: string) => {
     if (!confirm("Are you sure you want to delete this project? Its images and videos will also be permanently deleted from cloud storage.")) return;
     try {
@@ -375,27 +182,27 @@ export default function PortfolioThemesPage() {
   };
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-6">
       {/* Top Header */}
       <div className="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-4">
         <div>
           <h1 className="text-2xl font-black text-slate-900 dark:text-white flex items-center gap-2.5">
             <Briefcase className="text-[#3368B2]" size={24} />
-            Portfolio Projects & Case Studies
+            Portfolio Projects &amp; Case Studies
           </h1>
           <p className="text-slate-500 dark:text-gray-400 text-xs mt-1">
             Manage completed projects, client showcase works, video showcases, and credentials PDF
           </p>
         </div>
-        <button
-          onClick={openCreate}
-          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition"
+        <Link
+          href="/dashboard/portfolio/create"
+          className="inline-flex items-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold shadow-lg shadow-blue-900/30 transition cursor-pointer"
         >
           <Plus size={16} /> Add New Project
-        </button>
+        </Link>
       </div>
 
-      {/* Portfolio PDF Download Section Management (without Live Preview, 4px radius) */}
+      {/* Portfolio PDF Download Section Management */}
       <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] p-6 shadow-xs relative">
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3 pb-5 border-b border-slate-200 dark:border-gray-800">
           <div className="flex items-center gap-3">
@@ -422,7 +229,6 @@ export default function PortfolioThemesPage() {
 
         <form onSubmit={handleSavePdf} className="mt-5 space-y-4">
           <div className="grid grid-cols-1 lg:grid-cols-2 gap-4">
-            {/* Heading Input */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
                 Section Heading
@@ -437,7 +243,6 @@ export default function PortfolioThemesPage() {
               />
             </div>
 
-            {/* Badge Input */}
             <div>
               <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
                 Badge Tag Text
@@ -450,221 +255,256 @@ export default function PortfolioThemesPage() {
                 className="w-full bg-white dark:bg-[#181A1E] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
               />
             </div>
+
+            <div className="lg:col-span-2">
+              <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
+                Subheading Description
+              </label>
+              <textarea
+                value={pdfForm.subheading}
+                onChange={(e) => setPdfForm({ ...pdfForm, subheading: e.target.value })}
+                rows={2}
+                placeholder="Brief document description (e.g. Corporate capabilities brochure...)"
+                className="w-full bg-white dark:bg-[#181A1E] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+                required
+              />
+            </div>
           </div>
 
-          {/* Subheading Input */}
-          <div>
-            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
-              Section Subheading
-            </label>
-            <input
-              type="text"
-              value={pdfForm.subheading}
-              onChange={(e) => setPdfForm({ ...pdfForm, subheading: e.target.value })}
-              placeholder="e.g. Corporate capabilities brochure, technology stack & verified client references • PDF (2.8 MB)"
-              className="w-full bg-white dark:bg-[#181A1E] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
-              required
-            />
-          </div>
+          <div className="bg-slate-50 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800/80 rounded-[4px] p-4 flex flex-col md:flex-row items-center justify-between gap-4">
+            <div className="flex items-center gap-3 w-full md:w-auto">
+              <div className="w-10 h-10 rounded-[4px] bg-red-500/10 border border-red-500/30 flex items-center justify-center text-red-500 shrink-0">
+                <FileText size={20} />
+              </div>
+              <div className="min-w-0 flex-1">
+                <div className="text-xs font-semibold text-slate-900 dark:text-white flex items-center gap-2">
+                  <span className="truncate max-w-[280px] sm:max-w-md">{pdfForm.pdfUrl || "No file uploaded"}</span>
+                </div>
+                <div className="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">
+                  PDF format • Max file size 20MB • Cloud Storage
+                </div>
+              </div>
+            </div>
 
-          {/* PDF File Upload (Only Upload Button) */}
-          <div className="bg-slate-50 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4">
-            <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-2">
-              Official PDF File
-            </label>
-
-            <div className="flex items-center gap-3">
+            <div className="flex items-center gap-2.5 w-full md:w-auto justify-end">
               <input
-                type="file"
                 ref={pdfInputRef}
-                accept=".pdf,application/pdf"
+                type="file"
+                accept="application/pdf"
                 className="hidden"
-                onChange={(e) => {
-                  const file = e.target.files?.[0];
-                  if (file) handlePdfUpload(file);
-                }}
+                onChange={handlePdfUpload}
               />
 
               <button
                 type="button"
                 onClick={() => pdfInputRef.current?.click()}
                 disabled={uploadingPdf}
-                className="px-5 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-semibold flex items-center justify-center gap-2 transition disabled:opacity-50"
+                className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[4px] bg-white dark:bg-[#1F2228] border border-slate-300 dark:border-gray-700 hover:border-slate-400 dark:hover:border-gray-500 text-xs font-semibold text-slate-700 dark:text-gray-200 hover:text-slate-900 dark:hover:text-white transition disabled:opacity-50 cursor-pointer"
               >
-                {uploadingPdf ? (
-                  <>
-                    <Loader2 size={14} className="animate-spin" />
-                    <span>Uploading PDF...</span>
-                  </>
-                ) : (
-                  <>
-                    <UploadCloud size={14} />
-                    <span>Upload PDF</span>
-                  </>
-                )}
+                {uploadingPdf ? <Loader2 size={13} className="animate-spin" /> : <UploadCloud size={13} />}
+                <span>{uploadingPdf ? "Uploading..." : "Replace PDF File"}</span>
+              </button>
+
+              {pdfForm.pdfUrl && (
+                <a
+                  href={pdfForm.pdfUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-1.5 px-3.5 py-2 rounded-[4px] bg-slate-100 dark:bg-white/5 border border-slate-200 dark:border-gray-700 hover:bg-slate-200 dark:hover:bg-white/10 text-xs font-semibold text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white transition"
+                >
+                  <Download size={13} />
+                  <span>Download / Preview</span>
+                </a>
+              )}
+
+              <button
+                type="submit"
+                disabled={savingPdf || uploadingPdf}
+                className="inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold transition disabled:opacity-50 cursor-pointer shadow-md shadow-blue-900/20"
+              >
+                {savingPdf ? <Loader2 size={13} className="animate-spin" /> : <Check size={13} />}
+                <span>{savingPdf ? "Saving..." : "Save & Publish Live"}</span>
               </button>
             </div>
-
-            {/* Bottom: Recently uploaded file name */}
-            <div className="mt-3 pt-2.5 border-t border-slate-200 dark:border-gray-800/80 flex items-center gap-2 text-xs">
-              <span className="text-slate-500 dark:text-gray-400">Recently uploaded:</span>
-              {pdfForm.pdfUrl ? (
-                <span className="text-slate-900 dark:text-white font-medium font-mono text-[11px] bg-white dark:bg-white/5 border border-slate-200 dark:border-gray-800 px-2.5 py-1 rounded-[4px] truncate max-w-md">
-                  {pdfForm.pdfUrl.split("?")[0].split("/").pop() || pdfForm.pdfUrl}
-                </span>
-              ) : (
-                <span className="text-slate-400 dark:text-gray-500 italic">No PDF uploaded</span>
-              )}
-            </div>
-          </div>
-
-          {/* Save Action */}
-          <div className="flex items-center justify-end gap-3 pt-3 border-t border-slate-200 dark:border-gray-800">
-            <button
-              type="submit"
-              disabled={savingPdf || uploadingPdf}
-              className="px-6 py-2.5 rounded-[4px] bg-[#3368B2] hover:bg-blue-600 text-white text-xs font-bold flex items-center gap-2 shadow-lg shadow-blue-900/30 transition disabled:opacity-50"
-            >
-              {savingPdf ? (
-                <>
-                  <Loader2 size={14} className="animate-spin" />
-                  <span>Saving Changes...</span>
-                </>
-              ) : (
-                <>
-                  <Check size={14} />
-                  <span>Save PDF Section Settings</span>
-                </>
-              )}
-            </button>
           </div>
         </form>
       </div>
 
-      {/* Filter / Search */}
-      <div className="relative max-w-md">
-        <Search className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500" size={16} />
-        <input
-          type="text"
-          value={search}
-          onChange={(e) => setSearch(e.target.value)}
-          placeholder="Search by project, client, or category..."
-          className="w-full bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-800 rounded-[4px] pl-10 pr-4 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
-        />
+      {/* Search & Filter Bar */}
+      <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 flex flex-col sm:flex-row items-center justify-between gap-4 shadow-xs">
+        <div className="relative w-full sm:w-80">
+          <Search size={16} className="absolute left-3.5 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500" />
+          <input
+            type="text"
+            placeholder="Search projects, client, or category..."
+            value={search}
+            onChange={(e) => {
+              setSearch(e.target.value);
+              setCurrentPage(1);
+            }}
+            className="w-full bg-slate-50 dark:bg-[#181A1E] border border-slate-300 dark:border-gray-800 rounded-[4px] pl-9 pr-3.5 py-2 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#3368B2]"
+          />
+        </div>
+        <div className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+          Total Projects: <span className="text-slate-900 dark:text-white font-bold">{filtered.length}</span>
+        </div>
       </div>
 
-      {/* Projects Grid (4px radius) */}
+      {/* Projects Grid */}
       {loading ? (
-        <div className="text-center py-20 text-gray-500 text-xs">Loading portfolio projects...</div>
+        <div className="text-center py-20 text-gray-500 text-xs">
+          <Loader2 className="w-6 h-6 animate-spin mx-auto mb-2 text-[#3368B2]" />
+          Loading portfolio projects...
+        </div>
+      ) : filtered.length === 0 ? (
+        <div className="bg-[#131417] border border-gray-800 rounded-[4px] p-12 text-center text-gray-400 text-sm">
+          <Briefcase className="w-12 h-12 text-gray-600 mx-auto mb-3" />
+          <p className="font-semibold text-white">No projects found</p>
+          <p className="text-xs text-gray-500 mt-1 mb-5">Click below to add your first portfolio showcase</p>
+          <Link
+            href="/dashboard/portfolio/create"
+            className="inline-flex items-center gap-2 px-4 py-2 rounded-[4px] bg-[#3368B2] text-white text-xs font-bold"
+          >
+            <Plus size={14} /> Add Project
+          </Link>
+        </div>
       ) : (
         <>
-          {paginatedItems.length === 0 ? (
-            <div className="text-center py-16 bg-[#131417] border border-gray-800 rounded-[4px] text-gray-500 text-xs">
-              No portfolio projects found matching your search.
-            </div>
-          ) : (
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
-              {paginatedItems.map((item) => {
-                const hasVideo = item.mediaType === "video" || !!item.video;
-                const isYt = isYouTubeUrl(item.video);
-                const displayImage =
-                  item.videoThumbnail ||
-                  (isYt ? getYouTubeThumbnailUrl(item.video) : null) ||
-                  item.photo ||
-                  "/assets/bdhajj-D468QQtK.png";
+          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
+            {paginatedItems.map((item) => {
+              const isVideo = item.mediaType === "video" || Boolean(item.video);
+              const previewThumb = isVideo
+                ? (item.videoThumbnail || (isYouTubeUrl(item.video) ? getYouTubeThumbnailUrl(item.video) : "") || item.photo || "/assets/bdhajj-D468QQtK.png")
+                : (item.photo || "/assets/bdhajj-D468QQtK.png");
 
-                return (
-                  <div
-                    key={item._id}
-                    className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] overflow-hidden shadow-xs hover:shadow-md flex flex-col group hover:border-[#0167D6] dark:hover:border-[#3368B2] transition duration-200"
-                  >
-                    {/* Media Preview Box */}
-                    <div className="relative h-48 bg-black overflow-hidden rounded-t-[4px]">
-                      <img
-                        src={displayImage}
-                        alt={item.websiteTitle}
-                        className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
-                      />
+              return (
+                <div
+                  key={item._id}
+                  className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[420px]"
+                >
+                  {/* Media Thumbnail (Fixed aspect-video / 190px matching Services & Products) */}
+                  <div className="h-[190px] aspect-video w-full bg-slate-100 dark:bg-black relative overflow-hidden flex items-center justify-center shrink-0">
+                    <img
+                      src={previewThumb}
+                      alt={item.websiteTitle}
+                      className="w-full h-full object-cover group-hover:scale-105 transition duration-300"
+                      onError={(e: any) => {
+                        e.target.src = "/assets/bdhajj-D468QQtK.png";
+                      }}
+                    />
 
-                      {/* Badges */}
-                      <div className="absolute top-3 left-3 flex flex-wrap gap-1.5 z-10">
-                        <span className="px-2.5 py-1 rounded-[4px] bg-[#0167D6] text-white text-[11px] font-bold text-white-always shadow-md">
-                          {item.category}
+                    {/* Video or Image badge overlay */}
+                    <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
+                      {isVideo ? (
+                        <span className="px-2 py-0.5 rounded-[4px] bg-rose-600 text-white text-white-always text-[10px] font-bold flex items-center gap-1 shadow-sm border border-rose-500/30">
+                          <Play size={10} className="fill-white text-white text-white-always" />
+                          <span className="text-white text-white-always">VIDEO</span>
                         </span>
-                        {hasVideo && (
-                          <span className="px-2.5 py-1 rounded-[4px] bg-rose-600 text-white text-[11px] font-bold text-white-always flex items-center gap-1 shadow-md">
-                            <Play size={10} fill="white" /> Video
-                          </span>
-                        )}
-                        {item.popularBadge && (
-                          <span className="px-2 py-0.5 rounded-[4px] bg-amber-500 text-slate-950 text-[10px] font-black flex items-center gap-1 shadow-md">
-                            <Star size={10} fill="currentColor" /> Popular
-                          </span>
-                        )}
-                      </div>
+                      ) : (
+                        <span className="px-2.5 py-0.5 rounded-[4px] bg-white/95 dark:bg-black/75 text-slate-800 dark:text-white backdrop-blur-md text-[10px] font-bold flex items-center gap-1 shadow-sm border border-slate-300/80 dark:border-white/15">
+                          <ImageIcon size={10} className="text-slate-700 dark:text-slate-200" />
+                          <span>IMAGE</span>
+                        </span>
+                      )}
 
-                      {item.clientName && (
-                        <div className="absolute bottom-3 left-3 bg-black/80 backdrop-blur-sm px-2.5 py-0.5 rounded-[4px] text-[11px] text-white text-white-always shadow-md z-10">
-                          Client: <span className="text-white text-white-always font-bold">{item.clientName}</span>
-                        </div>
+                      {item.featuredBadge && (
+                        <span className="px-2.5 py-0.5 rounded-[4px] bg-amber-500 text-white text-white-always text-[10px] font-bold flex items-center gap-1 shadow-sm border border-amber-400/40">
+                          <Star size={10} className="fill-white text-white text-white-always" />
+                          <span className="text-white text-white-always">FEATURED</span>
+                        </span>
                       )}
                     </div>
 
-                    {/* Content */}
-                    <div className="p-5 flex-1 flex flex-col justify-between space-y-4">
-                      <div>
-                        <h3 className="text-base font-bold text-slate-900 dark:text-white group-hover:text-[#0167D6] dark:group-hover:text-[#3368B2] transition line-clamp-1">
-                          {item.websiteTitle}
-                        </h3>
-                        <div className="mt-1">
-                          <span className="font-mono text-[10px] text-slate-700 dark:text-gray-300 bg-slate-100 dark:bg-[#0d0e11] px-2 py-0.5 rounded border border-slate-300 dark:border-gray-800 inline-block truncate max-w-full">
-                            /portfolio/{item.slug || createSlug(item.websiteTitle)}
-                          </span>
-                        </div>
-                        <p className="text-xs text-slate-600 dark:text-gray-400 mt-2 line-clamp-2 leading-relaxed">
-                          {cleanSnippet(item.description) || "Completed project showcase delivered with high performance and modern UX."}
-                        </p>
-                      </div>
-
-                      {/* Actions Bar */}
-                      <div className="flex items-center justify-between pt-3 border-t border-slate-200 dark:border-gray-800/80">
-                        {item.websiteLink ? (
-                          <a
-                            href={item.websiteLink}
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="text-xs text-[#0167D6] dark:text-[#3368B2] hover:underline flex items-center gap-1 font-semibold"
-                          >
-                            <span>Live Preview</span>
-                            <ExternalLink size={12} />
-                          </a>
-                        ) : (
-                          <span className="text-[11px] text-slate-400 dark:text-gray-500 font-medium">Case Study</span>
-                        )}
-
-                        <div className="flex items-center gap-2">
-                          <button
-                            onClick={() => openEdit(item)}
-                            className="p-2 rounded-[4px] bg-slate-100 dark:bg-white/5 hover:bg-slate-200 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 hover:text-slate-900 dark:hover:text-white border border-slate-200 dark:border-transparent transition"
-                            title="Edit Project"
-                          >
-                            <Edit2 size={14} />
-                          </button>
-                          <button
-                            onClick={() => handleDelete(item._id)}
-                            className="p-2 rounded-[4px] bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-transparent transition"
-                            title="Delete Project (Purges cloud assets)"
-                          >
-                            <Trash2 size={14} />
-                          </button>
-                        </div>
-                      </div>
+                    <div className="absolute bottom-2.5 right-2.5">
+                      <span className="px-2.5 py-0.5 rounded-[4px] bg-white/95 dark:bg-black/75 text-slate-800 dark:text-gray-200 backdrop-blur-md text-[10px] font-mono font-semibold border border-slate-300/80 dark:border-white/15 shadow-sm">
+                        {item.category || "Web App"}
+                      </span>
                     </div>
                   </div>
-                );
-              })}
-            </div>
-          )}
+
+                  {/* Content Body (Flexible container with guaranteed min-height snippet) */}
+                  <div className="p-4 flex-1 flex flex-col justify-between min-h-0 space-y-2">
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between text-[11px] text-slate-500 dark:text-gray-400">
+                        <span className="font-medium text-slate-600 dark:text-gray-300 truncate max-w-[150px]">
+                          {item.clientName || "Proprietary Project"}
+                        </span>
+                        {item.price > 0 && (
+                          <span className="font-mono font-bold text-emerald-600 dark:text-emerald-400">
+                            ৳ {item.price.toLocaleString()}
+                          </span>
+                        )}
+                      </div>
+
+                      <h3 className="font-bold text-sm text-slate-900 dark:text-white line-clamp-1 group-hover:text-[#0167D6] transition">
+                        {item.websiteTitle}
+                      </h3>
+
+                      <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
+                        {cleanSnippet(item.description, 100) || (
+                          <span className="italic text-slate-400 dark:text-gray-600">No project description provided</span>
+                        )}
+                      </p>
+                    </div>
+
+                    {/* Tech Stack Chips */}
+                    {Array.isArray(item.techStack) && item.techStack.length > 0 && (
+                      <div className="flex flex-wrap gap-1 pt-1">
+                        {item.techStack.slice(0, 3).map((tech: string, i: number) => (
+                          <span
+                            key={i}
+                            className="text-[10px] px-1.5 py-0.5 rounded-[4px] bg-slate-100 dark:bg-white/5 text-slate-600 dark:text-gray-400 border border-slate-200 dark:border-gray-800"
+                          >
+                            {tech}
+                          </span>
+                        ))}
+                        {item.techStack.length > 3 && (
+                          <span className="text-[10px] px-1 py-0.5 text-slate-400 dark:text-gray-500">
+                            +{item.techStack.length - 3}
+                          </span>
+                        )}
+                      </div>
+                    )}
+                  </div>
+
+                  {/* Card Footer Actions (Fixed height h-[52px]) */}
+                  <div className="p-3.5 bg-slate-50/80 dark:bg-[#181A1F]/80 border-t border-slate-200 dark:border-gray-800/80 flex items-center justify-between shrink-0 h-[52px]">
+                    {item.websiteLink ? (
+                      <a
+                        href={item.websiteLink}
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-xs text-[#0167D6] dark:text-[#3368B2] hover:underline flex items-center gap-1 font-semibold"
+                      >
+                        <span>Live Preview</span>
+                        <ExternalLink size={12} />
+                      </a>
+                    ) : (
+                      <span className="text-[11px] text-slate-400 dark:text-gray-500 font-medium">Case Study</span>
+                    )}
+
+                    <div className="flex items-center gap-2">
+                      <Link
+                        href={`/dashboard/portfolio/${item._id}/edit`}
+                        className="flex items-center gap-1 px-2.5 py-1.5 rounded-[4px] bg-slate-100 dark:bg-white/5 hover:bg-[#0167D6] hover:text-white text-slate-700 dark:text-gray-300 dark:hover:text-white text-xs font-medium border border-slate-200 dark:border-transparent transition"
+                        title="Edit Project"
+                      >
+                        <Edit2 size={13} />
+                        <span>Edit</span>
+                      </Link>
+                      <button
+                        onClick={() => handleDelete(item._id)}
+                        className="p-1.5 rounded-[4px] bg-red-50 dark:bg-red-500/10 hover:bg-red-100 dark:hover:bg-red-500/20 text-red-600 dark:text-red-400 border border-red-200 dark:border-transparent transition cursor-pointer"
+                        title="Delete Project (Purges cloud assets)"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                </div>
+              );
+            })}
+          </div>
 
           {/* 12 items pagination bar */}
           {filtered.length > 0 && (
@@ -713,484 +553,6 @@ export default function PortfolioThemesPage() {
             </div>
           )}
         </>
-      )}
-
-      {/* Project Modal: Create & Edit (Refined UX, No clumsy link inputs, 4px radius) */}
-      {modalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 dark:bg-black/80 backdrop-blur-sm">
-          <div className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[4px] w-full max-w-4xl p-6 relative max-h-[90vh] overflow-y-auto shadow-2xl">
-            <button
-              onClick={() => setModalOpen(false)}
-              className="absolute top-4 right-4 text-slate-400 hover:text-slate-700 dark:text-gray-400 dark:hover:text-white transition"
-            >
-              <X size={20} />
-            </button>
-
-            <h2 className="text-lg font-bold text-slate-900 dark:text-white mb-5 flex items-center gap-2">
-              <Briefcase className="text-[#0167D6] dark:text-[#3368B2]" size={20} />
-              {editItem ? "Edit Portfolio Project" : "Add New Completed Project"}
-            </h2>
-
-            <form onSubmit={handleSubmit} className="space-y-5">
-              {/* Title & Client */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Project Title *</label>
-                  <input
-                    type="text"
-                    required
-                    value={form.websiteTitle}
-                    onChange={(e) => handleTitleChange(e.target.value)}
-                    placeholder="e.g. Agro Infusion Smart Supply Hub"
-                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Client Name</label>
-                  <input
-                    type="text"
-                    value={form.clientName}
-                    onChange={(e) => setForm({ ...form, clientName: e.target.value })}
-                    placeholder="e.g. Agro Infusion Ltd."
-                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
-                  />
-                </div>
-              </div>
-
-              {/* URL Slug Input */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1 flex items-center justify-between">
-                  <span>Project URL Slug <span className="text-red-500">*</span></span>
-                  <span className="text-[10px] text-slate-500 dark:text-gray-400 font-mono">
-                    Live URL: <span className="text-[#0167D6] dark:text-blue-400 font-bold">/portfolio/{form.slug || "project-slug"}</span>
-                  </span>
-                </label>
-                <input
-                  type="text"
-                  required
-                  value={form.slug}
-                  onChange={(e) => setForm({ ...form, slug: e.target.value })}
-                  placeholder="e.g. agro-infusion-smart-supply-hub"
-                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] font-mono"
-                />
-              </div>
-
-              {/* Category & Media Type */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Category</label>
-                  <select
-                    value={form.category}
-                    onChange={(e) => setForm({ ...form, category: e.target.value })}
-                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3 py-2.5 text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-                  >
-                    <option value="Web Applications">Web Applications</option>
-                    <option value="Mobile & SaaS">Mobile & SaaS</option>
-                    <option value="E-Commerce">E-Commerce</option>
-                    <option value="Corporate Systems">Corporate Systems</option>
-                    <option value="Agency">Agency</option>
-                    <option value="Motion & Video">Motion & Video</option>
-                  </select>
-                </div>
-
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Media Type</label>
-                  <div className="flex gap-2">
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, mediaType: "image" })}
-                      className={`flex-1 py-2 text-xs font-bold rounded-[4px] border transition flex items-center justify-center gap-1.5 ${
-                        form.mediaType === "image"
-                          ? "bg-[#0167D6] text-white text-white-always border-[#0167D6]"
-                          : "bg-slate-100 dark:bg-[#181A1F] text-slate-700 dark:text-gray-400 border-slate-300 dark:border-gray-800 hover:text-slate-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <ImageIcon size={14} /> Image
-                    </button>
-                    <button
-                      type="button"
-                      onClick={() => setForm({ ...form, mediaType: "video" })}
-                      className={`flex-1 py-2 text-xs font-bold rounded-[4px] border transition flex items-center justify-center gap-1.5 ${
-                        form.mediaType === "video"
-                          ? "bg-rose-600 text-white text-white-always border-rose-600"
-                          : "bg-slate-100 dark:bg-[#181A1F] text-slate-700 dark:text-gray-400 border-slate-300 dark:border-gray-800 hover:text-slate-900 dark:hover:text-white"
-                      }`}
-                    >
-                      <Video size={14} /> Video
-                    </button>
-                  </div>
-                </div>
-              </div>
-
-              {/* 1. IMAGE MEDIA TYPE: Only image upload, no video options */}
-              {form.mediaType === "image" && (
-                <div className="p-4 rounded-[4px] bg-slate-50 dark:bg-[#181A1F] border border-slate-200 dark:border-gray-800 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div>
-                      <label className="block text-xs font-bold text-slate-900 dark:text-white">
-                        Project Image *
-                      </label>
-                      <p className="text-[11px] text-slate-500 dark:text-gray-400 mt-0.5">
-                        Upload the primary showcase cover image for this portfolio piece.
-                      </p>
-                    </div>
-
-                    {/* Hidden file input */}
-                    <input
-                      type="file"
-                      ref={imageInputRef}
-                      accept="image/*"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleFileUpload(file, "photo");
-                      }}
-                      className="hidden"
-                    />
-
-                    <button
-                      type="button"
-                      onClick={() => imageInputRef.current?.click()}
-                      disabled={uploadingImage}
-                      className="px-4 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50 shrink-0 shadow-sm"
-                    >
-                      {uploadingImage ? (
-                        <>
-                          <Loader2 size={14} className="animate-spin" />
-                          <span>Uploading...</span>
-                        </>
-                      ) : (
-                        <>
-                          <UploadCloud size={14} />
-                          <span>{form.photo ? "Change Image" : "Upload Image"}</span>
-                        </>
-                      )}
-                    </button>
-                  </div>
-
-                  {/* Image Preview with Remove Option */}
-                  {form.photo ? (
-                    <div className="relative rounded-[4px] overflow-hidden bg-black/60 border border-slate-200 dark:border-gray-800 group h-40 flex items-center justify-center">
-                      <img src={form.photo} alt="Thumbnail preview" className="w-full h-full object-contain" />
-                      <div className="absolute top-2 right-2 flex gap-1.5">
-                        <button
-                          type="button"
-                          onClick={() => imageInputRef.current?.click()}
-                          className="px-2.5 py-1 rounded-[4px] bg-black/75 hover:bg-black text-white text-[11px] font-medium backdrop-blur-sm border border-gray-700 transition"
-                        >
-                          Change
-                        </button>
-                        <button
-                          type="button"
-                          onClick={() => setForm({ ...form, photo: "" })}
-                          className="px-2.5 py-1 rounded-[4px] bg-red-600/80 hover:bg-red-600 text-white text-[11px] font-medium transition"
-                        >
-                          Remove
-                        </button>
-                      </div>
-                    </div>
-                  ) : (
-                    <div
-                      onClick={() => imageInputRef.current?.click()}
-                      className="border-2 border-dashed border-slate-300 dark:border-gray-800 hover:border-slate-400 dark:hover:border-gray-700 rounded-[4px] p-6 text-center cursor-pointer transition bg-white dark:bg-[#141518]"
-                    >
-                      <ImageIcon className="mx-auto text-slate-400 dark:text-gray-500 mb-2" size={24} />
-                      <p className="text-xs text-slate-600 dark:text-gray-400 font-medium">Click to upload portfolio image</p>
-                      <p className="text-[10px] text-slate-400 dark:text-gray-600 mt-1">PNG, JPG, WebP up to 5MB</p>
-                    </div>
-                  )}
-                </div>
-              )}
-
-              {/* 2. VIDEO MEDIA TYPE: Thumbnail, Upload Video button, and YouTube Link */}
-              {form.mediaType === "video" && (
-                <div className="p-4 rounded-[4px] bg-slate-50 dark:bg-[#181A1F] border border-slate-200 dark:border-gray-800 space-y-5">
-                  <div className="flex items-center gap-2 text-xs font-bold text-rose-600 dark:text-rose-500 uppercase tracking-wider pb-2 border-b border-slate-200 dark:border-gray-800/80">
-                    <Video size={15} /> Video Project Configuration
-                  </div>
-
-                  {/* Video Poster Thumbnail Upload */}
-                  <div className="space-y-2">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-800 dark:text-gray-200">
-                          Video Poster Thumbnail
-                        </label>
-                        <p className="text-[11px] text-slate-500 dark:text-gray-400">
-                          Display poster prior to playback (optional for YouTube videos).
-                        </p>
-                      </div>
-
-                      <input
-                        type="file"
-                        ref={videoThumbInputRef}
-                        accept="image/*"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(file, "videoThumbnail");
-                        }}
-                        className="hidden"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => videoThumbInputRef.current?.click()}
-                        disabled={uploadingVideoThumb}
-                        className="px-4 py-2 rounded-[4px] bg-slate-200 hover:bg-slate-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-xs font-semibold flex items-center gap-1.5 transition disabled:opacity-50 shrink-0 border border-slate-300 dark:border-transparent"
-                      >
-                        {uploadingVideoThumb ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" />
-                            <span>Uploading...</span>
-                          </>
-                        ) : (
-                          <>
-                            <ImageIcon size={14} />
-                            <span>{form.videoThumbnail ? "Change Thumbnail" : "Upload Thumbnail"}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {form.videoThumbnail ? (
-                      <div className="relative rounded-[4px] overflow-hidden bg-black/60 border border-slate-200 dark:border-gray-800 h-28 flex items-center justify-center">
-                        <img src={form.videoThumbnail} alt="Poster" className="w-full h-full object-contain" />
-                        <div className="absolute top-2 right-2 flex gap-1.5">
-                          <button
-                            type="button"
-                            onClick={() => videoThumbInputRef.current?.click()}
-                            className="px-2.5 py-1 rounded-[4px] bg-black/75 hover:bg-black text-white text-[11px] font-medium backdrop-blur-sm border border-gray-700 transition"
-                          >
-                            Change
-                          </button>
-                          <button
-                            type="button"
-                            onClick={() => setForm({ ...form, videoThumbnail: "" })}
-                            className="px-2.5 py-1 rounded-[4px] bg-red-600/80 hover:bg-red-600 text-white text-[11px] font-medium transition"
-                          >
-                            Remove
-                          </button>
-                        </div>
-                      </div>
-                    ) : form.youtubeUrl && isYouTubeUrl(form.youtubeUrl) ? (
-                      <div className="rounded-[4px] bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800 p-2.5 flex items-center gap-3">
-                        <img
-                          src={getYouTubeThumbnailUrl(form.youtubeUrl) || ""}
-                          alt="YouTube Cover Preview"
-                          className="w-16 h-12 object-cover rounded-[2px] border border-slate-300 dark:border-gray-700 shrink-0"
-                        />
-                        <div className="text-[11px] text-slate-600 dark:text-gray-400">
-                          <span className="text-slate-900 dark:text-white font-bold">Automatic YouTube Thumbnail:</span> Using default HD cover from YouTube. You can also upload a custom thumbnail above.
-                        </div>
-                      </div>
-                    ) : null}
-                  </div>
-
-                  {/* YouTube Video Paste Link */}
-                  <div className="space-y-2 pt-3 border-t border-slate-200 dark:border-gray-800/80">
-                    <label className="block text-xs font-bold text-slate-800 dark:text-gray-200">
-                      YouTube Video Link
-                    </label>
-                    <input
-                      type="url"
-                      value={form.youtubeUrl}
-                      onChange={(e) => {
-                        const val = e.target.value;
-                        setForm({ ...form, youtubeUrl: val });
-                      }}
-                      placeholder="e.g. https://www.youtube.com/watch?v=dQw4w9WgXcQ or https://youtu.be/..."
-                      className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-rose-600"
-                    />
-
-                    {/* YouTube Live Embed Preview */}
-                    {form.youtubeUrl && isYouTubeUrl(form.youtubeUrl) && (
-                      <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 bg-black mt-2">
-                        <div className="aspect-video w-full">
-                          <iframe
-                            src={getYouTubeEmbedUrl(form.youtubeUrl) || ""}
-                            title="YouTube Preview"
-                            allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
-                            allowFullScreen
-                            className="w-full h-full border-0"
-                          />
-                        </div>
-                        <div className="p-2 bg-slate-100 dark:bg-[#121316] text-[11px] text-emerald-600 dark:text-green-400 flex items-center gap-1.5 font-bold">
-                          <CheckCircle2 size={13} /> Valid YouTube video parsed & verified ready for playback.
-                        </div>
-                      </div>
-                    )}
-                  </div>
-
-                  {/* Upload Video File Button */}
-                  <div className="space-y-2 pt-3 border-t border-slate-200 dark:border-gray-800/80">
-                    <div className="flex items-center justify-between">
-                      <div>
-                        <label className="block text-xs font-bold text-slate-800 dark:text-gray-200">
-                          Or Upload Video File (MP4 / WebM / MOV)
-                        </label>
-                        <p className="text-[11px] text-slate-500 dark:text-gray-400">Max size 200MB with cloud streaming.</p>
-                      </div>
-
-                      <input
-                        type="file"
-                        ref={videoInputRef}
-                        accept="video/mp4,video/webm,video/ogg,video/quicktime"
-                        onChange={(e) => {
-                          const file = e.target.files?.[0];
-                          if (file) handleFileUpload(file, "video");
-                        }}
-                        className="hidden"
-                      />
-
-                      <button
-                        type="button"
-                        onClick={() => videoInputRef.current?.click()}
-                        disabled={uploadingVideo}
-                        className="px-4 py-2 rounded-[4px] bg-rose-600 hover:bg-rose-700 text-white text-white-always text-xs font-bold flex items-center gap-1.5 transition disabled:opacity-50 shrink-0 shadow-sm"
-                      >
-                        {uploadingVideo ? (
-                          <>
-                            <Loader2 size={14} className="animate-spin" />
-                            <span>Uploading Video...</span>
-                          </>
-                        ) : (
-                          <>
-                            <Video size={14} />
-                            <span>{form.video ? "Change Video File" : "Upload Video File"}</span>
-                          </>
-                        )}
-                      </button>
-                    </div>
-
-                    {form.video && (
-                      <div className="relative rounded-[4px] overflow-hidden bg-black border border-slate-200 dark:border-gray-800 p-2">
-                        <video src={form.video} controls className="w-full max-h-48 object-contain rounded-[4px]" />
-                        <div className="flex justify-end mt-2 gap-2">
-                          <button
-                            type="button"
-                            onClick={() => setForm({ ...form, video: "" })}
-                            className="px-2.5 py-1 rounded-[4px] bg-red-600/80 hover:bg-red-600 text-white text-[11px] font-medium transition"
-                          >
-                            Remove Video File
-                          </button>
-                        </div>
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
-
-              {/* Live Link */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Live Project / Website Link</label>
-                <input
-                  type="url"
-                  value={form.websiteLink}
-                  onChange={(e) => setForm({ ...form, websiteLink: e.target.value })}
-                  placeholder="https://example.com"
-                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
-                />
-              </div>
-
-              {/* Description / Overview with Reusable Rich Text Editor */}
-              <RichTextEditor
-                value={form.description}
-                onChange={(val) => setForm({ ...form, description: val })}
-                label="Description / Overview *"
-                placeholder="Comprehensive overview of the project goals, architecture, tech stack, and delivered client impact..."
-                minHeight="min-h-[180px]"
-              />
-
-              {/* Challenge & Solution */}
-              <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">The Challenge</label>
-                  <textarea
-                    rows={3}
-                    value={form.challenge}
-                    onChange={(e) => setForm({ ...form, challenge: e.target.value })}
-                    placeholder="Technical obstacles faced during development..."
-                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] leading-relaxed"
-                  />
-                </div>
-                <div>
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">The Solution</label>
-                  <textarea
-                    rows={3}
-                    value={form.solution}
-                    onChange={(e) => setForm({ ...form, solution: e.target.value })}
-                    placeholder="Engineering approach and custom solutions deployed..."
-                    className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] leading-relaxed"
-                  />
-                </div>
-              </div>
-
-              {/* Features */}
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                  Deliverables & Features (One per line)
-                </label>
-                <textarea
-                  rows={3}
-                  value={form.featuresText}
-                  onChange={(e) => setForm({ ...form, featuresText: e.target.value })}
-                  placeholder="e.g.&#10;Custom responsive UI/UX architecture&#10;Instant Payment Gateway IPN Integration&#10;Sub-second Edge SSR Caching"
-                  className="w-full bg-white dark:bg-[#181A1F] border border-slate-300 dark:border-gray-800 rounded-[4px] px-3.5 py-2.5 text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 font-mono focus:outline-none focus:border-[#0167D6]"
-                />
-              </div>
-
-              {/* Technology Frameworks & Tools Icon Picker */}
-              <div>
-                <TechnologyIconPicker
-                  selected={form.techStack || []}
-                  onChange={(newStack) =>
-                    setForm((prev) => ({ ...prev, techStack: newStack }))
-                  }
-                  label="Technology Frameworks & Tools"
-                  helperText="Select technology stack icons for this portfolio project. Icons display uniformly in the case study."
-                />
-              </div>
-
-              {/* Badges */}
-              <div className="flex items-center gap-6">
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={form.popularBadge}
-                    onChange={(e) => setForm({ ...form, popularBadge: e.target.checked })}
-                    className="w-4 h-4 rounded-[4px] text-[#0167D6] bg-white dark:bg-gray-800 border-slate-300 dark:border-gray-700"
-                  />
-                  <span>Popular Badge</span>
-                </label>
-                <label className="flex items-center gap-2 cursor-pointer text-xs font-bold text-slate-700 dark:text-gray-300">
-                  <input
-                    type="checkbox"
-                    checked={form.featuredBadge}
-                    onChange={(e) => setForm({ ...form, featuredBadge: e.target.checked })}
-                    className="w-4 h-4 rounded-[4px] text-[#0167D6] bg-white dark:bg-gray-800 border-slate-300 dark:border-gray-700"
-                  />
-                  <span>Featured Case Study</span>
-                </label>
-              </div>
-
-              {/* Footer Actions */}
-              <div className="flex justify-end gap-3 pt-4 border-t border-slate-200 dark:border-gray-800">
-                <button
-                  type="button"
-                  onClick={() => setModalOpen(false)}
-                  className="px-4 py-2 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-white/5 dark:hover:bg-white/10 text-slate-700 dark:text-gray-300 border border-slate-300 dark:border-gray-800 text-xs font-semibold transition"
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition"
-                >
-                  {editItem ? "Save Changes" : "Create Project"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
       )}
     </div>
   );

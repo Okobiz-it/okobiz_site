@@ -1,5 +1,5 @@
 "use client";
-import React from "react";
+import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import { usePathname, useRouter } from "next/navigation";
 import {
@@ -9,7 +9,6 @@ import {
   Briefcase,
   Package,
   BookOpen,
-  UserCheck,
   GraduationCap,
   Server,
   FolderOpen,
@@ -18,8 +17,23 @@ import {
   Settings,
   LogOut,
   PanelLeftClose,
-  PanelLeftOpen
+  PanelLeftOpen,
+  FileText,
+  ChevronDown,
+  ChevronRight,
 } from "lucide-react";
+
+interface SubMenuItem {
+  name: string;
+  href: string;
+}
+
+interface MenuItem {
+  name: string;
+  href: string;
+  icon: any;
+  subItems?: SubMenuItem[];
+}
 
 interface SidebarProps {
   onClose?: () => void;
@@ -27,16 +41,24 @@ interface SidebarProps {
   onToggleCollapse?: () => void;
 }
 
-const MENU_ITEMS = [
+const MENU_ITEMS: MenuItem[] = [
   { name: "Overview", href: "/dashboard", icon: LayoutDashboard },
   { name: "Hero Slides", href: "/dashboard/hero", icon: Sliders },
   { name: "Client Partners", href: "/dashboard/clients", icon: Users },
   { name: "Services", href: "/dashboard/services", icon: Server },
   { name: "Portfolio Projects", href: "/dashboard/portfolio", icon: Briefcase },
   { name: "Products", href: "/dashboard/products", icon: Package },
+  {
+    name: "Quotation",
+    href: "/dashboard/quotations",
+    icon: FileText,
+    subItems: [
+      { name: "Create Quotation", href: "/dashboard/quotations/create" },
+      { name: "Manage Quotations", href: "/dashboard/quotations" },
+    ],
+  },
   { name: "Blog Posts", href: "/dashboard/blogs", icon: BookOpen },
   { name: "Gallery", href: "/dashboard/gallery", icon: FolderOpen },
-  { name: "Team & Advisors", href: "/dashboard/team", icon: UserCheck },
   { name: "Career", href: "/dashboard/career", icon: GraduationCap },
   { name: "Media Library", href: "/dashboard/media", icon: FolderOpen },
   { name: "FAQs", href: "/dashboard/faqs", icon: HelpCircle },
@@ -47,6 +69,15 @@ const MENU_ITEMS = [
 export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse }: SidebarProps) {
   const pathname = usePathname();
   const router = useRouter();
+
+  const isQuotationRoute = pathname.startsWith("/dashboard/quotations");
+  const [quotationOpen, setQuotationOpen] = useState(isQuotationRoute);
+
+  useEffect(() => {
+    if (isQuotationRoute) {
+      setQuotationOpen(true);
+    }
+  }, [isQuotationRoute]);
 
   const handleLogout = async () => {
     try {
@@ -128,8 +159,97 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
         )}
 
         {MENU_ITEMS.map((item) => {
-          const isActive = pathname === item.href;
           const Icon = item.icon;
+
+          // Item with submenus (e.g. Quotation)
+          if (item.subItems && item.subItems.length > 0) {
+            const hasActiveChild = pathname.startsWith(item.href);
+
+            if (isCollapsed) {
+              return (
+                <Link
+                  key={item.href}
+                  href={item.href}
+                  onClick={onClose}
+                  title={`${item.name} (${item.subItems.map(s => s.name).join(", ")})`}
+                  className={`flex items-center justify-center rounded-[4px] py-2.5 transition duration-150 ${
+                    hasActiveChild
+                      ? "bg-[#0167D6] text-white text-white-always shadow-md shadow-blue-500/20 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5"
+                  }`}
+                >
+                  <Icon
+                    size={18}
+                    className={`shrink-0 ${
+                      hasActiveChild ? "text-white text-white-always" : "text-slate-500 dark:text-gray-400"
+                    }`}
+                  />
+                </Link>
+              );
+            }
+
+            return (
+              <div key={item.name} className="space-y-0.5">
+                <button
+                  type="button"
+                  onClick={() => setQuotationOpen((prev) => !prev)}
+                  className={`w-full flex items-center justify-between rounded-[4px] text-sm font-medium transition duration-150 px-3.5 py-2.5 cursor-pointer ${
+                    hasActiveChild
+                      ? "bg-blue-50/70 text-[#0167D6] dark:bg-blue-900/20 dark:text-blue-400 font-semibold"
+                      : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5"
+                  }`}
+                >
+                  <div className="flex items-center gap-3 truncate">
+                    <Icon
+                      size={18}
+                      className={`shrink-0 ${
+                        hasActiveChild ? "text-[#0167D6] dark:text-blue-400" : "text-slate-500 dark:text-gray-400"
+                      }`}
+                    />
+                    <span className="truncate">{item.name}</span>
+                  </div>
+                  {quotationOpen ? (
+                    <ChevronDown size={15} className="text-slate-400 shrink-0" />
+                  ) : (
+                    <ChevronRight size={15} className="text-slate-400 shrink-0" />
+                  )}
+                </button>
+
+                {quotationOpen && (
+                  <div className="pl-9 pr-1 py-0.5 space-y-0.5 animate-in fade-in-50 duration-150">
+                    {item.subItems.map((sub) => {
+                      const isSubActive =
+                        sub.href === "/dashboard/quotations/create"
+                          ? pathname === "/dashboard/quotations/create"
+                          : pathname === "/dashboard/quotations" ||
+                            (pathname.startsWith("/dashboard/quotations/") &&
+                              !pathname.endsWith("/create"));
+
+                      return (
+                        <Link
+                          key={sub.href}
+                          href={sub.href}
+                          onClick={onClose}
+                          className={`flex items-center rounded-[4px] text-xs font-medium py-2 px-3 transition duration-150 ${
+                            isSubActive
+                              ? "bg-[#0167D6] text-white text-white-always shadow-xs font-semibold"
+                              : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-white/5"
+                          }`}
+                        >
+                          <span className="truncate">{sub.name}</span>
+                        </Link>
+                      );
+                    })}
+                  </div>
+                )}
+              </div>
+            );
+          }
+
+          // Regular flat item - active if exact match or nested sub-route (e.g. create, edit)
+          const isActive =
+            pathname === item.href ||
+            (item.href !== "/dashboard" && pathname.startsWith(item.href + "/"));
 
           return (
             <Link
@@ -173,7 +293,7 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
             <button
               onClick={handleLogout}
               title="Log out"
-              className="p-1.5 rounded-[4px] text-slate-400 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
+              className="p-1.5 rounded-[4px] text-slate-400 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition cursor-pointer"
             >
               <LogOut size={16} />
             </button>
@@ -189,7 +309,7 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
             <button
               onClick={handleLogout}
               title="Log out (admin@okobiz.com)"
-              className="p-2 rounded-[4px] text-slate-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition"
+              className="p-2 rounded-[4px] text-slate-500 hover:text-red-600 dark:text-gray-400 dark:hover:text-red-400 hover:bg-red-50 dark:hover:bg-red-500/10 transition cursor-pointer"
             >
               <LogOut size={16} />
             </button>

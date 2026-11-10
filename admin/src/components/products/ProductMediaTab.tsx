@@ -180,55 +180,13 @@ export default function ProductMediaTab({
           </div>
         </div>
 
-        {/* Direct Image URL input */}
-        <div className="flex items-center gap-2">
-          <input
-            type="url"
-            placeholder="Paste image URL here and click Add..."
-            id="new-img-url"
-            className="flex-1 px-3 py-2 bg-white dark:bg-[#15171C] border border-slate-300 dark:border-gray-800 rounded text-xs text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6]"
-            onKeyDown={(e) => {
-              if (e.key === "Enter") {
-                e.preventDefault();
-                const val = (e.currentTarget.value || "").trim();
-                if (val) {
-                  setForm((prev) => ({
-                    ...prev,
-                    thumbnail: prev.thumbnail || val,
-                    images: [...prev.images, val],
-                  }));
-                  e.currentTarget.value = "";
-                }
-              }
-            }}
-          />
-          <button
-            type="button"
-            onClick={() => {
-              const el = document.getElementById("new-img-url") as HTMLInputElement;
-              if (el && el.value.trim()) {
-                const val = el.value.trim();
-                setForm((prev) => ({
-                  ...prev,
-                  thumbnail: prev.thumbnail || val,
-                  images: [...prev.images, val],
-                }));
-                el.value = "";
-              }
-            }}
-            className="px-3 py-2 bg-slate-200 hover:bg-slate-300 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-xs rounded font-semibold"
-          >
-            Add URL
-          </button>
-        </div>
-
         {/* Image Gallery Cards */}
         {form.images.length === 0 ? (
           <div className="p-8 text-center border-2 border-dashed border-slate-300 dark:border-gray-800 rounded-[4px]">
             <ImageIcon size={32} className="mx-auto text-slate-400 dark:text-gray-600 mb-2" />
             <p className="text-xs text-slate-600 dark:text-gray-400">No images added yet.</p>
             <p className="text-[11px] text-slate-500 dark:text-gray-500 mt-1">
-              Click "Upload Multiple Images" above or paste an image URL.
+              Click &quot;Upload Multiple Images&quot; above to add screenshots.
             </p>
           </div>
         ) : (

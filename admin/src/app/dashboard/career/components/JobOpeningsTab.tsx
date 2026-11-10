@@ -1,6 +1,7 @@
 "use client";
 
 import React from "react";
+import Link from "next/link";
 import {
   Briefcase,
   MapPin,
@@ -89,12 +90,12 @@ export default function JobOpeningsTab({
           <p className="text-xs text-slate-600 dark:text-gray-400 max-w-sm mx-auto mb-4">
             No job postings match your filters. Click below to publish your first vacancy.
           </p>
-          <button
-            onClick={onOpenCreateJob}
-            className="px-4 py-2 bg-[#0167D6] text-white text-white-always text-xs font-semibold rounded-[4px] hover:bg-blue-700 transition cursor-pointer shadow-md shadow-blue-500/20"
+          <Link
+            href="/dashboard/career/create"
+            className="inline-block px-4 py-2 bg-[#0167D6] text-white text-white-always text-xs font-semibold rounded-[4px] hover:bg-blue-700 transition cursor-pointer shadow-md shadow-blue-500/20"
           >
             Post New Job
-          </button>
+          </Link>
         </div>
       ) : (
         <div className="space-y-4">
@@ -172,13 +173,13 @@ export default function JobOpeningsTab({
                   >
                     {job.status === "active" ? "Close Role" : "Activate"}
                   </button>
-                  <button
-                    onClick={() => onOpenEditJob(job)}
-                    className="p-1.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white border border-slate-200 dark:border-transparent transition cursor-pointer"
+                  <Link
+                    href={`/dashboard/career/${job._id}/edit`}
+                    className="p-1.5 rounded-[4px] bg-slate-100 hover:bg-slate-200 dark:bg-gray-800 dark:hover:bg-gray-700 text-slate-600 hover:text-slate-900 dark:text-gray-300 dark:hover:text-white border border-slate-200 dark:border-transparent transition inline-flex items-center justify-center cursor-pointer"
                     title="Edit Job"
                   >
                     <Edit2 size={13} />
-                  </button>
+                  </Link>
                   <button
                     onClick={() => onDeleteJob(job._id, job.title)}
                     className="p-1.5 rounded-[4px] bg-red-500/10 hover:bg-red-500/20 text-red-600 dark:text-red-400 transition cursor-pointer"

@@ -18,7 +18,8 @@ import {
   Palette,
   Highlighter,
   ChevronDown,
-  X
+  X,
+  GripHorizontal
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -32,8 +33,8 @@ interface RichTextEditorProps {
 // Converts legacy markdown to HTML on initial load so user sees formatted text immediately
 function convertMarkdownToHtml(text: string): string {
   if (!text) return "";
-  // If already contains HTML tags, return directly
-  if (/<\s*(?:p|strong|b|em|i|u|h[1-6]|ul|ol|li|blockquote|code|pre|br|a)\b/i.test(text)) {
+  // If already contains HTML tags, return directly without mangling
+  if (/<\s*(?:p|strong|b|em|i|u|h[1-6]|ul|ol|li|blockquote|code|pre|br|a|div|span|table|tr|td|th)\b/i.test(text)) {
     return text;
   }
 
@@ -147,11 +148,46 @@ export default function RichTextEditor({
   onChange,
   placeholder = "Start writing overview or description...",
   label,
-  minHeight = "min-h-[200px]"
+  minHeight = "min-h-[440px]"
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const isInternalChangeRef = useRef(false);
+  const lastEmittedValueRef = useRef<string>(value || "");
   const savedRangeRef = useRef<Range | null>(null);
+
+  // Dynamic user height resizing
+  const [customHeight, setCustomHeight] = useState<number | null>(null);
+  const isDraggingResizeRef = useRef(false);
+  const startYRef = useRef(0);
+  const startHeightRef = useRef(0);
+
+  const handleResizeStart = (e: React.MouseEvent) => {
+    e.preventDefault();
+    isDraggingResizeRef.current = true;
+    startYRef.current = e.clientY;
+    const currentH = editorRef.current ? editorRef.current.offsetHeight : 440;
+    startHeightRef.current = currentH;
+    document.body.style.cursor = "row-resize";
+    document.body.style.userSelect = "none";
+
+    const handleMouseMove = (ev: MouseEvent) => {
+      if (!isDraggingResizeRef.current) return;
+      const delta = ev.clientY - startYRef.current;
+      const newHeight = Math.max(180, Math.min(1600, startHeightRef.current + delta));
+      setCustomHeight(newHeight);
+    };
+
+    const handleMouseUp = () => {
+      isDraggingResizeRef.current = false;
+      document.body.style.cursor = "";
+      document.body.style.userSelect = "";
+      window.removeEventListener("mousemove", handleMouseMove);
+      window.removeEventListener("mouseup", handleMouseUp);
+    };
+
+    window.addEventListener("mousemove", handleMouseMove);
+    window.addEventListener("mouseup", handleMouseUp);
+  };
 
   const isColorPickerOpenRef = useRef(false);
 
@@ -386,9 +422,15 @@ export default function RichTextEditor({
       return;
     }
 
+    // If incoming value is identical to what this editor last emitted or current DOM, do nothing
+    if (value === lastEmittedValueRef.current || value === editor.innerHTML) {
+      return;
+    }
+
     const htmlContent = convertMarkdownToHtml(value || "");
     if (editor.innerHTML !== htmlContent) {
       editor.innerHTML = htmlContent;
+      lastEmittedValueRef.current = value || "";
     }
   }, [value]);
 
@@ -407,34 +449,42 @@ export default function RichTextEditor({
 
   const triggerChange = () => {
     if (!editorRef.current) return;
+    const currentHtml = editorRef.current.innerHTML;
+    lastEmittedValueRef.current = currentHtml;
     isInternalChangeRef.current = true;
-    onChange(editorRef.current.innerHTML);
+    onChange(currentHtml);
     updateActiveStates();
   };
 
   const handleInput = () => {
+    saveSelection();
     triggerChange();
   };
 
   // Execute standard formatting commands (toggles on/off)
   const execFormat = (e: React.MouseEvent, command: string, arg: string | undefined = undefined) => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     document.execCommand(command, false, arg);
+    saveSelection();
     triggerChange();
   };
 
   // Toggle Underline specifically
   const toggleUnderline = (e: React.MouseEvent) => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     document.execCommand("underline", false);
+    saveSelection();
     triggerChange();
   };
 
   // Toggle Headings (H2 / H3)
   const toggleHeading = (e: React.MouseEvent, tag: "h2" | "h3") => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     const isCurrent = checkInsideTag(tag);
     if (isCurrent) {
@@ -442,12 +492,14 @@ export default function RichTextEditor({
     } else {
       document.execCommand("formatBlock", false, `<${tag}>`);
     }
+    saveSelection();
     triggerChange();
   };
 
   // Toggle Blockquote
   const toggleBlockquote = (e: React.MouseEvent) => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     const isQuote = checkInsideTag("blockquote");
     if (isQuote) {
@@ -455,12 +507,14 @@ export default function RichTextEditor({
     } else {
       document.execCommand("formatBlock", false, "<blockquote>");
     }
+    saveSelection();
     triggerChange();
   };
 
   // Toggle Inline Code
   const toggleCode = (e: React.MouseEvent) => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     const selection = window.getSelection();
     if (!selection || selection.rangeCount === 0) return;
@@ -535,9 +589,11 @@ export default function RichTextEditor({
   // Remove Formatting
   const clearFormatting = (e: React.MouseEvent) => {
     e.preventDefault();
+    restoreSelection();
     editorRef.current?.focus();
     document.execCommand("removeFormat", false);
     document.execCommand("formatBlock", false, "<p>");
+    saveSelection();
     triggerChange();
   };
 
@@ -1096,9 +1152,40 @@ export default function RichTextEditor({
             saveSelection();
           }}
           data-placeholder={placeholder}
-          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-slate-900 dark:text-gray-200 bg-white dark:bg-[#181A1F] focus:outline-none leading-relaxed overflow-y-auto rounded-b-[4px]`}
-          style={{ minHeight: "210px" }}
+          className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-slate-900 dark:text-gray-200 bg-white dark:bg-[#181A1F] focus:outline-none leading-relaxed overflow-y-auto block`}
+          style={{
+            minHeight: customHeight ? `${customHeight}px` : undefined,
+            height: customHeight ? `${customHeight}px` : undefined,
+            resize: "vertical"
+          }}
         />
+
+        {/* Dynamic User Resize Handle Bar */}
+        <div
+          onMouseDown={handleResizeStart}
+          className="flex items-center justify-between px-3 py-1.5 bg-slate-50 dark:bg-[#141518] border-t border-slate-200 dark:border-gray-800 text-[11px] text-slate-500 dark:text-gray-400 select-none cursor-row-resize hover:bg-slate-100 dark:hover:bg-gray-800/60 transition rounded-b-[4px] group"
+          title="Drag up or down to adjust editor height"
+        >
+          <div className="flex items-center gap-1.5 text-slate-400 group-hover:text-slate-700 dark:group-hover:text-gray-200 transition">
+            <GripHorizontal size={14} className="text-slate-400 group-hover:text-[#0167D6] transition" />
+            <span className="text-[10px] font-medium hidden sm:inline">Drag to adjust editor size</span>
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onMouseDown={(e) => e.stopPropagation()}
+              onClick={() => setCustomHeight(prev => (!prev || prev < 560 ? 720 : 380))}
+              className="text-[10px] font-semibold text-slate-600 dark:text-gray-400 hover:text-[#0167D6] dark:hover:text-blue-400 transition px-2 py-0.5 rounded bg-white dark:bg-gray-800 border border-slate-200 dark:border-gray-700 shadow-2xs"
+            >
+              {customHeight && customHeight > 560 ? "Compact View" : "Expand View"}
+            </button>
+            <span className="w-1 h-1 rounded-full bg-slate-300 dark:bg-gray-700" />
+            <span className="text-[10px] font-mono text-slate-500 dark:text-gray-400">
+              {customHeight || (editorRef.current ? editorRef.current.offsetHeight : 440)}px
+            </span>
+          </div>
+        </div>
       </div>
     </div>
   );

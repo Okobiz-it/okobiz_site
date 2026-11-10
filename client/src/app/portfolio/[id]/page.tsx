@@ -159,12 +159,12 @@ function PortfolioDetailContent() {
             </div>
           </div>
 
-          {/* Media Showcase: YouTube Iframe, HTML5 Video, or Image */}
-          <div className="mb-14 rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 bg-slate-100 dark:bg-black shadow-lg relative">
+          {/* Media Showcase: YouTube Iframe, HTML5 Video, or Image - Elegantly Scaled & Centered */}
+          <div className="max-w-4xl lg:max-w-5xl mx-auto mb-14 rounded-xl overflow-hidden border border-slate-200 dark:border-gray-800 bg-slate-100 dark:bg-black shadow-2xl relative aspect-[16/9] max-h-[460px] md:max-h-[500px] flex items-center justify-center">
             {isVideo && project.videoUrl ? (
               !isPlaying ? (
                 /* Paused state when user clicked outside video play frame */
-                <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center group overflow-hidden">
+                <div className="relative w-full h-full bg-slate-900 flex items-center justify-center group overflow-hidden">
                   <img
                     src={displayPoster}
                     alt={project.title}
@@ -192,7 +192,7 @@ function PortfolioDetailContent() {
               ) : (
                 /* Autoplaying state when user clicked video play button */
                 isYt && ytEmbedUrl ? (
-                  <div className="relative aspect-video w-full bg-black">
+                  <div className="relative w-full h-full bg-black">
                     <iframe
                       src={ytEmbedUrl}
                       title={project.title}
@@ -202,7 +202,7 @@ function PortfolioDetailContent() {
                     />
                   </div>
                 ) : (
-                  <div className="relative aspect-video w-full bg-black flex items-center justify-center">
+                  <div className="relative w-full h-full bg-black flex items-center justify-center">
                     <video
                       src={project.videoUrl}
                       poster={displayPoster}
@@ -216,7 +216,7 @@ function PortfolioDetailContent() {
                 )
               )
             ) : (
-              <div className="relative aspect-video w-full overflow-hidden bg-slate-100 dark:bg-gray-950 flex items-center justify-center p-2 sm:p-4">
+              <div className="relative w-full h-full overflow-hidden bg-slate-100 dark:bg-gray-950 flex items-center justify-center p-3 sm:p-5">
                 <img
                   src={displayPoster}
                   alt={project.title}
@@ -226,7 +226,7 @@ function PortfolioDetailContent() {
                       target.src = "/assets/bdhajj-D468QQtK.png";
                     }
                   }}
-                  className="w-full h-full object-contain max-h-[550px] transition-all duration-300 rounded-[2px]"
+                  className="w-full h-full object-contain max-h-[460px] md:max-h-[500px] transition-all duration-300 rounded-[4px]"
                 />
               </div>
             )}
