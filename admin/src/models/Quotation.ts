@@ -34,6 +34,8 @@ export interface IQuotation {
   company_signatory_title?: string;
   company_phone?: string;
   company_email?: string;
+  doc_type?: "QUOTATION" | "BILL" | string;
+  bill_rows?: any[];
   status: "SENT" | "DRAFT" | "ACCEPTED" | "REJECTED" | string;
   email_sent_at?: Date | null;
   created_at: Date;
@@ -75,6 +77,8 @@ const QuotationSchema = new Schema<IQuotation>(
     company_signatory_title: { type: String, default: "CEO, okobiz" },
     company_phone: { type: String, default: "+880 1973590937" },
     company_email: { type: String, default: "info@okobiz.com" },
+    doc_type: { type: String, default: "QUOTATION" },
+    bill_rows: { type: Schema.Types.Mixed, default: [] },
     status: { type: String, default: "SENT" },
     email_sent_at: { type: Date, default: null },
   },

@@ -40,6 +40,113 @@ interface QuotationFormProps {
   isEdit?: boolean;
 }
 
+interface SyncedSoftwareRowProps {
+  row: SoftwareRow;
+  index: number;
+  onUpdate: (index: number, field: keyof SoftwareRow, value: any) => void;
+  onRemove: (index: number) => void;
+}
+
+function SyncedSoftwareRow({
+  row,
+  index,
+  onUpdate,
+  onRemove,
+}: SyncedSoftwareRowProps) {
+  const scopeRef = useRef<HTMLTextAreaElement>(null);
+  const partRef = useRef<HTMLTextAreaElement>(null);
+  const isSyncingRef = useRef(false);
+
+  useEffect(() => {
+    const scopeEl = scopeRef.current;
+    const partEl = partRef.current;
+    if (!scopeEl || !partEl) return;
+
+    // Align initial height on mount if one is already taller
+    const initH = Math.max(scopeEl.offsetHeight, partEl.offsetHeight, 38);
+    if (initH > 38) {
+      scopeEl.style.height = `${initH}px`;
+      partEl.style.height = `${initH}px`;
+    }
+
+    if (typeof ResizeObserver === "undefined") return;
+
+    const ro = new ResizeObserver((entries) => {
+      if (isSyncingRef.current) return;
+      for (const entry of entries) {
+        const target = entry.target as HTMLTextAreaElement;
+        const newHeight = target.offsetHeight;
+        if (newHeight <= 0) continue;
+
+        if (target === scopeEl && Math.abs(partEl.offsetHeight - newHeight) > 1) {
+          isSyncingRef.current = true;
+          partEl.style.height = `${newHeight}px`;
+          requestAnimationFrame(() => {
+            isSyncingRef.current = false;
+          });
+        } else if (target === partEl && Math.abs(scopeEl.offsetHeight - newHeight) > 1) {
+          isSyncingRef.current = true;
+          scopeEl.style.height = `${newHeight}px`;
+          requestAnimationFrame(() => {
+            isSyncingRef.current = false;
+          });
+        }
+      }
+    });
+
+    ro.observe(scopeEl);
+    ro.observe(partEl);
+
+    return () => {
+      ro.disconnect();
+    };
+  }, []);
+
+  return (
+    <tr className="hover:bg-slate-50/50 dark:hover:bg-gray-800/20 align-top">
+      <td className="py-2 px-3 text-center border-r border-slate-200 dark:border-gray-800 align-top">
+        <Input
+          value={row.sl}
+          onChange={(e) => onUpdate(index, "sl", e.target.value)}
+          className="h-9 text-center text-xs font-bold"
+        />
+      </td>
+      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
+        <Textarea
+          ref={scopeRef}
+          value={row.scope}
+          onChange={(e) => onUpdate(index, "scope", e.target.value)}
+          placeholder="e.g. Inventory Management System"
+          className="min-h-[38px] text-xs py-2 px-3 resize-y font-semibold leading-snug rounded-[4px]"
+          rows={1}
+        />
+      </td>
+      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
+        <Textarea
+          ref={partRef}
+          value={row.particulars}
+          onChange={(e) => onUpdate(index, "particulars", e.target.value)}
+          placeholder="e.g. Real-time stock alerts, barcode generation, multi-warehouse transfer"
+          className="min-h-[38px] text-xs py-2 px-3 resize-y leading-snug rounded-[4px]"
+          rows={1}
+        />
+      </td>
+      <td className="py-2 px-3 text-center align-top pt-2.5">
+        <Button
+          type="button"
+          variant="ghost"
+          size="icon"
+          onClick={() => onRemove(index)}
+          className="h-8 w-8 text-slate-400 hover:text-red-600"
+          title="Remove Row"
+        >
+          <Trash2 className="w-3.5 h-3.5" />
+        </Button>
+      </td>
+    </tr>
+  );
+}
+
 export function QuotationForm({ initialData, isEdit = false }: QuotationFormProps) {
   const router = useRouter();
 
@@ -99,8 +206,16 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
       return initialData.in_words;
     }
     const val = Number(initialData?.grand_total || initialData?.software_amount) || 30000;
-    return numberToWords(val).replace(" Taka Only", " Only");
+    return numberToWords(val).replace(" Taka Only", " Taka Only.");
   });
+
+  // Automatically update inWords dynamically when grandTotal changes (unless manually edited)
+  const [isWordsManuallyEdited, setIsWordsManuallyEdited] = useState(false);
+  useEffect(() => {
+    if (!isWordsManuallyEdited && grandTotal > 0) {
+      setInWords(numberToWords(grandTotal).replace(" Taka Only", " Taka Only."));
+    }
+  }, [grandTotal, isWordsManuallyEdited]);
 
   // Signatory
   const [signatoryName, setSignatoryName] = useState(
@@ -517,53 +632,13 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-gray-800">
                   {softwareRows.map((row, index) => (
-                    <tr
+                    <SyncedSoftwareRow
                       key={index}
-                      className="hover:bg-slate-50/50 dark:hover:bg-gray-800/20 align-top"
-                    >
-                      <td className="py-2 px-3 text-center border-r border-slate-200 dark:border-gray-800 align-top">
-                        <Input
-                          value={row.sl}
-                          onChange={(e) =>
-                            handleUpdateSoftwareRow(index, "sl", e.target.value)
-                          }
-                          className="h-8 text-center text-xs font-bold"
-                        />
-                      </td>
-                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
-                        <Input
-                          value={row.scope}
-                          onChange={(e) =>
-                            handleUpdateSoftwareRow(index, "scope", e.target.value)
-                          }
-                          placeholder="e.g. Inventory Management System"
-                          className="h-8 text-xs font-semibold"
-                        />
-                      </td>
-                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
-                        <Textarea
-                          value={row.particulars}
-                          onChange={(e) =>
-                            handleUpdateSoftwareRow(index, "particulars", e.target.value)
-                          }
-                          placeholder="e.g. Real-time stock alerts, barcode generation, multi-warehouse transfer"
-                          className="min-h-[36px] text-xs py-1.5 px-3 resize-y leading-snug rounded-[4px]"
-                          rows={1}
-                        />
-                      </td>
-                      <td className="py-2 px-3 text-center align-top">
-                        <Button
-                          type="button"
-                          variant="ghost"
-                          size="icon"
-                          onClick={() => handleRemoveSoftwareRow(index)}
-                          className="h-8 w-8 text-slate-400 hover:text-red-600"
-                          title="Remove Row"
-                        >
-                          <Trash2 className="w-3.5 h-3.5" />
-                        </Button>
-                      </td>
-                    </tr>
+                      row={row}
+                      index={index}
+                      onUpdate={handleUpdateSoftwareRow}
+                      onRemove={handleRemoveSoftwareRow}
+                    />
                   ))}
                 </tbody>
               </table>
@@ -595,14 +670,14 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                   </label>
                   <Input
                     type="number"
+                    min="0"
+                    step="any"
                     value={grandTotal || ""}
                     onChange={(e) => {
-                      const val = Number(e.target.value) || 0;
+                      const val = parseFloat(e.target.value) || 0;
                       setGrandTotal(val);
-                      if (val > 0) {
-                        setInWords(numberToWords(val).replace(" Taka Only", " Only"));
-                      } else {
-                        setInWords("");
+                      if (!isWordsManuallyEdited) {
+                        setInWords(val > 0 ? numberToWords(val).replace(" Taka Only", " Taka Only.") : "");
                       }
                     }}
                     placeholder="e.g. 30000"
@@ -617,9 +692,12 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                   </label>
                   <Input
                     value={inWords}
-                    onChange={(e) => setInWords(e.target.value)}
-                    placeholder="e.g. Thirty Thousand Only"
-                    className="h-9 text-xs bg-white dark:bg-gray-900"
+                    onChange={(e) => {
+                      setInWords(e.target.value);
+                      setIsWordsManuallyEdited(true);
+                    }}
+                    placeholder="e.g. Thirty Thousand Taka Only."
+                    className="h-9 text-xs font-semibold bg-white dark:bg-gray-900"
                   />
                 </div>
               </div>

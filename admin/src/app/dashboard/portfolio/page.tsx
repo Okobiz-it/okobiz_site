@@ -440,8 +440,8 @@ export default function PortfolioThemesPage() {
                         {item.websiteTitle}
                       </h3>
 
-                      <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
-                        {cleanSnippet(item.description, 100) || (
+                      <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                        {cleanSnippet(item.description, 260) || (
                           <span className="italic text-slate-400 dark:text-gray-600">No project description provided</span>
                         )}
                       </p>
@@ -449,7 +449,7 @@ export default function PortfolioThemesPage() {
 
                     {/* Tech Stack Chips */}
                     {Array.isArray(item.techStack) && item.techStack.length > 0 && (
-                      <div className="flex flex-wrap gap-1 pt-1">
+                      <div className="flex flex-wrap gap-1 pt-1.5 border-t border-slate-100 dark:border-gray-800/60">
                         {item.techStack.slice(0, 3).map((tech: string, i: number) => (
                           <span
                             key={i}

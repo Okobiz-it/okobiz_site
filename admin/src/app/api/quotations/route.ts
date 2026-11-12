@@ -6,11 +6,16 @@ import { sendQuotationEmail } from "@/lib/email";
 
 export const dynamic = "force-dynamic";
 
-async function generateNextRefNo(existingCount: number): Promise<string> {
+async function generateNextRefNo(existingCount: number, docType: string = "QUOTATION"): Promise<string> {
   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");
   const year = String(now.getFullYear()).slice(-2);
   const sequence = String(existingCount + 1).padStart(3, "0");
+  if (docType === "BILL") {
+    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+    const month = monthNames[now.getMonth()];
+    return `okobiz/bill/${month}/${sequence}/${year}`;
+  }
   return `okobiz/bizpos/${sequence}/${day}/${year}`;
 }
 
@@ -19,6 +24,7 @@ export async function GET(req: NextRequest) {
     const { searchParams } = new URL(req.url);
     const search = (searchParams.get("search") || "").toLowerCase();
     const status = searchParams.get("status") || "";
+    const docType = (searchParams.get("doc_type") || "").toUpperCase();
 
     const store = getDataStore();
     let quotationsList: any[] = [];
@@ -31,6 +37,11 @@ export async function GET(req: NextRequest) {
         if (status && status !== "ALL") {
           query.status = status;
         }
+        if (docType === "BILL") {
+          query.doc_type = "BILL";
+        } else if (docType === "QUOTATION") {
+          query.doc_type = { $ne: "BILL" };
+        }
         if (search) {
           query.$or = [
             { ref_no: { $regex: search, $options: "i" } },
@@ -42,7 +53,7 @@ export async function GET(req: NextRequest) {
           ];
         }
         quotationsList = await Quotation.find(query).sort({ created_at: -1 }).lean();
-        totalCount = await Quotation.countDocuments();
+        totalCount = await Quotation.countDocuments(docType ? { doc_type: docType === "BILL" ? "BILL" : { $ne: "BILL" } } : {});
       } catch (dbErr: any) {
         console.warn("MongoDB GET quotations error:", dbErr.message);
       }
@@ -52,6 +63,9 @@ export async function GET(req: NextRequest) {
     if (quotationsList.length === 0 && Array.isArray(store.quotations)) {
       quotationsList = store.quotations.filter((q: any) => {
         const matchStatus = !status || status === "ALL" || q.status === status;
+        const matchDocType =
+          !docType ||
+          (docType === "BILL" ? q.doc_type === "BILL" : q.doc_type !== "BILL");
         const matchSearch =
           !search ||
           (q.ref_no && q.ref_no.toLowerCase().includes(search)) ||
@@ -60,17 +74,19 @@ export async function GET(req: NextRequest) {
           (q.email && q.email.toLowerCase().includes(search)) ||
           (q.phone && q.phone.toLowerCase().includes(search)) ||
           (q.subject && q.subject.toLowerCase().includes(search));
-        return matchStatus && matchSearch;
+        return matchStatus && matchDocType && matchSearch;
       });
-      totalCount = store.quotations.length;
+      totalCount = quotationsList.length;
     }
 
-    const nextRefNo = await generateNextRefNo(totalCount);
+    const nextRefNo = await generateNextRefNo(totalCount, "QUOTATION");
+    const nextBillRefNo = await generateNextRefNo(totalCount, "BILL");
 
     return NextResponse.json({
       success: true,
       data: quotationsList,
       nextRefNo,
+      nextBillRefNo,
     });
   } catch (error: any) {
     console.error("GET /api/quotations error:", error);
@@ -87,21 +103,24 @@ export async function POST(req: NextRequest) {
     const store = getDataStore();
     if (!store.quotations) store.quotations = [];
 
+    const doc_type = body.doc_type || "QUOTATION";
     let ref_no = (body.ref_no || "").trim();
     if (!ref_no) {
-      ref_no = await generateNextRefNo(store.quotations.length);
+      ref_no = await generateNextRefNo(store.quotations.length, doc_type);
     }
 
     const newQuotation = {
       _id: "quote-" + Date.now(),
       ref_no,
+      doc_type,
       quote_date: body.quote_date ? new Date(body.quote_date) : new Date(),
       client_name: body.client_name || "Valued Client",
       organization_name: body.organization_name || "",
       address: body.address || "",
       phone: body.phone || "",
       email: body.email || "",
-      subject: body.subject || "Quotation for Web & Software Solution",
+      subject: body.subject || (doc_type === "BILL" ? "Due Bill for Web & Software Solution" : "Quotation for Web & Software Solution"),
+      bill_rows: body.bill_rows || [],
       software_columns: body.software_columns || [],
       software_rows: body.software_rows || [],
       software_amount: Number(body.software_amount || 0),

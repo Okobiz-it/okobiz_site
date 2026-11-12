@@ -1370,7 +1370,7 @@ export const QuotationPrintSheet: React.FC<QuotationPrintSheetProps> = ({
   const inWordsDisplay =
     data.in_words && data.in_words.trim().length > 0
       ? data.in_words
-      : numberToWords(grandTotalValue).replace(" Taka Only", " Only");
+      : numberToWords(grandTotalValue).replace(" Taka Only", " Taka Only.");
 
   return (
     <div

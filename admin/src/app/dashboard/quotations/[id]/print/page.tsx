@@ -3,6 +3,7 @@
 import React, { useEffect, useState, useRef } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { QuotationPrintSheet } from "@/components/quotation/quotation-print-sheet";
+import { BillPrintSheet } from "@/components/quotation/bill-print-sheet";
 import { Button } from "@/components/ui/button";
 import { Printer, Download, Mail, ArrowLeft, RefreshCw } from "lucide-react";
 import { toast } from "@/lib/toast";
@@ -88,8 +89,9 @@ export default function QuotationPrintPage() {
     const toastId = toast.loading("Generating pristine PDF for direct download...");
 
     try {
-      const cleanRefNo = (data.ref_no || "quotation").replace(/[^a-zA-Z0-9_-]/g, "_");
-      await exportQuotationToPdf(printSheetRef.current, `Quotation_${cleanRefNo}.pdf`);
+      const isBill = data.doc_type === "BILL";
+      const cleanRefNo = (data.ref_no || (isBill ? "bill" : "quotation")).replace(/[^a-zA-Z0-9_-]/g, "_");
+      await exportQuotationToPdf(printSheetRef.current, `${isBill ? "Bill" : "Quotation"}_${cleanRefNo}.pdf`);
       toast.dismiss(toastId);
       toast.success("PDF downloaded successfully!");
     } catch (err: any) {
@@ -160,10 +162,10 @@ export default function QuotationPrintPage() {
           <Button
             variant="ghost"
             size="sm"
-            onClick={() => router.push("/dashboard/quotations")}
+            onClick={() => router.push(data.doc_type === "BILL" ? "/dashboard/quotations/manage-bills" : "/dashboard/quotations")}
             className="text-slate-600 hover:text-slate-900 dark:text-slate-400 cursor-pointer"
           >
-            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Quotations
+            <ArrowLeft className="w-4 h-4 mr-1.5" /> {data.doc_type === "BILL" ? "Back to Bills" : "Back to Quotations"}
           </Button>
 
           <div className="flex items-center gap-2.5">
@@ -217,7 +219,11 @@ export default function QuotationPrintPage() {
       {/* Printable Sheet */}
       <div className="pt-6 px-4 print:p-0 print:px-0 print:m-0 print:mx-0 flex justify-center print:block print:w-full print:max-w-full">
         <div ref={printSheetRef} className="w-full flex justify-center print:block print:w-full print:max-w-full print:p-0 print:m-0">
-          <QuotationPrintSheet data={data} />
+          {data.doc_type === "BILL" ? (
+            <BillPrintSheet data={data} />
+          ) : (
+            <QuotationPrintSheet data={data} />
+          )}
         </div>
       </div>
     </div>

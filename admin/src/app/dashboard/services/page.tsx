@@ -152,23 +152,11 @@ export default function ServicesPage() {
                       {srv.title}
                     </h3>
 
-                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
-                      {cleanSnippet(srv.shortDesc, 110) || (
+                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                      {cleanSnippet(srv.shortDesc || srv.fullDescription, 260) || (
                         <span className="italic text-slate-400 dark:text-gray-600">No short description set</span>
                       )}
                     </p>
-                  </div>
-
-                  {/* Highlights overview */}
-                  <div className="grid grid-cols-2 gap-2 pt-2 border-t border-slate-100 dark:border-gray-800/80 text-[11px] text-slate-600 dark:text-gray-400">
-                    <div className="flex items-center gap-1.5">
-                      <Layers size={13} className="text-[#0167D6] dark:text-[#3368B2]" />
-                      <span>{srv.features?.length || 0} Features</span>
-                    </div>
-                    <div className="flex items-center gap-1.5">
-                      <Sparkles size={13} className="text-emerald-600 dark:text-emerald-500" />
-                      <span>{srv.whyChooseUs?.length || 0} Why Choose</span>
-                    </div>
                   </div>
                 </div>
 

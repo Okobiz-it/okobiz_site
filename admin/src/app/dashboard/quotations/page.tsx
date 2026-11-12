@@ -52,6 +52,7 @@ export default function ManageQuotationsPage() {
     setLoading(true);
     try {
       const params = new URLSearchParams();
+      params.append("doc_type", "QUOTATION");
       if (search) params.append("search", search);
       if (statusFilter !== "ALL") params.append("status", statusFilter);
 

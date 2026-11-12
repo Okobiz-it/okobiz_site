@@ -156,34 +156,11 @@ export default function ProductTable({
                       {product.title}
                     </h3>
 
-                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed min-h-[2.5rem]">
-                      {cleanSnippet(product.tagline || product.fullDescription, 100) || (
+                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                      {cleanSnippet(product.tagline || product.fullDescription, 260) || (
                         <span className="italic text-slate-400 dark:text-gray-600">Finished enterprise digital SaaS solution</span>
                       )}
                     </p>
-                  </div>
-
-                  {/* Quick Links Row */}
-                  <div className="flex items-center gap-2 pt-1 border-t border-slate-100 dark:border-gray-800/80">
-                    <a
-                      href={whatsappDemoUrl}
-                      target="_blank"
-                      rel="noopener noreferrer"
-                      className="inline-flex items-center gap-1 px-2 py-0.5 rounded bg-emerald-50 text-emerald-700 hover:bg-emerald-100 border border-emerald-200 dark:bg-emerald-950/60 dark:text-emerald-400 dark:hover:bg-emerald-900/80 dark:border-emerald-800/40 text-[10px] font-bold"
-                      title="Request WhatsApp Demo"
-                    >
-                      <MessageCircle size={10} /> Test Demo WA
-                    </a>
-                    {product.liveUrl && (
-                      <a
-                        href={product.liveUrl}
-                        target="_blank"
-                        rel="noopener noreferrer"
-                        className="text-[11px] text-[#0167D6] dark:text-blue-400 hover:underline inline-flex items-center gap-1 font-semibold"
-                      >
-                        <ExternalLink size={11} /> Live Demo
-                      </a>
-                    )}
                   </div>
                 </div>
 

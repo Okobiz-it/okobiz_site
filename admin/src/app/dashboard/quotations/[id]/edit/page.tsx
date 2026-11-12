@@ -3,6 +3,7 @@
 import React, { useEffect, useState } from "react";
 import { useParams, useRouter } from "next/navigation";
 import { QuotationForm } from "@/components/quotation/quotation-form";
+import { BillForm } from "@/components/quotation/bill-form";
 import { RefreshCw, ArrowLeft } from "lucide-react";
 import { Button } from "@/components/ui/button";
 
@@ -51,7 +52,11 @@ export default function EditQuotationPage() {
 
   return (
     <div className="w-full">
-      <QuotationForm initialData={data} isEdit={true} />
+      {data.doc_type === "BILL" ? (
+        <BillForm initialData={data} isEdit={true} />
+      ) : (
+        <QuotationForm initialData={data} isEdit={true} />
+      )}
     </div>
   );
 }

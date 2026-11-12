@@ -81,6 +81,8 @@ export async function PUT(
 
     const updateData: any = {
       ref_no: body.ref_no,
+      doc_type: body.doc_type,
+      bill_rows: body.bill_rows,
       quote_date: body.quote_date ? new Date(body.quote_date) : undefined,
       client_name: body.client_name,
       organization_name: body.organization_name,

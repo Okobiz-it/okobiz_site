@@ -21,6 +21,7 @@ import {
   FileText,
   FilePlus,
   Files,
+  Receipt,
   Layers,
   Image,
   ChevronDown,
@@ -73,12 +74,14 @@ const MENU_ITEMS: MenuItem[] = [
     ],
   },
   {
-    name: "Quotation",
+    name: "Quotation & Bill",
     href: "/dashboard/quotations",
     icon: FileText,
     subItems: [
       { name: "Create Quotation", href: "/dashboard/quotations/create", icon: FilePlus },
+      { name: "Create Bill", href: "/dashboard/quotations/create-bill", icon: FilePlus },
       { name: "Manage Quotations", href: "/dashboard/quotations", icon: Files },
+      { name: "Manage Bills", href: "/dashboard/quotations/manage-bills", icon: Receipt },
     ],
   },
 ];
@@ -95,11 +98,20 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
     if (href === "/dashboard/quotations") {
       return (
         pathname === "/dashboard/quotations" ||
-        (pathname.startsWith("/dashboard/quotations/") && !pathname.endsWith("/create"))
+        (pathname.startsWith("/dashboard/quotations/") &&
+          !pathname.endsWith("/create") &&
+          !pathname.endsWith("/create-bill") &&
+          !pathname.endsWith("/manage-bills"))
       );
     }
     if (href === "/dashboard/quotations/create") {
       return pathname === "/dashboard/quotations/create";
+    }
+    if (href === "/dashboard/quotations/create-bill") {
+      return pathname === "/dashboard/quotations/create-bill";
+    }
+    if (href === "/dashboard/quotations/manage-bills") {
+      return pathname === "/dashboard/quotations/manage-bills";
     }
     return pathname === href || pathname.startsWith(href + "/");
   };
@@ -113,7 +125,7 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
   // Expandable menus state
   const [openMenus, setOpenMenus] = useState<Record<string, boolean>>(() => {
     const initial: Record<string, boolean> = {
-      Quotation: false,
+      "Quotation & Bill": false,
       "Client CMS": true,
     };
     MENU_ITEMS.forEach((item) => {
@@ -263,14 +275,14 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
                             key={sub.href}
                             href={sub.href}
                             onClick={onClose}
-                            className={`flex items-center gap-2.5 rounded-[4px] text-[13.5px] font-medium py-2 px-2.5 transition duration-150 ${
+                            className={`flex items-center gap-2.5 rounded-[4px] text-[12.8px] font-medium py-1.5 px-2.5 transition duration-150 ${
                               isSubActive
                                 ? "bg-[#0167D6] text-white text-white-always font-semibold shadow-xs"
                                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40"
                             }`}
                           >
                             <SubIcon
-                              size={16}
+                              size={15}
                               className={`shrink-0 ${
                                 isSubActive ? "text-white text-white-always" : "text-slate-400 dark:text-gray-400"
                               }`}
@@ -357,14 +369,14 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
                           key={sub.href}
                           href={sub.href}
                           onClick={onClose}
-                          className={`flex items-center gap-2.5 rounded-[4px] text-[13.5px] font-medium py-2 px-3 transition duration-150 border-0 !border-none !shadow-none ${
+                          className={`flex items-center gap-2.5 rounded-[4px] text-[12.8px] font-medium py-1.5 px-3 transition duration-150 border-0 !border-none !shadow-none ${
                             isSubActive
                               ? "!bg-[#0167D6] text-white text-white-always shadow-xs font-semibold"
                               : "!bg-transparent text-slate-600 hover:text-slate-900 hover:!bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:!bg-gray-800/40"
                           }`}
                         >
                           <SubIcon
-                            size={16}
+                            size={15}
                             className={`shrink-0 ${
                               isSubActive ? "text-white text-white-always" : "text-slate-400 dark:text-gray-400"
                             }`}
