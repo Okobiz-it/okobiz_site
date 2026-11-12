@@ -19,7 +19,6 @@ import {
   ServiceClientItem,
   getServices,
   getServiceBySlug,
-  DEFAULT_SERVICES,
   getServiceWhatsAppUrl
 } from "@/lib/api";
 
@@ -30,7 +29,7 @@ interface ServiceDetailViewProps {
 
 export default function ServiceDetailView({ slug, initialService }: ServiceDetailViewProps) {
   const [service, setService] = useState<ServiceClientItem | null>(initialService || null);
-  const [allServices, setAllServices] = useState<ServiceClientItem[]>(DEFAULT_SERVICES);
+  const [allServices, setAllServices] = useState<ServiceClientItem[]>([]);
   const [loading, setLoading] = useState(!initialService);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
@@ -53,7 +52,7 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
                    s.slug === `${slug}-service` ||
                    slug === `${s.slug}-service`
             );
-            setService(found || DEFAULT_SERVICES[0]);
+            setService(found || null);
           }
           if (servicesList.length > 0) {
             setAllServices(servicesList);
@@ -77,7 +76,19 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
     return <UniversalLoader fullScreen size="lg" />;
   }
 
-  const activeService = service || DEFAULT_SERVICES[0];
+  if (!service) {
+    return (
+      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
+        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Service Not Found</h2>
+        <p className="text-sm text-slate-600 dark:text-gray-400 mb-6">The requested service offering does not exist or has been removed.</p>
+        <Link href="/services" className="px-5 py-2.5 rounded-[4px] bg-[#0167D6] text-white font-semibold text-sm">
+          Browse All Services
+        </Link>
+      </div>
+    );
+  }
+
+  const activeService = service;
 
   // Other services for left sidebar navigation (filter out current)
   const otherServices = allServices.filter(

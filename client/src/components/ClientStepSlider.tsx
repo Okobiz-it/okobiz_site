@@ -5,99 +5,8 @@ import Link from "next/link";
 import { getClients } from "@/lib/api";
 import { ClientPartner } from "@/data/mockData";
 
-const FALLBACK_CLIENTS: ClientPartner[] = [
-  {
-    _id: "c-2",
-    name: "Agro Infusion",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852860/okobiz/assets/agroinfusion-Drvh30g_.png",
-    order: 1,
-    isActive: true,
-  },
-  {
-    _id: "c-3",
-    name: "OGV",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852934/okobiz/assets/ogv-C2n4LvNa.png",
-    order: 2,
-    isActive: true,
-  },
-  {
-    _id: "c-4",
-    name: "DOOLA",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852867/okobiz/assets/DOOLA-BwowQigu.png",
-    order: 3,
-    isActive: true,
-  },
-  {
-    _id: "c-5",
-    name: "VENUES",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852863/okobiz/assets/VENUES-CXz5tN5L.png",
-    order: 4,
-    isActive: true,
-  },
-  {
-    _id: "c-6",
-    name: "KORTE",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852870/okobiz/assets/KORTE-D3466O8E.png",
-    order: 5,
-    isActive: true,
-  },
-  {
-    _id: "c-7",
-    name: "Eatclub",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852864/okobiz/assets/eatclub-Kr92Ly9u.png",
-    order: 6,
-    isActive: true,
-  },
-  {
-    _id: "c-8",
-    name: "Town",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852874/okobiz/assets/town-kEwniVp8.png",
-    order: 7,
-    isActive: true,
-  },
-  {
-    _id: "c-9",
-    name: "Olanka",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852866/okobiz/assets/olanka-D3466O8E.png",
-    order: 8,
-    isActive: true,
-  },
-  {
-    _id: "c-10",
-    name: "Nexlin",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852876/okobiz/assets/nexlin-BD_vK2wR.png",
-    order: 9,
-    isActive: true,
-  },
-  {
-    _id: "c-11",
-    name: "Aladal",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/aladal-CXz5tN5L.png",
-    order: 10,
-    isActive: true,
-  },
-  {
-    _id: "c-12",
-    name: "Rich",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852872/okobiz/assets/rich-D1pjTLHC.png",
-    order: 11,
-    isActive: true,
-  },
-  {
-    _id: "c-1",
-    name: "Nitol Niloy",
-    image: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852877/okobiz/assets/nitol_niloy-C3PFPoNU.png",
-    order: 12,
-    isActive: true,
-  },
-];
-
 export default function ClientStepSlider() {
-  const [items, setItems] = useState<ClientPartner[]>(() => {
-    return FALLBACK_CLIENTS.length < 10
-      ? [...FALLBACK_CLIENTS, ...FALLBACK_CLIENTS]
-      : FALLBACK_CLIENTS;
-  });
+  const [items, setItems] = useState<ClientPartner[]>([]);
 
   const [itemsPerView, setItemsPerView] = useState<number>(5);
   const [translateOffset, setTranslateOffset] = useState<number>(0);
@@ -214,6 +123,10 @@ export default function ClientStepSlider() {
       slidePrev();
     }
   };
+
+  if (!items || items.length === 0) {
+    return null;
+  }
 
   return (
     <div

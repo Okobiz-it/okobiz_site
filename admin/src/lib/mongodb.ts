@@ -17,14 +17,13 @@ if (!cached) {
   cached = globalWithMongoose.mongoose = { conn: null, promise: null };
 }
 
-let srvWarningLogged = false;
-
 export async function connectDB(): Promise<typeof mongoose | null> {
-  if (cached && cached.conn) {
+  if (cached && cached.conn && cached.conn.connection.readyState === 1) {
     return cached.conn;
   }
 
   if (!MONGODB_URI) {
+    console.error("MONGODB_URI environment variable is missing in .env.local!");
     return null;
   }
 
@@ -33,40 +32,34 @@ export async function connectDB(): Promise<typeof mongoose | null> {
   }
 
   if (!cached.promise) {
-    const opts = {
+    const opts: mongoose.ConnectOptions = {
       bufferCommands: false,
-      dbName: "okobiz",
-      serverSelectionTimeoutMS: 5000,
+      dbName: "okobiz_site",
+      serverSelectionTimeoutMS: 15000,
     };
 
     cached.promise = mongoose
       .connect(MONGODB_URI, opts)
       .then((mongooseInstance) => {
-        console.log("Connected to MongoDB Atlas successfully");
+        console.log("Connected to MongoDB Atlas (okobiz_site) successfully");
         return mongooseInstance;
       })
       .catch((err) => {
-        // querySrv ECONNREFUSED is a known local ISP / Wi-Fi DNS limitation on Windows.
-        // The application safely uses local dataStore (admin_store.json) without data loss.
-        if (err?.message?.includes("querySrv")) {
-          if (!srvWarningLogged) {
-            srvWarningLogged = true;
-            console.log("ℹ️  MongoDB Atlas: Local DNS SRV is blocked by ISP. Operating seamlessly on local database store.");
-          }
-          return null as any;
-        }
-        console.warn("MongoDB connection warning:", err.message);
+        console.error("MongoDB Atlas connection error:", err.message);
+        if (cached) cached.promise = null;
         return null as any;
       });
   }
 
   try {
     cached.conn = await cached.promise;
-    if (!cached.conn) {
+    if (!cached.conn || cached.conn.connection.readyState !== 1) {
       cached.promise = null;
+      cached.conn = null;
     }
     return cached.conn;
-  } catch (e) {
+  } catch (e: any) {
+    console.error("MongoDB connectDB error:", e?.message);
     cached.promise = null;
     cached.conn = null;
     return null;

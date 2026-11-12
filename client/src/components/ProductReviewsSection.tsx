@@ -4,60 +4,16 @@ import React from "react";
 import { Star } from "lucide-react";
 import { ProductReview } from "@/data/mockData";
 
-export const DEFAULT_REVIEWS = [
-  {
-    name: "Dr. Rafiqul Islam",
-    designation: "Managing Director",
-    company: "Al-Madina Pharma Care",
-    location: "Dhaka",
-    comment: "PharmaCare Pro completely eliminated our medicine expiry losses. The automatic advance alerts and barcode POS billing have made our checkout 3x faster. Outstanding software!",
-    rating: 5,
-    tag: "Pharmacy ERP"
-  },
-  {
-    name: "Tanvir Ahmed",
-    designation: "Founder & Owner",
-    company: "The Smokehouse Grill & Cafe",
-    location: "Gulshan",
-    comment: "The table management and kitchen display (KDS) system transformed our dining service. Zero order mistakes and daily cash register reconciliation is seamless.",
-    rating: 5,
-    tag: "Restaurant POS"
-  },
-  {
-    name: "Shahidul Alam",
-    designation: "Operations Head",
-    company: "MegaMart Retail Chain",
-    location: "Uttara",
-    comment: "okobiz team deployed our full clinic and lab management system in less than 48 hours. Direct WhatsApp support responds within 5 minutes whenever we need anything.",
-    rating: 5,
-    tag: "Healthcare SaaS"
-  },
-  {
-    name: "Farhan Kabir",
-    designation: "Managing Partner",
-    company: "Taste of Italy Trattoria",
-    location: "Banani",
-    comment: "Best investment for our restaurant chain. Recipe ingredient costing and daily sales analytics give us exact profit margins every night on our phone.",
-    rating: 5,
-    tag: "Cloud Kitchen ERP"
-  },
-  {
-    name: "Kamrul Hasan",
-    designation: "Proprietor",
-    company: "Trust Medicine Corner",
-    location: "Mirpur",
-    comment: "The generic medicine alternative search is a lifesaver. When a prescribed brand is out of stock, we can immediately offer the generic equivalent to customers.",
-    rating: 5,
-    tag: "Pharmacy System"
-  }
-];
-
 interface ProductReviewsSectionProps {
   reviews?: ProductReview[];
 }
 
 export default function ProductReviewsSection({ reviews }: ProductReviewsSectionProps) {
-  const productReviews = (reviews && reviews.length > 0) ? reviews : DEFAULT_REVIEWS;
+  if (!reviews || reviews.length === 0) {
+    return null;
+  }
+
+  const productReviews = reviews;
   
   // Guarantee minimum items so track is wider than any 4K screen before duplicating
   const minBaseCount = 8;

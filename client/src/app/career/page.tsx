@@ -2,7 +2,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from "react";
 import TalkCta from "@/components/TalkCta";
-import { getJobs, JobItem, DEFAULT_JOBS } from "@/lib/api";
+import { getJobs, JobItem } from "@/lib/api";
 import CareerHero from "./components/CareerHero";
 import EngineeringCulture from "./components/EngineeringCulture";
 import WorkplaceBenefits from "./components/WorkplaceBenefits";
@@ -12,7 +12,7 @@ import JobOpeningsSection from "./components/JobOpeningsSection";
 import CareerFaq from "./components/CareerFaq";
 
 export default function CareerPage() {
-  const [jobs, setJobs] = useState<JobItem[]>(DEFAULT_JOBS);
+  const [jobs, setJobs] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [selectedDepartment, setSelectedDepartment] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
@@ -26,11 +26,11 @@ export default function CareerPage() {
       try {
         setLoading(true);
         const data = await getJobs();
-        if (isMounted && Array.isArray(data) && data.length > 0) {
-          setJobs(data);
+        if (isMounted) {
+          setJobs(data || []);
         }
       } catch (err) {
-        console.warn("Using fallback jobs:", err);
+        console.warn("Failed to fetch jobs:", err);
       } finally {
         if (isMounted) setLoading(false);
       }

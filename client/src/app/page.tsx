@@ -7,14 +7,6 @@ import { Play, ArrowRight, Monitor, PenTool, BarChart, Plus, Minus, Phone } from
 import ClientStepSlider from "@/components/ClientStepSlider";
 import { getHeroSlides, getFaqs, HeroSlideItem, FaqItemType } from "@/lib/api";
 
-const DEFAULT_HERO_SLIDES: HeroSlideItem[] = [
-  { title: "Drive Business, Elevate Success", img: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852950/okobiz/assets/Untitled-10-C-7O9vGO.jpg" },
-  { title: "Boosting Business Digitally", img: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852952/okobiz/assets/Untitled-11-BtrXcvlB.jpg" },
-  { title: "Transforming Ideas into Growth", img: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852954/okobiz/assets/Untitled-12-DD3oUXmC.jpg" },
-  { title: "Where Creativity Meets Technology", img: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852955/okobiz/assets/Untitled-13-C9Bpoyra.jpg" },
-  { title: "Empowering Your Digital future", img: "https://res.cloudinary.com/dccui8s58/image/upload/v1790852957/okobiz/assets/Untitled-14-FHKbdJRS.jpg" }
-];
-
 const TICKER_ITEMS = [
   "Portfolio Design", "App Design", "Mobile App Development", 
   "Graphic Design", "Motion Design", "Social Advertising", 
@@ -27,30 +19,11 @@ const TICKER_ITEMS_BLACK = [
   "Blog Websites", "Agency Websites"
 ];
 
-const DEFAULT_FAQS: FaqItemType[] = [
-  {
-    question: "What services do talent agencies provide?",
-    answer: "Talent agencies provide representation, negotiation, career management, and contract guidance for models, actors, creatives, and athletes to secure work and maximize career opportunities."
-  },
-  {
-    question: "How can I get represented by a talent agency?",
-    answer: "To get represented, you typically submit a portfolio or showreel, attend open casting calls, or get scouted. It is important to have professional materials."
-  },
-  {
-    question: "What is the process of getting an agent for my child?",
-    answer: "The process involves submitting photos, attending meetings, and ensuring the agency specializes in youth talent. Parents must be highly involved."
-  },
-  {
-    question: "What are the common commission rates for talent agencies?",
-    answer: "Standard commission rates range between 10% and 20% depending on the industry and the specific union regulations."
-  }
-];
-
 export default function HomePage() {
   const [activeFaq, setActiveFaq] = useState(0);
   const [currentSlide, setCurrentSlide] = useState(0);
-  const [heroSlides, setHeroSlides] = useState<HeroSlideItem[]>(DEFAULT_HERO_SLIDES);
-  const [faqs, setFaqs] = useState<FaqItemType[]>(DEFAULT_FAQS);
+  const [heroSlides, setHeroSlides] = useState<HeroSlideItem[]>([]);
+  const [faqs, setFaqs] = useState<FaqItemType[]>([]);
 
   useEffect(() => {
     const loadLiveData = async () => {
