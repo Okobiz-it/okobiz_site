@@ -150,12 +150,12 @@ export const OkobizFooterBanner = ({
   <div className="quotation-footer w-full mt-auto select-none shrink-0 overflow-hidden m-0 p-0">
     {/* Blue Bar */}
     <div
-      className="bg-[#1E65B8] text-white py-1.5 px-[12mm] print:px-[12mm] flex items-center justify-between text-[11px] font-semibold tracking-wide text-white-always w-full"
+      className="bg-[#1E65B8] text-white py-1.5 px-[12mm] print:px-[12mm] flex items-center justify-between text-[9.8px] print:text-[9.8px] font-semibold tracking-wide text-white-always w-full"
       style={{ backgroundColor: "#1E65B8", color: "#ffffff" }}
     >
       <div className="flex items-center gap-1.5 text-white-always" style={{ color: "#ffffff" }}>
         <Phone
-          className="w-3 h-3 text-white fill-white stroke-none shrink-0"
+          className="w-2.5 h-2.5 text-white fill-white stroke-none shrink-0"
           style={{ fill: "#ffffff", color: "#ffffff" }}
         />
         <span className="text-white-always !text-white font-medium" style={{ color: "#ffffff" }}>
@@ -164,7 +164,7 @@ export const OkobizFooterBanner = ({
       </div>
       <div className="flex items-center gap-1.5 text-white-always" style={{ color: "#ffffff" }}>
         <Send
-          className="w-3 h-3 text-white fill-white stroke-none shrink-0"
+          className="w-2.5 h-2.5 text-white fill-white stroke-none shrink-0"
           style={{ fill: "#ffffff", color: "#ffffff" }}
         />
         <span className="text-white-always !text-white font-medium" style={{ color: "#ffffff" }}>
@@ -176,7 +176,7 @@ export const OkobizFooterBanner = ({
           viewBox="0 0 24 24"
           fill="none"
           xmlns="http://www.w3.org/2000/svg"
-          className="globe-icon w-3.5 h-3.5 text-white shrink-0"
+          className="globe-icon w-3 h-3 text-white shrink-0"
           style={{ fill: "none" }}
           aria-hidden="true"
         >

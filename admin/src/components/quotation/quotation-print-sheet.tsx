@@ -116,12 +116,12 @@ export const formatPrice = (val: number | string | undefined | null): string => 
 // TOP-LEVEL REUSABLE COMPONENTS
 // ─────────────────────────────────────────────────────────────
 export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data }) => (
-  <div className="pt-3 mt-auto pb-0.5 select-none shrink-0 signatory-block">
+  <div className="pt-2.5 mt-auto pb-0.5 select-none shrink-0 signatory-block">
     <div className="flex justify-between items-end">
       <div>
-        <div className="font-bold text-zinc-900 mb-1 text-[16px] print:text-[16px]">Thanks &amp; Regards</div>
-        <div className="h-9" />
-        <div className="font-bold text-zinc-900 text-[16px] print:text-[16px] leading-snug">
+        <div className="font-bold text-zinc-900 mb-1 text-[14px] print:text-[14px]">Thanks &amp; Regards</div>
+        <div className="h-8" />
+        <div className="font-bold text-zinc-900 text-[14px] print:text-[14px] leading-snug">
           {data.company_signatory_name || "Md. Sorower Jahan"} |{" "}
           {data.company_signatory_title
             ? data.company_signatory_title.includes("okobiz")
@@ -129,16 +129,16 @@ export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data })
               : `${data.company_signatory_title}, okobiz`
             : "CEO, okobiz"}
         </div>
-        <div className="font-semibold text-zinc-700 text-[15px] print:text-[15px] leading-snug">okobiz</div>
-        <div className="text-zinc-600 text-[14px] print:text-[14px] leading-snug">
+        <div className="font-semibold text-zinc-700 text-[13px] print:text-[13px] leading-snug">okobiz</div>
+        <div className="text-zinc-600 text-[12.2px] print:text-[12.2px] leading-snug">
           Contact No: {data.company_phone || "+880 1973590937"}
         </div>
       </div>
 
       <div className="text-right">
-        <div className="h-9" />
-        <div className="w-60 border-t-2 border-dashed border-zinc-800 mb-1.5 ml-auto" />
-        <div className="font-bold text-zinc-900 text-[16px] print:text-[16px]">Client Signature &amp; Seal</div>
+        <div className="h-8" />
+        <div className="w-52 border-t-2 border-dashed border-zinc-800 mb-1.5 ml-auto" />
+        <div className="font-bold text-zinc-900 text-[14px] print:text-[14px]">Client Signature &amp; Seal</div>
       </div>
     </div>
   </div>
@@ -170,7 +170,7 @@ export const FirstPageHeader: React.FC<{ data: QuotationPrintData; formattedDate
       {data.email && <div className="text-zinc-600">Email: {data.email}</div>}
     </div>
 
-    <div className="text-[12px] font-bold text-zinc-900 mb-3.5 pb-1 border-b border-zinc-200">
+    <div className="text-[13.8px] print:text-[13.8px] font-bold text-zinc-900 mb-3.5 pb-1 border-b border-zinc-200">
       <span>Subject: </span>
       <span className="underline">{data.subject || "Quotation for Web & Software Solution"}</span>
     </div>
