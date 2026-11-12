@@ -18,6 +18,7 @@ export interface ISiteSetting {
     pdfUrl: string;
     badge?: string;
   };
+  defaultTermsAndConditions?: string;
 }
 
 const SiteSettingSchema = new Schema<ISiteSetting>({
@@ -26,6 +27,7 @@ const SiteSettingSchema = new Schema<ISiteSetting>({
   contactEmail: { type: String, default: "info@okobiz.com" },
   contactAddress: { type: String, default: "Uttara, Dhaka, Bangladesh" },
   whatsappNumber: { type: String, default: "+8801973590937" },
+  defaultTermsAndConditions: { type: String, default: "" },
   stats: {
     journeyStarted: { type: String, default: "2018" },
     happyClients: { type: String, default: "150" },

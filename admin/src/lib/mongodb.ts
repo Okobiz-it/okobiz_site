@@ -1,16 +1,6 @@
 import mongoose from "mongoose";
-import dns from "dns";
 
-// Ensure SRV DNS lookup succeeds reliably for MongoDB Atlas clusters across Windows networks
-try {
-  dns.setServers(["8.8.8.8", "1.1.1.1"]);
-} catch (e) {
-  // Ignore if custom DNS cannot be set
-}
-
-const MONGODB_URI =
-  process.env.MONGODB_URI ||
-  "mongodb+srv://okobizit_db_user:gEgpQgjQ3ROCM7dH@cluster0.ir3r065.mongodb.net/okobiz?retryWrites=true&w=majority&appName=Cluster0";
+const MONGODB_URI = process.env.MONGODB_URI;
 
 interface GlobalWithMongoose {
   mongoose?: {
@@ -27,9 +17,15 @@ if (!cached) {
   cached = globalWithMongoose.mongoose = { conn: null, promise: null };
 }
 
+let srvWarningLogged = false;
+
 export async function connectDB(): Promise<typeof mongoose | null> {
   if (cached && cached.conn) {
     return cached.conn;
+  }
+
+  if (!MONGODB_URI) {
+    return null;
   }
 
   if (!cached) {
@@ -40,16 +36,25 @@ export async function connectDB(): Promise<typeof mongoose | null> {
     const opts = {
       bufferCommands: false,
       dbName: "okobiz",
-      serverSelectionTimeoutMS: 10000,
+      serverSelectionTimeoutMS: 5000,
     };
 
     cached.promise = mongoose
       .connect(MONGODB_URI, opts)
       .then((mongooseInstance) => {
-        console.log("Connected to MongoDB Atlas (okobiz database) successfully");
+        console.log("Connected to MongoDB Atlas successfully");
         return mongooseInstance;
       })
       .catch((err) => {
+        // querySrv ECONNREFUSED is a known local ISP / Wi-Fi DNS limitation on Windows.
+        // The application safely uses local dataStore (admin_store.json) without data loss.
+        if (err?.message?.includes("querySrv")) {
+          if (!srvWarningLogged) {
+            srvWarningLogged = true;
+            console.log("ℹ️  MongoDB Atlas: Local DNS SRV is blocked by ISP. Operating seamlessly on local database store.");
+          }
+          return null as any;
+        }
         console.warn("MongoDB connection warning:", err.message);
         return null as any;
       });

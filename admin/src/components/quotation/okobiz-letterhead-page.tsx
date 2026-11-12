@@ -22,6 +22,8 @@ export const OkobizWatermark = () => (
       <img
         src={OKOBIZ_WATERMARK_SRC}
         alt=""
+        width={399}
+        height={360}
         className="w-full h-full object-contain pointer-events-none select-none"
         style={{ opacity: 1 }}
       />
@@ -33,7 +35,7 @@ export const OkobizWatermark = () => (
 // OFFICIAL OKOBIZ HEADER BANNER (UNIFIED FULL-BLEED VECTOR SVG)
 // ─────────────────────────────────────────────────────────────
 export const OkobizHeaderBanner = () => (
-  <div className="relative w-full select-none overflow-hidden shrink-0 m-0 p-0 mb-4 print:mb-3">
+  <div className="relative w-full select-none overflow-hidden shrink-0 m-0 p-0 mb-3 print:mb-3">
     <svg
       viewBox="0 0 723 86"
       className="w-full h-auto block select-none pointer-events-none"
@@ -148,7 +150,7 @@ export const OkobizFooterBanner = ({
   <div className="quotation-footer w-full mt-auto select-none shrink-0 overflow-hidden m-0 p-0">
     {/* Blue Bar */}
     <div
-      className="bg-[#1E65B8] text-white py-1.5 px-6 sm:px-8 print:px-[12mm] flex items-center justify-between text-[10px] sm:text-[11px] font-semibold tracking-wide text-white-always w-full"
+      className="bg-[#1E65B8] text-white py-1.5 px-[12mm] print:px-[12mm] flex items-center justify-between text-[11px] font-semibold tracking-wide text-white-always w-full"
       style={{ backgroundColor: "#1E65B8", color: "#ffffff" }}
     >
       <div className="flex items-center gap-1.5 text-white-always" style={{ color: "#ffffff" }}>
@@ -262,15 +264,15 @@ export const OkobizLetterheadPage: React.FC<OkobizLetterheadPageProps> = ({
 }) => {
   return (
     <section
-      className={`quotation-page relative bg-white border border-zinc-200 print:border-none p-0 mb-8 print:mb-0 shadow-sm print:shadow-none w-[794px] min-h-[1123px] h-[1123px] print:w-full print:max-w-full print:h-[297mm] print:min-h-[297mm] print:max-h-[297mm] print:m-0 print:mx-0 flex flex-col justify-between overflow-hidden rounded-none ${className}`}
+      className={`quotation-page relative bg-white border border-zinc-200 print:border-none p-0 mb-8 print:mb-0 shadow-sm print:shadow-none w-[210mm] max-w-[210mm] print:w-full print:max-w-full print:m-0 print:mx-0 flex flex-col justify-between overflow-hidden rounded-none ${className}`}
     >
       {showWatermark && <OkobizWatermark />}
 
       {showHeader && <OkobizHeaderBanner />}
 
-      <div className="quotation-page-body flex-1 flex flex-col px-5 sm:px-8 print:px-[12mm] relative z-10 bg-transparent">
+      <div className="quotation-page-body flex-1 flex flex-col px-[12mm] pb-[8px] print:px-[12mm] print:pb-[8px] relative z-10 bg-transparent">
         {(date || refNo) && (
-          <div className="flex justify-between items-start text-xs sm:text-sm font-semibold mb-3">
+          <div className="flex justify-between items-start text-[13px] font-semibold mb-3">
             <div>{date || ""}</div>
             {refNo && (
               <div className="text-right">

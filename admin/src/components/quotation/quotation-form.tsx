@@ -115,8 +115,70 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
   // Submission & Preview state
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
+  const [isSavingDefaultTerms, setIsSavingDefaultTerms] = useState<boolean>(false);
+  const [savedTermsBaseline, setSavedTermsBaseline] = useState<string>(() => {
+    return initialData?.terms_conditions || DEFAULT_UNIFIED_TERMS_AND_CONDITIONS;
+  });
   const [showPreviewModal, setShowPreviewModal] = useState<boolean>(false);
   const printSheetHiddenRef = useRef<HTMLDivElement>(null);
+
+  // Automatically load saved default terms and conditions from database for new quotations
+  useEffect(() => {
+    if (isEdit || initialData?.terms_conditions) return;
+    let isMounted = true;
+    fetch("/api/quotations/default-terms")
+      .then((res) => res.json())
+      .then((resData) => {
+        if (isMounted && resData.success && resData.defaultTerms) {
+          setTermsContent(resData.defaultTerms);
+          setSavedTermsBaseline(resData.defaultTerms);
+        }
+      })
+      .catch((err) => {
+        console.warn("Failed to load saved default terms:", err);
+      });
+    return () => {
+      isMounted = false;
+    };
+  }, [isEdit, initialData]);
+
+  // Check if terms & conditions text has been modified from saved baseline
+  const normalizeTermsHtml = (val: string) => (val || "").trim().replace(/\s+/g, " ");
+  const isTermsDirty =
+    Boolean(termsContent && termsContent.trim().length > 0) &&
+    normalizeTermsHtml(termsContent) !== normalizeTermsHtml(savedTermsBaseline);
+
+  // Save current terms & conditions as default in database
+  const handleSaveDefaultTerms = async () => {
+    if (!isTermsDirty || !termsContent || termsContent.trim().length === 0) {
+      return;
+    }
+
+    setIsSavingDefaultTerms(true);
+    const loadingId = toast.loading("Saving default terms & conditions to database...");
+    try {
+      const res = await fetch("/api/quotations/default-terms", {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({ defaultTerms: termsContent }),
+      });
+      toast.dismiss(loadingId);
+      const resData = await res.json();
+      if (resData.success) {
+        setSavedTermsBaseline(termsContent);
+        toast.success(
+          "Default terms & conditions saved successfully! They will now appear automatically on the create quotation page."
+        );
+      } else {
+        toast.error(resData.message || "Failed to save default terms");
+      }
+    } catch (err: any) {
+      toast.dismiss(loadingId);
+      toast.error(err.message || "An error occurred while saving default terms");
+    } finally {
+      setIsSavingDefaultTerms(false);
+    }
+  };
 
   // Close preview modal on Escape key
   useEffect(() => {
@@ -455,8 +517,11 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                 </thead>
                 <tbody className="divide-y divide-slate-200 dark:divide-gray-800">
                   {softwareRows.map((row, index) => (
-                    <tr key={index} className="hover:bg-slate-50/50 dark:hover:bg-gray-800/20">
-                      <td className="py-2 px-3 text-center border-r border-slate-200 dark:border-gray-800">
+                    <tr
+                      key={index}
+                      className="hover:bg-slate-50/50 dark:hover:bg-gray-800/20 align-top"
+                    >
+                      <td className="py-2 px-3 text-center border-r border-slate-200 dark:border-gray-800 align-top">
                         <Input
                           value={row.sl}
                           onChange={(e) =>
@@ -465,7 +530,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                           className="h-8 text-center text-xs font-bold"
                         />
                       </td>
-                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800">
+                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
                         <Input
                           value={row.scope}
                           onChange={(e) =>
@@ -475,17 +540,18 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                           className="h-8 text-xs font-semibold"
                         />
                       </td>
-                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800">
-                        <Input
+                      <td className="py-2 px-3 border-r border-slate-200 dark:border-gray-800 align-top">
+                        <Textarea
                           value={row.particulars}
                           onChange={(e) =>
                             handleUpdateSoftwareRow(index, "particulars", e.target.value)
                           }
                           placeholder="e.g. Real-time stock alerts, barcode generation, multi-warehouse transfer"
-                          className="h-8 text-xs"
+                          className="min-h-[36px] text-xs py-1.5 px-3 resize-y leading-snug rounded-[4px]"
+                          rows={1}
                         />
                       </td>
-                      <td className="py-2 px-3 text-center">
+                      <td className="py-2 px-3 text-center align-top">
                         <Button
                           type="button"
                           variant="ghost"
@@ -578,6 +644,9 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
             <QuotationRichEditor
               value={termsContent}
               onChange={setTermsContent}
+              onSaveText={handleSaveDefaultTerms}
+              isSavingText={isSavingDefaultTerms}
+              isSaveDisabled={!isTermsDirty}
             />
           </CardContent>
         </Card>

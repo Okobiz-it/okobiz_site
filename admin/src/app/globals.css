@@ -394,6 +394,19 @@ html.light button.bg-slate-100:hover * {
   color: #0F172A !important;
 }
 
+/* Sidebar Nav Buttons: Zero background and zero border when unselected */
+html.light aside button:not(.bg-\[\#0167D6\]):not([class*="bg-\[\#0167D6\]"]),
+html.light aside [type="button"]:not(.bg-\[\#0167D6\]):not([class*="bg-\[\#0167D6\]"]) {
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+}
+html.light aside button:not(.bg-\[\#0167D6\]):hover,
+html.light aside [type="button"]:not(.bg-\[\#0167D6\]):hover {
+  background-color: #F1F5F9 !important;
+  border: none !important;
+}
+
 /* Tables in Light Mode */
 html.light table:not(.quotation-table) th {
   background-color: #F8FAFC !important;
@@ -901,6 +914,7 @@ html.light .bg-\[\#1E65B8\] *,
   }
 
   .quotation-document {
+    --q-page-h: 296.2mm;
     display: block !important;
     width: 210mm !important;
     min-width: 210mm !important;
@@ -915,9 +929,9 @@ html.light .bg-\[\#1E65B8\] *,
     width: 210mm !important;
     min-width: 210mm !important;
     max-width: 210mm !important;
-    height: 297mm !important;
-    min-height: 297mm !important;
-    max-height: 297mm !important;
+    height: var(--q-page-h, 296.2mm) !important;
+    min-height: var(--q-page-h, 296.2mm) !important;
+    max-height: var(--q-page-h, 296.2mm) !important;
     margin: 0 !important;
     padding: 0 !important;
     border: none !important;
@@ -937,6 +951,19 @@ html.light .bg-\[\#1E65B8\] *,
   .quotation-page:last-child {
     page-break-after: auto !important;
     break-after: auto !important;
+  }
+
+  .quotation-page-body {
+    box-sizing: border-box !important;
+    width: 100% !important;
+    padding-left: 12mm !important;
+    padding-right: 12mm !important;
+    padding-bottom: 8px !important;
+    padding-top: 0 !important;
+    flex: 1 1 0% !important;
+    display: flex !important;
+    flex-direction: column !important;
+    overflow: hidden !important;
   }
 }
 

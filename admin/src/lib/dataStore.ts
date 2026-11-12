@@ -247,6 +247,7 @@ export interface DataStoreSchema {
       pdfUrl: string;
       badge?: string;
     };
+    defaultTermsAndConditions?: string;
   };
 }
 

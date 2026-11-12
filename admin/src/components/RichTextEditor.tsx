@@ -19,7 +19,9 @@ import {
   Highlighter,
   ChevronDown,
   X,
-  GripHorizontal
+  GripHorizontal,
+  Save,
+  RefreshCw
 } from "lucide-react";
 
 interface RichTextEditorProps {
@@ -28,6 +30,9 @@ interface RichTextEditorProps {
   placeholder?: string;
   label?: string;
   minHeight?: string;
+  onSaveText?: () => void;
+  isSavingText?: boolean;
+  isSaveDisabled?: boolean;
 }
 
 // Converts legacy markdown to HTML on initial load so user sees formatted text immediately
@@ -148,7 +153,10 @@ export default function RichTextEditor({
   onChange,
   placeholder = "Start writing overview or description...",
   label,
-  minHeight = "min-h-[440px]"
+  minHeight = "min-h-[440px]",
+  onSaveText,
+  isSavingText = false,
+  isSaveDisabled = false
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const isInternalChangeRef = useRef(false);
@@ -1151,6 +1159,104 @@ export default function RichTextEditor({
             updateActiveStates();
             saveSelection();
           }}
+          onKeyDown={(e) => {
+            // Tab key: insert tab indent (&emsp;&emsp;) instead of moving focus
+            if (e.key === "Tab") {
+              e.preventDefault();
+              document.execCommand("insertHTML", false, "&emsp;&emsp;");
+              saveSelection();
+              triggerChange();
+              return;
+            }
+
+            // Backspace key: ensure empty blocks and containers are deleted cleanly
+            if (e.key === "Backspace") {
+              const selection = window.getSelection();
+              if (selection && selection.isCollapsed && editorRef.current) {
+                let node: Node | null = selection.anchorNode;
+                let blockEl: HTMLElement | null = null;
+                while (node && node !== editorRef.current) {
+                  if (node.nodeType === Node.ELEMENT_NODE && /^(P|DIV|H[1-6]|LI|BLOCKQUOTE)$/i.test((node as HTMLElement).tagName)) {
+                    blockEl = node as HTMLElement;
+                    break;
+                  }
+                  node = node.parentNode;
+                }
+                if (blockEl && blockEl !== editorRef.current) {
+                  const rawText = (blockEl.textContent || "").replace(/[\s\u00a0]/g, "");
+                  const rawHtml = blockEl.innerHTML.trim().toLowerCase();
+                  if (!rawText && (rawHtml === "<br>" || rawHtml === "<br/>" || rawHtml === "&nbsp;" || rawHtml === "")) {
+                    const prevEl = blockEl.previousElementSibling as HTMLElement | null;
+                    e.preventDefault();
+                    blockEl.remove();
+                    if (prevEl) {
+                      const range = document.createRange();
+                      range.selectNodeContents(prevEl);
+                      range.collapse(false);
+                      selection.removeAllRanges();
+                      selection.addRange(range);
+                    }
+                    saveSelection();
+                    triggerChange();
+                    return;
+                  }
+                }
+              }
+            }
+          }}
+          onPaste={(e) => {
+            e.preventDefault();
+            const pastedHtml = e.clipboardData.getData("text/html");
+            const pastedText = e.clipboardData.getData("text/plain");
+
+            if (pastedHtml) {
+              // Strip outer <html>/<head>/<body> wrappers and unwrap <div> containers (e.g. lipsum div)
+              // that add extra spacing. Preserve block-level content (<p>, <h*>, <ul>, etc.)
+              let clean = pastedHtml
+                .replace(/<!--[\s\S]*?-->/gi, "")
+                .replace(/<style[\s\S]*?<\/style>/gi, "")
+                .replace(/<script[\s\S]*?<\/script>/gi, "")
+                .replace(/<\/?(?:html|head|body|meta|link)[^>]*>/gi, "");
+
+              // Recursively unwrap all <div> wrappers (e.g. <div id="lipsum">)
+              let prev = "";
+              let count = 0;
+              while (clean !== prev && count < 10) {
+                count++;
+                prev = clean;
+                clean = clean.replace(/<div(?:\s+[^>]*)?>([\s\S]*?)<\/div>/gi, "$1");
+              }
+
+              // Strip id and class from <p> tags so imported styles don't create phantom margins
+              clean = clean.replace(/<p\s+[^>]*>/gi, "<p>");
+
+              // Strip leading/trailing empty paragraphs
+              clean = clean.replace(/^(\s*<p>\s*(?:<br\s*\/?>|&nbsp;|\u00a0|\s)*<\/p>\s*)+/gi, "");
+              clean = clean.replace(/(\s*<p>\s*(?:<br\s*\/?>|&nbsp;|\u00a0|\s)*<\/p>\s*)+$/gi, "");
+              clean = clean.trim();
+
+              if (clean) {
+                document.execCommand("insertHTML", false, clean);
+              } else if (pastedText) {
+                const paras = pastedText
+                  .split(/\r?\n\r?\n+/)
+                  .map((p) => `<p>${p.trim().replace(/\r?\n/g, "<br>")}</p>`)
+                  .filter((p) => p !== "<p></p>")
+                  .join("");
+                document.execCommand("insertHTML", false, paras || pastedText);
+              }
+            } else if (pastedText) {
+              const paras = pastedText
+                .split(/\r?\n\r?\n+/)
+                .map((p) => `<p>${p.trim().replace(/\r?\n/g, "<br>")}</p>`)
+                .filter((p) => p !== "<p></p>")
+                .join("");
+              document.execCommand("insertHTML", false, paras || pastedText);
+            }
+
+            saveSelection();
+            triggerChange();
+          }}
           data-placeholder={placeholder}
           className={`wysiwyg-editor w-full ${minHeight} p-4 text-xs sm:text-sm text-slate-900 dark:text-gray-200 bg-white dark:bg-[#181A1F] focus:outline-none leading-relaxed overflow-y-auto block`}
           style={{
@@ -1172,6 +1278,43 @@ export default function RichTextEditor({
           </div>
 
           <div className="flex items-center gap-2">
+            {onSaveText && (
+              <button
+                type="button"
+                onMouseDown={(e) => e.stopPropagation()}
+                onClick={onSaveText}
+                disabled={isSaveDisabled || isSavingText}
+                title={
+                  isSaveDisabled
+                    ? "No changes to save"
+                    : "Save current text as default terms & conditions"
+                }
+                className={`text-[10px] font-semibold transition px-2.5 py-0.5 rounded shadow-2xs flex items-center gap-1 ${
+                  isSaveDisabled || isSavingText
+                    ? "text-slate-400 dark:text-gray-500 bg-slate-100 dark:bg-gray-800/40 border border-slate-200 dark:border-gray-800 cursor-not-allowed opacity-60"
+                    : "text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 cursor-pointer"
+                }`}
+              >
+                {isSavingText ? (
+                  <>
+                    <RefreshCw size={10} className="animate-spin text-slate-400" />
+                    <span>Saving...</span>
+                  </>
+                ) : (
+                  <>
+                    <Save
+                      size={10}
+                      className={
+                        isSaveDisabled
+                          ? "text-slate-400 dark:text-gray-500"
+                          : "text-emerald-600 dark:text-emerald-400"
+                      }
+                    />
+                    <span>Save Text</span>
+                  </>
+                )}
+              </button>
+            )}
             <button
               type="button"
               onMouseDown={(e) => e.stopPropagation()}

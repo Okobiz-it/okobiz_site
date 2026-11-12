@@ -15,6 +15,7 @@ export default function QuotationPrintPage() {
   const [loading, setLoading] = useState(true);
   const [isSendingEmail, setIsSendingEmail] = useState(false);
   const [isDownloading, setIsDownloading] = useState(false);
+  const [paginationReady, setPaginationReady] = useState(false);
   const printSheetRef = useRef<HTMLDivElement>(null);
 
   const quoteId = params.id as string;
@@ -34,7 +35,48 @@ export default function QuotationPrintPage() {
       .finally(() => setLoading(false));
   }, [quoteId]);
 
-  const handlePrint = () => {
+  // Monitor when closed-loop measured pagination completes
+  useEffect(() => {
+    if (!data) return;
+    const checkReady = () => {
+      if (printSheetRef.current?.querySelector('[data-pagination-ready="true"]')) {
+        setPaginationReady(true);
+        return true;
+      }
+      return false;
+    };
+
+    if (checkReady()) return;
+    const interval = setInterval(() => {
+      if (checkReady()) {
+        clearInterval(interval);
+      }
+    }, 80);
+
+    return () => clearInterval(interval);
+  }, [data]);
+
+  const waitForPaginationReady = async () => {
+    if (typeof document !== "undefined" && document.fonts && document.fonts.ready) {
+      await document.fonts.ready;
+    }
+    if (!printSheetRef.current) return;
+    if (printSheetRef.current.querySelector('[data-pagination-ready="true"]')) {
+      return;
+    }
+
+    const start = Date.now();
+    while (Date.now() - start < 2500) {
+      await new Promise((r) => setTimeout(r, 60));
+      if (printSheetRef.current.querySelector('[data-pagination-ready="true"]')) {
+        setPaginationReady(true);
+        return;
+      }
+    }
+  };
+
+  const handlePrint = async () => {
+    await waitForPaginationReady();
     toast.info("In Destination, select 'Save as PDF' to save a pristine vector PDF.");
     window.print();
   };
@@ -42,6 +84,7 @@ export default function QuotationPrintPage() {
   const handleDirectDownload = async () => {
     if (!printSheetRef.current || !data) return;
     setIsDownloading(true);
+    await waitForPaginationReady();
     const toastId = toast.loading("Generating pristine PDF for direct download...");
 
     try {
@@ -143,23 +186,29 @@ export default function QuotationPrintPage() {
               variant="outline"
               size="sm"
               onClick={handleDirectDownload}
-              disabled={isDownloading}
-              className="flex items-center gap-1.5 text-xs text-slate-700 border-slate-300 hover:bg-slate-100 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 cursor-pointer shadow-xs"
+              disabled={isDownloading || !paginationReady}
+              className="flex items-center gap-1.5 text-xs text-slate-700 border-slate-300 hover:bg-slate-100 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 cursor-pointer shadow-xs disabled:opacity-60"
             >
               {isDownloading ? (
                 <RefreshCw className="w-3.5 h-3.5 animate-spin" />
               ) : (
                 <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
               )}
-              {isDownloading ? "Downloading..." : "Direct Download PDF"}
+              {isDownloading
+                ? "Downloading..."
+                : !paginationReady
+                ? "Paginating..."
+                : "Direct Download PDF"}
             </Button>
 
             <Button
               size="sm"
               onClick={handlePrint}
-              className="bg-[#0167D6] hover:bg-blue-700 text-white flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer"
+              disabled={!paginationReady}
+              className="bg-[#0167D6] hover:bg-blue-700 text-white flex items-center gap-1.5 text-xs font-bold shadow-xs cursor-pointer disabled:opacity-60"
             >
-              <Printer className="w-4 h-4" /> Print / Save PDF
+              <Printer className="w-4 h-4" />{" "}
+              {!paginationReady ? "Paginating..." : "Print / Save PDF"}
             </Button>
           </div>
         </div>
