@@ -191,25 +191,14 @@ export function BlogForm({ initialData, isEdit = false }: BlogFormProps) {
             <ArrowLeft className="w-4 h-4" /> Back to Articles
           </Link>
           <div className="h-5 w-px bg-slate-200 dark:bg-gray-800 hidden sm:block" />
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <BookOpen className="w-5 h-5 text-[#0167D6]" />
-                {isEdit ? `Edit Article: ${form.title || "Untitled"}` : "Write New Article"}
-              </h1>
-              <span
-                className={`text-[10px] uppercase font-bold px-2 py-0.5 rounded-[4px] ${
-                  form.isPublished
-                    ? "bg-emerald-50 text-emerald-700 border border-emerald-200 dark:bg-emerald-950/40 dark:text-emerald-400 dark:border-emerald-800/40"
-                    : "bg-amber-50 text-amber-700 border border-amber-200 dark:bg-amber-950/40 dark:text-amber-400 dark:border-amber-800/40"
-                }`}
-              >
-                {form.isPublished ? "Published" : "Draft"}
-              </span>
-            </div>
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-              Author rich thought-leadership content, tech insights, case studies, and SEO articles
-            </p>
+          <div className="min-w-0">
+            <h1
+              className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 truncate max-w-[280px] sm:max-w-md lg:max-w-xl"
+              title={isEdit ? `Edit Article: ${form.title || "Untitled"}` : "Write New Article"}
+            >
+              <BookOpen className="w-5 h-5 text-[#0167D6] shrink-0" />
+              <span className="truncate">{isEdit ? `Edit Article: ${form.title || "Untitled"}` : "Write New Article"}</span>
+            </h1>
           </div>
         </div>
 

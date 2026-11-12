@@ -32,6 +32,10 @@ export interface BillPrintData {
   subject?: string;
   bill_rows?: BillRow[];
   software_rows?: any[];
+  sub_total?: number;
+  has_advance_payment?: boolean;
+  advance_amount?: number;
+  advance_label?: string;
   grand_total?: number;
   software_amount?: number;
   in_words?: string;
@@ -62,6 +66,7 @@ export const formatBillPrice = (val: number | string | undefined | null): string
 interface BillPageShellProps {
   data: BillPrintData;
   formattedDate: string;
+  subTotal: number;
   grandTotal: number;
   inWordsDisplay: string;
   page: BillPageModel;
@@ -71,11 +76,23 @@ interface BillPageShellProps {
 export const BillPageShell: React.FC<BillPageShellProps> = ({
   data,
   formattedDate,
+  subTotal,
   grandTotal,
   inWordsDisplay,
   page,
   measureMode = false,
 }) => {
+  const hasAdvance = Boolean(
+    data.has_advance_payment && Number(data.advance_amount || 0) > 0
+  );
+  const advanceAmount = Number(data.advance_amount || 0);
+  const advanceLabel = data.advance_label?.trim() || "Already Paid / Advance";
+  const effectiveSubTotal =
+    subTotal !== undefined && !isNaN(subTotal) && subTotal > 0
+      ? subTotal
+      : hasAdvance
+      ? grandTotal + advanceAmount
+      : grandTotal;
   return (
     <section
       className="quotation-page relative bg-white border border-zinc-200 print:border-none p-0 mb-8 print:mb-0 shadow-sm print:shadow-none w-[210mm] max-w-[210mm] print:w-full print:max-w-full print:m-0 print:mx-0 flex flex-col justify-between overflow-hidden rounded-none"
@@ -190,19 +207,66 @@ export const BillPageShell: React.FC<BillPageShellProps> = ({
                   );
                 })}
 
-                {/* Total Amount Row (Only on final page) */}
+                {/* Total & Advance Payment Breakdown (Only on final page) */}
                 {page.isLastPage && (
-                  <tr className="border-t-2 border-zinc-900 bg-zinc-50/60 font-bold">
-                    <td
-                      colSpan={2}
-                      className="py-2 px-3 text-center text-zinc-900 font-bold border-r border-zinc-900 tracking-wider"
-                    >
-                      Total Amount
-                    </td>
-                    <td className="py-2 px-2 text-center text-zinc-900 font-bold">
-                      Tk. {formatBillPrice(grandTotal)}
-                    </td>
-                  </tr>
+                  hasAdvance ? (
+                    <>
+                      {/* 1. Subtotal / Total Amount before deduction */}
+                      <tr className="border-t-2 border-zinc-900 bg-zinc-50/70 font-bold">
+                        <td
+                          colSpan={2}
+                          className="py-1.5 px-3 text-center text-zinc-900 font-bold border-r border-zinc-900 tracking-wider text-[12.5px]"
+                        >
+                          Total Amount
+                        </td>
+                        <td className="py-1.5 px-2 text-center text-zinc-900 font-bold text-[12.5px]">
+                          Tk. {formatBillPrice(effectiveSubTotal)}
+                        </td>
+                      </tr>
+
+                      {/* 2. Less: Already Paid / Advance Amount (Green Color) */}
+                      <tr className="border-t border-zinc-400 bg-emerald-50/30 font-bold">
+                        <td
+                          colSpan={2}
+                          className="py-1.5 px-3 text-center font-bold border-r border-zinc-900 tracking-wider text-[12.5px]"
+                          style={{ color: "#047857" }}
+                        >
+                          {advanceLabel}
+                        </td>
+                        <td
+                          className="py-1.5 px-2 text-center font-bold text-[12.5px]"
+                          style={{ color: "#059669" }}
+                        >
+                          Tk. {formatBillPrice(advanceAmount)}
+                        </td>
+                      </tr>
+
+                      {/* 3. Net Payable Total Due Amount */}
+                      <tr className="border-t-2 border-zinc-900 bg-zinc-100 font-bold">
+                        <td
+                          colSpan={2}
+                          className="py-2 px-3 text-center text-zinc-950 font-bold border-r border-zinc-900 tracking-wider uppercase text-[12.5px]"
+                        >
+                          Total Due Amount
+                        </td>
+                        <td className="py-2 px-2 text-center text-zinc-950 font-extrabold text-[13px]">
+                          Tk. {formatBillPrice(grandTotal)}
+                        </td>
+                      </tr>
+                    </>
+                  ) : (
+                    <tr className="border-t-2 border-zinc-900 bg-zinc-50/60 font-bold">
+                      <td
+                        colSpan={2}
+                        className="py-2 px-3 text-center text-zinc-900 font-bold border-r border-zinc-900 tracking-wider"
+                      >
+                        Total Amount
+                      </td>
+                      <td className="py-2 px-2 text-center text-zinc-900 font-bold">
+                        Tk. {formatBillPrice(grandTotal)}
+                      </td>
+                    </tr>
+                  )
                 )}
               </tbody>
             </table>
@@ -252,7 +316,7 @@ export const BillPageShell: React.FC<BillPageShellProps> = ({
 // CALIBRATED SYNCHRONOUS INITIALIZER
 // Provides instant zero-layout-shift SSR and initial paint
 // ─────────────────────────────────────────────────────────────
-export function buildBillPagesSync(allRows: BillRow[]): BillPageModel[] {
+export function buildBillPagesSync(allRows: BillRow[], hasAdvance: boolean = false): BillPageModel[] {
   if (allRows.length === 0) {
     return [
       {
@@ -265,8 +329,9 @@ export function buildBillPagesSync(allRows: BillRow[]): BillPageModel[] {
     ];
   }
 
-  // If <= 17 rows, fits on 1 page completely with total + closing block
-  if (allRows.length <= 17) {
+  // If <= 17 rows (or 15 with advance breakdown), fits on 1 page completely with total + closing block
+  const maxFirstFinal = hasAdvance ? 15 : 17;
+  if (allRows.length <= maxFirstFinal) {
     return [
       {
         pageNumber: 1,
@@ -287,7 +352,7 @@ export function buildBillPagesSync(allRows: BillRow[]): BillPageModel[] {
     const isFirstPage = pageNumber === 1;
 
     // Check if remaining rows fit on this page as final page
-    const maxOnFinalPage = isFirstPage ? 17 : 20;
+    const maxOnFinalPage = isFirstPage ? maxFirstFinal : (hasAdvance ? 18 : 20);
     if (remaining.length <= maxOnFinalPage) {
       pages.push({
         pageNumber,
@@ -329,7 +394,7 @@ export async function paginateBillMeasured(
   allRows: BillRow[]
 ): Promise<BillPageModel[]> {
   if (typeof window === "undefined" || typeof document === "undefined") {
-    return buildBillPagesSync(allRows);
+    return buildBillPagesSync(allRows, Boolean(data.has_advance_payment && Number(data.advance_amount || 0) > 0));
   }
 
   if (document.fonts && document.fonts.ready) {
@@ -346,13 +411,23 @@ export async function paginateBillMeasured(
       ? format(new Date(data.quote_date), "d MMM yyyy")
       : format(new Date(), "d MMM yyyy");
 
-    const grandTotal =
-      data.grand_total !== undefined && data.grand_total !== null && !isNaN(Number(data.grand_total))
-        ? Number(data.grand_total)
+    const subTotal =
+      data.sub_total !== undefined && data.sub_total !== null && !isNaN(Number(data.sub_total))
+        ? Number(data.sub_total)
         : allRows.reduce((sum, r) => {
             const val = typeof r.amount === "string" ? parseFloat(r.amount.replace(/[^0-9.-]/g, "")) : r.amount;
             return sum + (isNaN(val) ? 0 : val);
           }, 0);
+
+    const hasAdvance = Boolean(
+      data.has_advance_payment && Number(data.advance_amount || 0) > 0
+    );
+    const advanceAmount = Number(data.advance_amount || 0);
+
+    const grandTotal =
+      data.grand_total !== undefined && data.grand_total !== null && !isNaN(Number(data.grand_total))
+        ? Number(data.grand_total)
+        : Math.max(0, subTotal - (hasAdvance ? advanceAmount : 0));
 
     const inWordsDisplay =
       data.in_words && data.in_words.trim().length > 0
@@ -367,6 +442,7 @@ export async function paginateBillMeasured(
           <BillPageShell
             data={data}
             formattedDate={formattedDate}
+            subTotal={subTotal}
             grandTotal={grandTotal}
             inWordsDisplay={inWordsDisplay}
             page={pageModel}
@@ -508,16 +584,28 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
     ];
   }, [data.bill_rows, data.software_rows]);
 
-  // Calculate Grand Total
-  const grandTotal = useMemo(() => {
-    if (data.grand_total !== undefined && data.grand_total !== null && !isNaN(Number(data.grand_total))) {
-      return Number(data.grand_total);
+  // Calculate Subtotal & Grand Total
+  const subTotal = useMemo(() => {
+    if (data.sub_total !== undefined && data.sub_total !== null && !isNaN(Number(data.sub_total))) {
+      return Number(data.sub_total);
     }
     return allRows.reduce((sum, r) => {
       const val = typeof r.amount === "string" ? parseFloat(r.amount.replace(/[^0-9.-]/g, "")) : r.amount;
       return sum + (isNaN(val) ? 0 : val);
     }, 0);
-  }, [data.grand_total, allRows]);
+  }, [data.sub_total, allRows]);
+
+  const hasAdvance = Boolean(
+    data.has_advance_payment && Number(data.advance_amount || 0) > 0
+  );
+  const advanceAmount = Number(data.advance_amount || 0);
+
+  const grandTotal = useMemo(() => {
+    if (data.grand_total !== undefined && data.grand_total !== null && !isNaN(Number(data.grand_total))) {
+      return Number(data.grand_total);
+    }
+    return Math.max(0, subTotal - (hasAdvance ? advanceAmount : 0));
+  }, [data.grand_total, subTotal, hasAdvance, advanceAmount]);
 
   const inWordsDisplay = useMemo(() => {
     return data.in_words && data.in_words.trim().length > 0
@@ -526,7 +614,7 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
   }, [data.in_words, grandTotal]);
 
   // Initialize pages with calibrated synchronous layout
-  const [pages, setPages] = useState<BillPageModel[]>(() => buildBillPagesSync(allRows));
+  const [pages, setPages] = useState<BillPageModel[]>(() => buildBillPagesSync(allRows, hasAdvance));
   const [ready, setReady] = useState(false);
 
   // Stable layout dependency key to prevent infinite loops
@@ -540,11 +628,15 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
       phone: data.phone,
       email: data.email,
       sub: data.subject,
+      sub_total: subTotal,
+      has_adv: data.has_advance_payment,
+      adv_amt: data.advance_amount,
+      adv_lbl: data.advance_label,
       total: grandTotal,
       words: inWordsDisplay,
       rows: allRows,
     });
-  }, [data, allRows, grandTotal, inWordsDisplay]);
+  }, [data, allRows, subTotal, grandTotal, inWordsDisplay]);
 
   // Measured closed-loop pagination
   useLayoutEffect(() => {
@@ -612,6 +704,7 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
           key={`bill-page-${page.pageNumber}`}
           data={data}
           formattedDate={formattedDate}
+          subTotal={subTotal}
           grandTotal={grandTotal}
           inWordsDisplay={inWordsDisplay}
           page={page}

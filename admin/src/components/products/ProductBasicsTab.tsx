@@ -4,6 +4,7 @@ import React from "react";
 import { Link2, AlertCircle, CheckCircle2, Sparkles } from "lucide-react";
 import { ProductFormState } from "./types";
 import TechnologyIconPicker from "@/components/TechnologyIconPicker";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductBasicsTabProps {
   form: ProductFormState;
@@ -173,7 +174,7 @@ export default function ProductBasicsTab({
           <span>Quick Highlight Bullets (1 per line)</span>
           <span className="text-[10px] text-slate-500 dark:text-gray-400">Shown as checkmark pills on cards</span>
         </label>
-        <textarea
+        <Textarea
           rows={3}
           placeholder="Automated Batch & Expiry Date Alert&#10;Generic Brand Recommendation System&#10;High-Speed Barcode POS Billing"
           value={form.featuresText}

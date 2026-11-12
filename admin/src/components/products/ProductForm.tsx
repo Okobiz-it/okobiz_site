@@ -30,7 +30,8 @@ import {
   Globe,
   Phone,
   Eye,
-  X
+  X,
+  Edit2
 } from "lucide-react";
 import {
   ProductFormState,
@@ -43,6 +44,7 @@ import TechnologyIconPicker from "@/components/TechnologyIconPicker";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { createSlug } from "@/lib/slug";
 import { toast } from "@/lib/toast";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductFormProps {
   initialData?: any;
@@ -305,31 +307,56 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
     }));
   };
 
-  const addPricingPlan = () => {
-    setForm((prev) => ({
-      ...prev,
-      pricingPlans: [
-        ...prev.pricingPlans,
-        {
-          name: `Tier ${prev.pricingPlans.length + 1}`,
-          price: 15000,
-          discountPrice: 0,
-          period: "/month",
-          badge: "",
-          description: "",
-          featuresText: "Feature 1\nFeature 2\nFeature 3",
-          isPopular: false,
-        },
-      ],
-    }));
+  // Pricing Modal State
+  const [isPlanModalOpen, setIsPlanModalOpen] = useState(false);
+  const [editingPlanIndex, setEditingPlanIndex] = useState<number | null>(null);
+  const [planDraft, setPlanDraft] = useState<PricingPlanForm>({
+    name: "",
+    price: 0,
+    period: "/month",
+    discountPrice: 0,
+    badge: "",
+    description: "",
+    featuresText: "",
+    isPopular: false,
+  });
+
+  const handleOpenAddPlan = () => {
+    setPlanDraft({
+      name: `Tier ${form.pricingPlans.length + 1}`,
+      price: 15000,
+      discountPrice: 0,
+      period: "/month",
+      badge: "",
+      description: "",
+      featuresText: "Core SaaS Module\nCloud Database Setup\nEmail & Chat Support",
+      isPopular: false,
+    });
+    setEditingPlanIndex(null);
+    setIsPlanModalOpen(true);
   };
 
-  const updatePricingPlan = (index: number, field: keyof PricingPlanForm, value: any) => {
+  const handleOpenEditPlan = (idx: number) => {
+    setPlanDraft({ ...form.pricingPlans[idx] });
+    setEditingPlanIndex(idx);
+    setIsPlanModalOpen(true);
+  };
+
+  const handleSavePlanDraft = () => {
+    if (!planDraft.name.trim()) {
+      toast.error("Please provide a plan name");
+      return;
+    }
     setForm((prev) => {
-      const copy = [...prev.pricingPlans];
-      copy[index] = { ...copy[index], [field]: value };
-      return { ...prev, pricingPlans: copy };
+      const nextPlans = [...prev.pricingPlans];
+      if (editingPlanIndex !== null && editingPlanIndex >= 0) {
+        nextPlans[editingPlanIndex] = planDraft;
+      } else {
+        nextPlans.push(planDraft);
+      }
+      return { ...prev, pricingPlans: nextPlans };
     });
+    setIsPlanModalOpen(false);
   };
 
   const removePricingPlan = (index: number) => {
@@ -480,21 +507,14 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
             <ArrowLeft className="w-4 h-4" /> Back to Products
           </Link>
           <div className="h-5 w-px bg-slate-200 dark:bg-gray-800 hidden sm:block" />
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Package className="w-5 h-5 text-[#0167D6]" />
-                {isEdit ? `Edit Product: ${form.title || "Untitled"}` : "Add New SaaS / Finished Product"}
-              </h1>
-              {form.slug && (
-                <span className="text-[11px] font-mono px-2 py-0.5 rounded-[4px] bg-blue-50 dark:bg-blue-900/30 text-[#0167D6] dark:text-blue-300">
-                  /products/{form.slug}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-              Showcase, price, and sell finished turn-key SaaS systems, ERP solutions, and software products
-            </p>
+          <div className="min-w-0">
+            <h1
+              className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 truncate max-w-[280px] sm:max-w-md lg:max-w-xl"
+              title={isEdit ? `Edit Product: ${form.title || "Untitled"}` : "Add New SaaS / Finished Product"}
+            >
+              <Package className="w-5 h-5 text-[#0167D6] shrink-0" />
+              <span className="truncate">{isEdit ? `Edit Product: ${form.title || "Untitled"}` : "Add New SaaS / Finished Product"}</span>
+            </h1>
           </div>
         </div>
 
@@ -561,8 +581,14 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                 Custom Page Slug (/products/slug) <span className="text-red-500">*</span>
               </label>
               <div className="flex items-center gap-2">
-                <div className="relative flex-1">
-                  <span className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 text-xs font-mono">
+                <div
+                  className={`flex items-center flex-1 rounded-[4px] border overflow-hidden transition ${
+                    slugError
+                      ? "border-red-500 bg-red-50/10"
+                      : "border-slate-300 dark:border-gray-700 bg-slate-50 dark:bg-[#18191D] focus-within:border-[#0167D6]"
+                  }`}
+                >
+                  <span className="px-3 py-2 bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-gray-400 text-xs font-mono border-r border-slate-300 dark:border-gray-700 shrink-0 select-none">
                     /products/
                   </span>
                   <input
@@ -571,11 +597,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                     placeholder="pharmacare-pro"
                     value={form.slug}
                     onChange={(e) => handleSlugChange(e.target.value)}
-                    className={`w-full pl-22 pr-3 py-2 bg-slate-50 dark:bg-[#18191D] border rounded-[4px] text-xs text-slate-900 dark:text-white font-mono focus:outline-none ${
-                      slugError
-                        ? "border-red-500 focus:border-red-500"
-                        : "border-slate-300 dark:border-gray-700 focus:border-[#0167D6]"
-                    }`}
+                    className="w-full px-3 py-2 bg-transparent text-xs text-slate-900 dark:text-white font-mono focus:outline-none"
                   />
                 </div>
                 <button
@@ -623,7 +645,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                 Core Highlight Bullets (1 per line)
               </label>
-              <textarea
+              <Textarea
                 rows={3}
                 placeholder="Automated Batch &amp; Expiry Date Alert&#10;Generic Brand Recommendation System&#10;High-Speed Barcode POS Billing"
                 value={form.featuresText}
@@ -684,155 +706,280 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
 
               <button
                 type="button"
-                onClick={addPricingPlan}
+                onClick={handleOpenAddPlan}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs cursor-pointer"
               >
                 <Plus size={14} /> Add Tier Plan
               </button>
             </div>
 
+            {/* Lean Pricing Plans Cards */}
             {form.pricingPlans.length === 0 ? (
               <div className="p-8 text-center border-2 border-dashed border-slate-200 dark:border-gray-800 rounded-[4px]">
                 <Tag className="mx-auto text-slate-300 dark:text-gray-600 mb-2" size={32} />
                 <p className="text-xs font-semibold text-slate-600 dark:text-gray-300">No pricing plans defined yet</p>
                 <button
                   type="button"
-                  onClick={addPricingPlan}
-                  className="mt-3 px-3 py-1.5 bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold rounded-[4px] cursor-pointer"
+                  onClick={handleOpenAddPlan}
+                  className="mt-3 px-3 py-1.5 bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold rounded-[4px] cursor-pointer shadow-xs"
                 >
                   Add Starter Plan
                 </button>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                {form.pricingPlans.map((plan, idx) => (
-                  <div
-                    key={idx}
-                    className={`p-4 rounded-[4px] border ${
-                      plan.isPopular
-                        ? "border-[#0167D6] bg-blue-50/20 dark:bg-blue-950/10 ring-1 ring-blue-500/30"
-                        : "border-slate-200 dark:border-gray-800 bg-slate-50/50 dark:bg-[#18191D]/50"
-                    } space-y-3 relative`}
-                  >
-                    <div className="flex items-center justify-between">
-                      <span className="text-[11px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider">
-                        Tier #{idx + 1}
-                      </span>
-                      <div className="flex items-center gap-3">
-                        <label className="flex items-center gap-1.5 text-xs font-medium text-slate-700 dark:text-gray-300 cursor-pointer">
-                          <input
-                            type="checkbox"
-                            checked={Boolean(plan.isPopular)}
-                            onChange={(e) => updatePricingPlan(idx, "isPopular", e.target.checked)}
-                            className="rounded text-[#0167D6] focus:ring-0"
-                          />
-                          Popular Badge
-                        </label>
+              <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-3">
+                {form.pricingPlans.map((plan, idx) => {
+                  const featuresCount = plan.featuresText
+                    ? plan.featuresText.split("\n").filter((f) => f.trim().length > 0).length
+                    : 0;
+
+                  return (
+                    <div
+                      key={idx}
+                      className={`p-3.5 rounded-[4px] border flex flex-col justify-between transition shadow-2xs ${
+                        plan.isPopular
+                          ? "border-[#0167D6] bg-blue-50/25 dark:bg-blue-950/20 ring-1 ring-blue-500/30"
+                          : "border-slate-200 dark:border-gray-800 bg-white dark:bg-[#15171B]"
+                      }`}
+                    >
+                      <div className="space-y-1.5">
+                        <div className="flex items-center justify-between">
+                          <span className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider">
+                            Tier #{idx + 1}
+                          </span>
+                          <div className="flex items-center gap-1">
+                            {plan.badge && (
+                              <span className="px-2 py-0.5 rounded-[3px] bg-purple-600 text-white text-white-always text-[9.5px] font-bold">
+                                {plan.badge}
+                              </span>
+                            )}
+                            {plan.isPopular && (
+                              <span className="px-2 py-0.5 rounded-[3px] bg-amber-500 text-white text-white-always text-[9.5px] font-bold">
+                                POPULAR
+                              </span>
+                            )}
+                          </div>
+                        </div>
+
+                        <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate">
+                          {plan.name || "Untitled Tier"}
+                        </h4>
+
+                        <div className="flex items-baseline gap-1.5">
+                          <span className="text-base font-extrabold text-[#0167D6] font-mono">
+                            ৳ {Number(plan.price || 0).toLocaleString("en-IN")}
+                          </span>
+                          {plan.discountPrice ? (
+                            <span className="text-xs text-slate-400 line-through font-mono">
+                              ৳ {Number(plan.discountPrice).toLocaleString("en-IN")}
+                            </span>
+                          ) : null}
+                          {plan.period && (
+                            <span className="text-[10.5px] text-slate-500 dark:text-gray-400 truncate">
+                              ({plan.period})
+                            </span>
+                          )}
+                        </div>
+
+                        {plan.description && (
+                          <p className="text-[11px] text-slate-500 dark:text-gray-400 line-clamp-1">
+                            {plan.description}
+                          </p>
+                        )}
+
+                        <div className="text-[11px] text-slate-600 dark:text-gray-400 font-medium pt-1 flex items-center gap-1.5">
+                          <Check size={12} className="text-emerald-500" />
+                          <span>{featuresCount} Features Listed</span>
+                        </div>
+                      </div>
+
+                      <div className="flex items-center justify-end gap-1.5 pt-3 mt-3 border-t border-slate-100 dark:border-gray-800/80">
+                        <button
+                          type="button"
+                          onClick={() => handleOpenEditPlan(idx)}
+                          className="flex items-center gap-1 px-2.5 py-1 rounded-[4px] bg-slate-100 dark:bg-white/5 hover:bg-[#0167D6] hover:text-white text-slate-700 dark:text-gray-300 dark:hover:text-white text-xs font-semibold border border-slate-200 dark:border-transparent transition cursor-pointer"
+                          title="Edit Package"
+                        >
+                          <Edit2 size={12} />
+                          <span>Edit</span>
+                        </button>
                         <button
                           type="button"
                           onClick={() => removePricingPlan(idx)}
-                          className="text-slate-400 hover:text-red-500 transition cursor-pointer"
-                          title="Delete this plan"
+                          className="p-1 rounded-[4px] text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
+                          title="Delete Package"
                         >
-                          <Trash2 size={15} />
+                          <Trash2 size={14} />
                         </button>
                       </div>
                     </div>
+                  );
+                })}
+              </div>
+            )}
 
+            {/* Pricing Plan Edit / Add Modal */}
+            {isPlanModalOpen && (
+              <div
+                onClick={() => setIsPlanModalOpen(false)}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in-50 duration-150 cursor-pointer"
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full max-w-lg bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] cursor-default overflow-hidden"
+                >
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-gray-800">
+                    <div className="flex items-center gap-2">
+                      <DollarSign className="w-5 h-5 text-[#0167D6]" />
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                        {editingPlanIndex !== null ? "Edit Plan Tier" : "Add Plan Tier"}
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsPlanModalOpen(false)}
+                      className="p-1.5 rounded-[4px] text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-800 transition cursor-pointer"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="p-5 space-y-3.5 overflow-y-auto">
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                          Plan Name *
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Plan Name <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="text"
-                          placeholder="Single Store, Multi-Branch"
-                          value={plan.name}
-                          onChange={(e) => updatePricingPlan(idx, "name", e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
+                          placeholder="e.g. Starter, Pro, Enterprise"
+                          value={planDraft.name}
+                          onChange={(e) => setPlanDraft({ ...planDraft, name: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                          required
+                          autoFocus
                         />
                       </div>
+
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                           Billing Cycle / Duration
                         </label>
                         <input
                           type="text"
                           placeholder="One-Time Setup, /month, /year"
-                          value={plan.period}
-                          onChange={(e) => updatePricingPlan(idx, "period", e.target.value)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
+                          value={planDraft.period}
+                          onChange={(e) => setPlanDraft({ ...planDraft, period: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
                         />
                       </div>
                     </div>
 
                     <div className="grid grid-cols-2 gap-3">
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                          Price (BDT) *
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Price (BDT) <span className="text-red-500">*</span>
                         </label>
                         <input
                           type="number"
-                          placeholder="20000"
-                          value={plan.price}
-                          onChange={(e) => updatePricingPlan(idx, "price", Number(e.target.value) || 0)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono"
+                          min="0"
+                          placeholder="15000"
+                          value={planDraft.price || ""}
+                          onChange={(e) => setPlanDraft({ ...planDraft, price: Number(e.target.value) || 0 })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono font-bold focus:outline-none focus:border-[#0167D6]"
+                          required
                         />
                       </div>
+
                       <div>
-                        <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                          Regular / Discount Price
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Regular / Strike Price (Optional)
                         </label>
                         <input
                           type="number"
-                          placeholder="Optional regular price"
-                          value={plan.discountPrice || ""}
-                          onChange={(e) => updatePricingPlan(idx, "discountPrice", Number(e.target.value) || 0)}
-                          className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono"
+                          min="0"
+                          placeholder="e.g. 20000"
+                          value={planDraft.discountPrice || ""}
+                          onChange={(e) => setPlanDraft({ ...planDraft, discountPrice: Number(e.target.value) || 0 })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:border-[#0167D6]"
                         />
                       </div>
                     </div>
 
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Badge Tag Text (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Best Value, Recommended"
+                          value={planDraft.badge || ""}
+                          onChange={(e) => setPlanDraft({ ...planDraft, badge: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
+                        />
+                      </div>
+
+                      <div className="flex items-center pt-5">
+                        <label className="flex items-center gap-2 text-xs font-semibold text-slate-700 dark:text-gray-300 cursor-pointer select-none">
+                          <input
+                            type="checkbox"
+                            checked={Boolean(planDraft.isPopular)}
+                            onChange={(e) => setPlanDraft({ ...planDraft, isPopular: e.target.checked })}
+                            className="rounded text-[#0167D6] focus:ring-0"
+                          />
+                          <span>Highlight as &ldquo;POPULAR&rdquo; Tier</span>
+                        </label>
+                      </div>
+                    </div>
+
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                        Badge Text (Optional)
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                        Short Plan Summary
                       </label>
                       <input
                         type="text"
-                        placeholder="e.g. Best Value, Recommended"
-                        value={plan.badge || ""}
-                        onChange={(e) => updatePricingPlan(idx, "badge", e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
+                        placeholder="e.g. Target audience or package overview"
+                        value={planDraft.description || ""}
+                        onChange={(e) => setPlanDraft({ ...planDraft, description: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
                       />
                     </div>
 
                     <div>
-                      <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                        Short Description
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="Target audience or package summary"
-                        value={plan.description || ""}
-                        onChange={(e) => updatePricingPlan(idx, "description", e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                      />
-                    </div>
-
-                    <div>
-                      <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                         Included Features (1 per line)
                       </label>
-                      <textarea
-                        rows={4}
+                      <Textarea
+                        rows={3}
                         placeholder="Feature 1&#10;Feature 2&#10;Feature 3"
-                        value={plan.featuresText}
-                        onChange={(e) => updatePricingPlan(idx, "featuresText", e.target.value)}
-                        className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono"
+                        value={planDraft.featuresText}
+                        onChange={(e) => setPlanDraft({ ...planDraft, featuresText: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-mono focus:outline-none focus:border-[#0167D6]"
                       />
                     </div>
                   </div>
-                ))}
+
+                  {/* Modal Footer */}
+                  <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-[#101114]">
+                    <button
+                      type="button"
+                      onClick={() => setIsPlanModalOpen(false)}
+                      className="px-4 py-2 rounded-[4px] bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-xs font-semibold text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSavePlanDraft}
+                      className="px-4 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold cursor-pointer shadow-xs"
+                    >
+                      Save Plan
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -942,7 +1089,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                       />
                     </div>
 
-                    <textarea
+                    <Textarea
                       rows={2}
                       placeholder="Client testimonial / review text..."
                       value={rev.comment}
@@ -974,31 +1121,6 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               </span>
             </div>
 
-            {/* Media Mode Switcher */}
-            <div className="flex rounded-[4px] bg-slate-100 dark:bg-[#18191D] p-1 border border-slate-200 dark:border-gray-800">
-              <button
-                type="button"
-                onClick={() => setForm((prev) => ({ ...prev, mediaType: "image" }))}
-                className={`flex-1 py-1.5 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition ${
-                  form.mediaType === "image"
-                    ? "bg-white dark:bg-[#131417] text-[#0167D6] shadow-xs"
-                    : "text-slate-600 dark:text-gray-400 hover:text-slate-900"
-                }`}
-              >
-                <ImageIcon size={13} /> Still Images
-              </button>
-              <button
-                type="button"
-                onClick={() => setForm((prev) => ({ ...prev, mediaType: "video" }))}
-                className={`flex-1 py-1.5 text-xs font-bold rounded flex items-center justify-center gap-1.5 transition ${
-                  form.mediaType === "video"
-                    ? "bg-white dark:bg-[#131417] text-[#0167D6] shadow-xs"
-                    : "text-slate-600 dark:text-gray-400 hover:text-slate-900"
-                }`}
-              >
-                <Video size={13} /> Video Showcase
-              </button>
-            </div>
 
             {/* ── VIDEO SECTION (Clearly Single Slot) ── */}
             <div className="p-3.5 bg-slate-50 dark:bg-[#18191D] border border-slate-200 dark:border-gray-800 rounded-[4px] space-y-3">

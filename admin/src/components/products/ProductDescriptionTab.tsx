@@ -4,6 +4,7 @@ import React from "react";
 import { Layers, Quote, Plus, Star, Trash2 } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
 import { ProductFormState, ProductReviewForm } from "./types";
+import { Textarea } from "@/components/ui/textarea";
 
 interface ProductDescriptionTabProps {
   form: ProductFormState;
@@ -203,7 +204,7 @@ export default function ProductDescriptionTab({
                     <label className="text-[11px] font-bold text-slate-600 dark:text-gray-400">
                       Client Testimonial Review <span className="text-red-500">*</span>
                     </label>
-                    <textarea
+                    <Textarea
                       rows={3}
                       placeholder="Write customer feedback, operational improvements, and impact of your system..."
                       value={rev.comment}

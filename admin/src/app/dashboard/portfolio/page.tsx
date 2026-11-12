@@ -25,6 +25,7 @@ import {
 } from "lucide-react";
 import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { cleanSnippet } from "@/lib/richText";
+import { Textarea } from "@/components/ui/textarea";
 
 const ITEMS_PER_PAGE = 12;
 
@@ -260,7 +261,7 @@ export default function PortfolioThemesPage() {
               <label className="block text-xs font-semibold text-slate-700 dark:text-gray-300 mb-1.5">
                 Subheading Description
               </label>
-              <textarea
+              <Textarea
                 value={pdfForm.subheading}
                 onChange={(e) => setPdfForm({ ...pdfForm, subheading: e.target.value })}
                 rows={2}
@@ -380,7 +381,7 @@ export default function PortfolioThemesPage() {
               return (
                 <div
                   key={item._id}
-                  className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[420px]"
+                  className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[355px]"
                 >
                   {/* Media Thumbnail (Fixed aspect-video / 190px matching Services & Products) */}
                   <div className="h-[190px] aspect-video w-full bg-slate-100 dark:bg-black relative overflow-hidden flex items-center justify-center shrink-0">
@@ -440,7 +441,7 @@ export default function PortfolioThemesPage() {
                         {item.websiteTitle}
                       </h3>
 
-                      <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                      <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                         {cleanSnippet(item.description, 260) || (
                           <span className="italic text-slate-400 dark:text-gray-600">No project description provided</span>
                         )}

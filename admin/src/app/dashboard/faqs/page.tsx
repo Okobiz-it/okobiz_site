@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, HelpCircle, X } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function FaqsPage() {
   const [faqs, setFaqs] = useState<any[]>([]);
@@ -164,8 +165,8 @@ export default function FaqsPage() {
 
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Answer</label>
-                <textarea
-                  rows={4}
+                <Textarea
+                  rows={3}
                   required
                   value={form.answer}
                   onChange={e => setForm({ ...form, answer: e.target.value })}

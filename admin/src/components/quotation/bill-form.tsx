@@ -18,6 +18,8 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardHeader, CardTitle, CardDescription } from "@/components/ui/card";
+import { Checkbox } from "@/components/ui/checkbox";
+import { Badge } from "@/components/ui/badge";
 import { toast } from "@/lib/toast";
 import { BillPrintSheet, BillRow } from "./bill-print-sheet";
 import { numberToWords } from "@/lib/number-to-words";
@@ -68,18 +70,32 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     ];
   });
 
-  // Calculate Grand Total
-  const grandTotal = billRows.reduce((sum, r) => {
+  // Calculate Subtotal (Total of all bill expenses)
+  const subTotal = billRows.reduce((sum, r) => {
     const val = typeof r.amount === "string" ? parseFloat(r.amount.replace(/[^0-9.-]/g, "")) : r.amount;
     return sum + (isNaN(val) ? 0 : val);
   }, 0);
 
-  // Amount In Words
+  // Advance / Already Paid State
+  const [hasAdvancePayment, setHasAdvancePayment] = useState<boolean>(
+    Boolean(initialData?.has_advance_payment || (initialData?.advance_amount && Number(initialData.advance_amount) > 0))
+  );
+  const [advanceAmount, setAdvanceAmount] = useState<number>(() => {
+    return initialData?.advance_amount !== undefined ? Number(initialData.advance_amount) : 0;
+  });
+  const [advanceLabel, setAdvanceLabel] = useState<string>(
+    initialData?.advance_label || "Already Paid / Advance"
+  );
+
+  // Calculate Net Grand Total (Deduct advance if enabled)
+  const grandTotal = Math.max(0, subTotal - (hasAdvancePayment ? advanceAmount : 0));
+
+  // Amount In Words (Based on Net Due Grand Total)
   const [inWords, setInWords] = useState<string>(() => {
     if (initialData?.in_words && initialData.in_words.trim().length > 0) {
       return initialData.in_words;
     }
-    const val = Number(initialData?.grand_total || initialData?.software_amount) || 5000;
+    const val = Number(initialData?.grand_total || initialData?.software_amount) || grandTotal;
     return numberToWords(val).replace(" Taka Only", " Taka Only.");
   });
 
@@ -163,6 +179,10 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     subject,
     doc_type: "BILL",
     bill_rows: billRows,
+    sub_total: subTotal,
+    has_advance_payment: hasAdvancePayment,
+    advance_amount: hasAdvancePayment ? advanceAmount : 0,
+    advance_label: advanceLabel,
     grand_total: grandTotal,
     in_words: inWords,
     additional_notes: additionalNotes,
@@ -190,6 +210,10 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
       toast.error("Please provide a valid Expense Head for every item");
       return;
     }
+    if (hasAdvancePayment && advanceAmount < 0) {
+      toast.error("Advance amount cannot be negative");
+      return;
+    }
 
     setIsSubmitting(true);
     const loadingToastId = toast.loading(isEdit ? "Updating bill..." : "Creating official bill...");
@@ -212,6 +236,10 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
           particulars: "",
           amount: Number(r.amount) || 0,
         })),
+        sub_total: subTotal,
+        has_advance_payment: hasAdvancePayment,
+        advance_amount: hasAdvancePayment ? advanceAmount : 0,
+        advance_label: advanceLabel,
         grand_total: grandTotal,
         software_amount: grandTotal,
         in_words: inWords,
@@ -521,16 +549,119 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
               </table>
             </div>
 
+            {/* Advance / Already Paid Amount Section */}
+            <div className="p-4 rounded-lg border border-slate-200 dark:border-gray-800 bg-white dark:bg-gray-900/40 space-y-3">
+              <div className="flex items-center justify-between">
+                <div className="flex items-center gap-2.5">
+                  <Checkbox
+                    id="has-advance-payment"
+                    checked={hasAdvancePayment}
+                    onCheckedChange={(checked) => {
+                      const isChecked = Boolean(checked);
+                      setHasAdvancePayment(isChecked);
+                      if (!isChecked) {
+                        setAdvanceAmount(0);
+                      }
+                    }}
+                  />
+                  <label
+                    htmlFor="has-advance-payment"
+                    className="text-xs sm:text-sm font-bold text-slate-800 dark:text-gray-200 cursor-pointer select-none"
+                  >
+                    Client Has Already Paid Some Amount (Advance / Partial Payment)
+                  </label>
+                </div>
+                {hasAdvancePayment && (
+                  <Badge variant="outline" className="bg-emerald-50 text-emerald-700 dark:bg-emerald-950/40 dark:text-emerald-400 border-emerald-300 text-[11px] font-semibold">
+                    Advance Active
+                  </Badge>
+                )}
+              </div>
+
+              {hasAdvancePayment && (
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-3 pt-2 border-t border-slate-100 dark:border-gray-800 animate-in fade-in-50 duration-150">
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">
+                      Already Paid / Advance Amount (BDT) <span className="text-red-500">*</span>
+                    </label>
+                    <div className="relative">
+                      <span className="absolute left-3 top-1/2 -translate-y-1/2 text-xs font-bold text-emerald-600">
+                        Tk.
+                      </span>
+                      <Input
+                        type="number"
+                        min="0"
+                        step="any"
+                        value={advanceAmount || ""}
+                        onChange={(e) => {
+                          const val = parseFloat(e.target.value) || 0;
+                          setAdvanceAmount(val);
+                        }}
+                        placeholder="e.g. 2500"
+                        className="pl-9 font-bold text-sm text-emerald-700 dark:text-emerald-400 bg-emerald-50/30 dark:bg-emerald-950/10 border-emerald-300 dark:border-emerald-800"
+                        required={hasAdvancePayment}
+                      />
+                    </div>
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      This amount is subtracted from total expenses and displayed in green on the bill.
+                    </p>
+                  </div>
+
+                  <div>
+                    <label className="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">
+                      Expense Head / Payment Title
+                    </label>
+                    <Input
+                      value={advanceLabel}
+                      onChange={(e) => setAdvanceLabel(e.target.value)}
+                      placeholder="e.g. Already Paid / Advance or Advance Received"
+                      className="text-xs font-medium"
+                    />
+                    <p className="text-[10px] text-slate-500 mt-1">
+                      Label shown in the bill table expense head column.
+                    </p>
+                  </div>
+                </div>
+              )}
+            </div>
+
             {/* Total and In Words Summary Card */}
             <div className="bg-slate-50 dark:bg-gray-900/50 p-4 rounded-lg border border-slate-200 dark:border-gray-800 space-y-3">
-              <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800">
-                <span className="text-sm font-bold text-slate-800 dark:text-gray-200">
-                  Total Bill Amount:
-                </span>
-                <span className="text-lg font-extrabold text-[#0167D6] font-mono">
-                  Tk. {grandTotal.toLocaleString("en-IN")}/-
-                </span>
-              </div>
+              {hasAdvancePayment && advanceAmount > 0 ? (
+                <>
+                  <div className="flex items-center justify-between text-xs font-medium text-slate-600 dark:text-gray-400 pb-1.5 border-b border-slate-200/70 dark:border-gray-800">
+                    <span>Total Expense Amount (Subtotal):</span>
+                    <span className="font-semibold text-slate-800 dark:text-gray-200 font-mono">
+                      Tk. {subTotal.toLocaleString("en-IN")}/-
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between text-xs font-bold text-emerald-600 dark:text-emerald-400 pb-1.5 border-b border-slate-200/70 dark:border-gray-800">
+                    <span>(-) {advanceLabel || "Already Paid / Advance"}:</span>
+                    <span className="font-mono">
+                      - Tk. {advanceAmount.toLocaleString("en-IN")}/-
+                    </span>
+                  </div>
+
+                  <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800">
+                    <span className="text-sm font-bold text-slate-800 dark:text-gray-200">
+                      Total Due Bill Amount (Net Payable):
+                    </span>
+                    <span className="text-lg font-extrabold text-[#0167D6] font-mono">
+                      Tk. {grandTotal.toLocaleString("en-IN")}/-
+                    </span>
+                  </div>
+                </>
+              ) : (
+                <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800">
+                  <span className="text-sm font-bold text-slate-800 dark:text-gray-200">
+                    Total Bill Amount:
+                  </span>
+                  <span className="text-lg font-extrabold text-[#0167D6] font-mono">
+                    Tk. {grandTotal.toLocaleString("en-IN")}/-
+                  </span>
+                </div>
+              )}
 
               <div>
                 <label className="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">

@@ -36,6 +36,10 @@ export interface IQuotation {
   company_email?: string;
   doc_type?: "QUOTATION" | "BILL" | string;
   bill_rows?: any[];
+  sub_total?: number;
+  has_advance_payment?: boolean;
+  advance_amount?: number;
+  advance_label?: string;
   status: "SENT" | "DRAFT" | "ACCEPTED" | "REJECTED" | string;
   email_sent_at?: Date | null;
   created_at: Date;
@@ -79,6 +83,10 @@ const QuotationSchema = new Schema<IQuotation>(
     company_email: { type: String, default: "info@okobiz.com" },
     doc_type: { type: String, default: "QUOTATION" },
     bill_rows: { type: Schema.Types.Mixed, default: [] },
+    sub_total: { type: Number, default: 0 },
+    has_advance_payment: { type: Boolean, default: false },
+    advance_amount: { type: Number, default: 0 },
+    advance_label: { type: String, default: "Already Paid / Advance" },
     status: { type: String, default: "SENT" },
     email_sent_at: { type: Date, default: null },
   },

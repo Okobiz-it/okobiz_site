@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import {
   FileText,
@@ -56,18 +56,36 @@ function SyncedSoftwareRow({
   const scopeRef = useRef<HTMLTextAreaElement>(null);
   const partRef = useRef<HTMLTextAreaElement>(null);
   const isSyncingRef = useRef(false);
+  const manualHeightRef = useRef<number>(38);
+
+  const syncHeights = useCallback(() => {
+    const scopeEl = scopeRef.current;
+    const partEl = partRef.current;
+    if (!scopeEl || !partEl) return;
+
+    // Temporarily reset to auto to calculate scrollHeights accurately
+    scopeEl.style.height = "auto";
+    partEl.style.height = "auto";
+
+    const targetHeight = Math.max(
+      scopeEl.scrollHeight,
+      partEl.scrollHeight,
+      manualHeightRef.current,
+      38
+    );
+
+    scopeEl.style.height = `${targetHeight}px`;
+    partEl.style.height = `${targetHeight}px`;
+  }, []);
+
+  useEffect(() => {
+    syncHeights();
+  }, [row.scope, row.particulars, syncHeights]);
 
   useEffect(() => {
     const scopeEl = scopeRef.current;
     const partEl = partRef.current;
     if (!scopeEl || !partEl) return;
-
-    // Align initial height on mount if one is already taller
-    const initH = Math.max(scopeEl.offsetHeight, partEl.offsetHeight, 38);
-    if (initH > 38) {
-      scopeEl.style.height = `${initH}px`;
-      partEl.style.height = `${initH}px`;
-    }
 
     if (typeof ResizeObserver === "undefined") return;
 
@@ -77,6 +95,8 @@ function SyncedSoftwareRow({
         const target = entry.target as HTMLTextAreaElement;
         const newHeight = target.offsetHeight;
         if (newHeight <= 0) continue;
+
+        manualHeightRef.current = Math.max(manualHeightRef.current, newHeight);
 
         if (target === scopeEl && Math.abs(partEl.offsetHeight - newHeight) > 1) {
           isSyncingRef.current = true;
@@ -115,9 +135,11 @@ function SyncedSoftwareRow({
         <Textarea
           ref={scopeRef}
           value={row.scope}
+          autoResize={false}
           onChange={(e) => onUpdate(index, "scope", e.target.value)}
+          onInput={syncHeights}
           placeholder="e.g. Inventory Management System"
-          className="min-h-[38px] text-xs py-2 px-3 resize-y font-semibold leading-snug rounded-[4px]"
+          className="min-h-[38px] text-xs py-2 px-3 resize-y font-semibold leading-snug rounded-[4px] overflow-hidden"
           rows={1}
         />
       </td>
@@ -125,9 +147,11 @@ function SyncedSoftwareRow({
         <Textarea
           ref={partRef}
           value={row.particulars}
+          autoResize={false}
           onChange={(e) => onUpdate(index, "particulars", e.target.value)}
+          onInput={syncHeights}
           placeholder="e.g. Real-time stock alerts, barcode generation, multi-warehouse transfer"
-          className="min-h-[38px] text-xs py-2 px-3 resize-y leading-snug rounded-[4px]"
+          className="min-h-[38px] text-xs py-2 px-3 resize-y leading-snug rounded-[4px] overflow-hidden"
           rows={1}
         />
       </td>

@@ -1,6 +1,7 @@
 "use client";
 import React, { useEffect, useState } from "react";
 import { Plus, Edit2, Trash2, Search, ImageIcon, X, Image as PhotoIcon, Check, UploadCloud } from "lucide-react";
+import { Textarea } from "@/components/ui/textarea";
 
 export default function GalleryAdminPage() {
   const [items, setItems] = useState<any[]>([]);
@@ -346,7 +347,7 @@ export default function GalleryAdminPage() {
               {/* Description */}
               <div>
                 <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">Description (Optional)</label>
-                <textarea
+                <Textarea
                   rows={2}
                   value={form.description}
                   onChange={(e) => setForm({ ...form, description: e.target.value })}

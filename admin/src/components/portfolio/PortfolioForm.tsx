@@ -28,6 +28,7 @@ import TechnologyIconPicker from "@/components/TechnologyIconPicker";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { createSlug } from "@/lib/slug";
 import { toast } from "@/lib/toast";
+import { Textarea } from "@/components/ui/textarea";
 
 export interface PortfolioFormData {
   _id?: string;
@@ -272,21 +273,14 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
             <ArrowLeft className="w-4 h-4" /> Back to Portfolio
           </Link>
           <div className="h-5 w-px bg-slate-200 dark:bg-gray-800 hidden sm:block" />
-          <div>
-            <div className="flex items-center gap-2">
-              <h1 className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
-                <Briefcase className="w-5 h-5 text-[#0167D6]" />
-                {isEdit ? `Edit Project: ${form.websiteTitle || "Untitled"}` : "Add Portfolio Project"}
-              </h1>
-              {form.category && (
-                <span className="text-[11px] font-semibold px-2 py-0.5 rounded-[4px] bg-blue-50 dark:bg-blue-900/30 text-[#0167D6] dark:text-blue-300">
-                  {form.category}
-                </span>
-              )}
-            </div>
-            <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-              Showcase high-impact web apps, enterprise systems, screenshots, interactive demos, and tech stacks
-            </p>
+          <div className="min-w-0">
+            <h1
+              className="text-lg sm:text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2 truncate max-w-[280px] sm:max-w-md lg:max-w-xl"
+              title={isEdit ? `Edit Project: ${form.websiteTitle || "Untitled"}` : "Add Portfolio Project"}
+            >
+              <Briefcase className="w-5 h-5 text-[#0167D6] shrink-0" />
+              <span className="truncate">{isEdit ? `Edit Project: ${form.websiteTitle || "Untitled"}` : "Add Portfolio Project"}</span>
+            </h1>
           </div>
         </div>
 
@@ -452,8 +446,8 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
                   <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                     Key Challenges
                   </label>
-                  <textarea
-                    rows={4}
+                  <Textarea
+                    rows={3}
                     placeholder="What core architectural, scaling, or operational hurdles did the client face?"
                     value={form.challenge}
                     onChange={(e) => setForm({ ...form, challenge: e.target.value })}
@@ -465,8 +459,8 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
                   <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                     Our Engineering Solution
                   </label>
-                  <textarea
-                    rows={4}
+                  <Textarea
+                    rows={3}
                     placeholder="How did Okobiz engineer and deliver the high-performance solution?"
                     value={form.solution}
                     onChange={(e) => setForm({ ...form, solution: e.target.value })}
@@ -479,8 +473,8 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
                 <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
                   Core Features (One per line)
                 </label>
-                <textarea
-                  rows={4}
+                <Textarea
+                  rows={3}
                   placeholder="Real-time multi-tenant sync&#10;Role-based access control&#10;Automated PDF invoice generation"
                   value={form.featuresText}
                   onChange={(e) => setForm({ ...form, featuresText: e.target.value })}

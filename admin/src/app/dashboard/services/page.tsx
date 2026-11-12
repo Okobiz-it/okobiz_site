@@ -94,7 +94,7 @@ export default function ServicesPage() {
             return (
               <div
                 key={srv._id}
-                className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[420px]"
+                className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[355px]"
               >
                 {/* Media Header (Fixed aspect-video / 190px matching Portfolio & Products) */}
                 <div className="h-[190px] aspect-video w-full bg-slate-100 dark:bg-black relative overflow-hidden flex items-center justify-center shrink-0">
@@ -122,12 +122,7 @@ export default function ServicesPage() {
                     )}
                   </div>
 
-                  {/* Bottom-right Slug Badge */}
-                  <div className="absolute bottom-2.5 right-2.5">
-                    <span className="px-2.5 py-0.5 rounded-[4px] bg-white/95 dark:bg-black/80 text-slate-800 dark:text-gray-200 backdrop-blur-md text-[10px] font-mono font-semibold border border-slate-300/80 dark:border-white/15 shadow-sm">
-                      /services/{srv.slug}
-                    </span>
-                  </div>
+
                 </div>
 
                 {/* Card Body (Flexible container with guaranteed min-height snippet) */}
@@ -152,7 +147,7 @@ export default function ServicesPage() {
                       {srv.title}
                     </h3>
 
-                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                    <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                       {cleanSnippet(srv.shortDesc || srv.fullDescription, 260) || (
                         <span className="italic text-slate-400 dark:text-gray-600">No short description set</span>
                       )}

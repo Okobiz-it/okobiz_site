@@ -275,14 +275,14 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
                             key={sub.href}
                             href={sub.href}
                             onClick={onClose}
-                            className={`flex items-center gap-2.5 rounded-[4px] text-[12.8px] font-medium py-1.5 px-2.5 transition duration-150 ${
+                            className={`flex items-center gap-2.5 rounded-[4px] text-[13.4px] font-medium py-1.5 px-2.5 transition duration-150 ${
                               isSubActive
                                 ? "bg-[#0167D6] text-white text-white-always font-semibold shadow-xs"
                                 : "text-slate-600 hover:text-slate-900 hover:bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:bg-gray-800/40"
                             }`}
                           >
                             <SubIcon
-                              size={15}
+                              size={16}
                               className={`shrink-0 ${
                                 isSubActive ? "text-white text-white-always" : "text-slate-400 dark:text-gray-400"
                               }`}
@@ -317,8 +317,9 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
                   />
                 </Link>
                 <div className="absolute left-full top-1/2 -translate-y-1/2 pl-2.5 z-50 pointer-events-none opacity-0 invisible -translate-x-1 group-hover:opacity-100 group-hover:visible group-hover:translate-x-0 transition-all duration-150">
-                  <div className="bg-slate-900 dark:bg-gray-800 text-white text-xs font-medium px-2.5 py-1 rounded shadow-md whitespace-nowrap">
-                    {item.name}
+                  <div className="bg-white dark:bg-[#141518] border border-slate-200 dark:border-gray-800 text-slate-800 dark:text-gray-100 text-[13px] font-semibold px-3 py-1.5 rounded-md shadow-lg whitespace-nowrap flex items-center gap-2">
+                    <Icon size={14} className="text-[#0167D6]" />
+                    <span>{item.name}</span>
                   </div>
                 </div>
               </div>
@@ -369,14 +370,14 @@ export default function Sidebar({ onClose, isCollapsed = false, onToggleCollapse
                           key={sub.href}
                           href={sub.href}
                           onClick={onClose}
-                          className={`flex items-center gap-2.5 rounded-[4px] text-[12.8px] font-medium py-1.5 px-3 transition duration-150 border-0 !border-none !shadow-none ${
+                          className={`flex items-center gap-2.5 rounded-[4px] text-[13.4px] font-medium py-1.5 px-3 transition duration-150 border-0 !border-none !shadow-none ${
                             isSubActive
                               ? "!bg-[#0167D6] text-white text-white-always shadow-xs font-semibold"
                               : "!bg-transparent text-slate-600 hover:text-slate-900 hover:!bg-slate-100 dark:text-gray-400 dark:hover:text-white dark:hover:!bg-gray-800/40"
                           }`}
                         >
                           <SubIcon
-                            size={15}
+                            size={16}
                             className={`shrink-0 ${
                               isSubActive ? "text-white text-white-always" : "text-slate-400 dark:text-gray-400"
                             }`}

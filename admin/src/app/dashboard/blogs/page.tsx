@@ -100,7 +100,7 @@ export default function BlogsPage() {
           {filtered.map((blog) => (
             <div
               key={blog._id}
-              className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[420px]"
+              className="bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-[6px] overflow-hidden group hover:border-[#0167D6] dark:hover:border-[#3368B2]/60 transition shadow-xs hover:shadow-md flex flex-col justify-between h-[355px]"
             >
               {/* Thumbnail matching Services & Portfolio */}
               <div className="h-[190px] aspect-video w-full bg-slate-100 dark:bg-black relative overflow-hidden flex items-center justify-center shrink-0">
@@ -139,7 +139,7 @@ export default function BlogsPage() {
                     {blog.title}
                   </h3>
 
-                  <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-4 leading-relaxed">
+                  <p className="text-xs text-slate-500 dark:text-gray-400 line-clamp-2 leading-relaxed">
                     {cleanSnippet(blog.content, 260) || (
                       <span className="italic text-slate-400 dark:text-gray-600">No article excerpt provided</span>
                     )}
