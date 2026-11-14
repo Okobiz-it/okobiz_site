@@ -17,6 +17,8 @@ import {
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
+import SectionLoader from "@/components/SectionLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { PortfolioProject } from "@/data/mockData";
 import { getThemes, getPortfolioPdf, PortfolioPdfData } from "@/lib/api";
 import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
@@ -27,6 +29,8 @@ const ITEMS_PER_PAGE = 12;
 
 export default function PortfolioPage() {
   const [projects, setProjects] = useState<PortfolioProject[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedCategory, setSelectedCategory] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
 
@@ -37,38 +41,48 @@ export default function PortfolioPage() {
     badge: ""
   });
 
-  useEffect(() => {
-    const fetchLiveProjects = async () => {
-      try {
-        const themes = await getThemes();
-        if (Array.isArray(themes) && themes.length > 0) {
-          const formatted: PortfolioProject[] = themes.map((t: any) => ({
-            _id: t._id,
-            slug: t.slug || createSlug(t.websiteTitle || t.title || "Project"),
-            title: t.websiteTitle || t.title || "Project",
-            category: t.category || "Web Applications",
-            clientName: t.clientName || "Enterprise Client",
-            completionYear: "2024",
-            mediaType: t.mediaType || (t.video ? "video" : "image"),
-            thumbnail: t.photo || (isYouTubeUrl(t.video) ? getYouTubeThumbnailUrl(t.video) : "") || "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
-            videoUrl: t.video || "",
-            videoThumbnail: t.videoThumbnail || (isYouTubeUrl(t.video) ? getYouTubeThumbnailUrl(t.video) : "") || t.photo || "",
-            liveUrl: t.websiteLink || "",
-            shortDescription: t.description || "",
-            fullDescription: t.description || "",
-            challenge: t.challenge || "",
-            solution: t.solution || "",
-            features: t.features || [],
-            techStack: ["Next.js", "TypeScript", "Tailwind CSS"],
-            results: ["Production Deployed", "High Performance Architecture"],
-            isFeatured: Boolean(t.featuredBadge || t.popularBadge)
-          }));
-          setProjects(formatted);
-        }
-      } catch (e) {
-        console.warn("Failed to fetch live projects:", e);
+  const fetchLiveProjects = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const themes = await getThemes();
+      if (Array.isArray(themes)) {
+        const formatted: PortfolioProject[] = themes.map((t: any) => ({
+          _id: t._id,
+          slug: t.slug || createSlug(t.websiteTitle || t.title || "Project"),
+          title: t.websiteTitle || t.title || "Project",
+          category: t.category || "Web Applications",
+          clientName: t.clientName || "Enterprise Client",
+          completionYear: "2024",
+          mediaType: t.mediaType || (t.video ? "video" : "image"),
+          thumbnail: t.photo || (Array.isArray(t.images) && t.images[0]) || (isYouTubeUrl(t.video) ? getYouTubeThumbnailUrl(t.video) : "") || "https://res.cloudinary.com/dccui8s58/image/upload/v1790852858/okobiz/assets/bdhajj-D468QQtK.png",
+          images: Array.isArray(t.images) && t.images.length > 0 ? t.images : (t.photo ? [t.photo] : []),
+          videoUrl: t.video || "",
+          videoThumbnail: t.videoThumbnail || (isYouTubeUrl(t.video) ? getYouTubeThumbnailUrl(t.video) : "") || t.photo || (Array.isArray(t.images) && t.images[0]) || "",
+          liveUrl: t.websiteLink || "",
+          shortDescription: t.description || "",
+          fullDescription: t.description || "",
+          challenge: t.challenge || "",
+          solution: t.solution || "",
+          features: t.features || [],
+          techStack: (Array.isArray(t.techStack) && t.techStack.length > 0) ? t.techStack : ["Next.js", "TypeScript", "Tailwind CSS"],
+          results: ["Production Deployed", "High Performance Architecture"],
+          isFeatured: Boolean(t.featuredBadge || t.popularBadge)
+        }));
+        setProjects(formatted);
+      } else {
+        setError(true);
       }
-    };
+    } catch (e) {
+      console.warn("Failed to fetch live projects:", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchLiveProjects();
 
     const fetchPdf = async () => {
       try {
@@ -79,17 +93,18 @@ export default function PortfolioPage() {
       }
     };
 
-    fetchLiveProjects();
     fetchPdf();
   }, []);
 
-  const categories = [
-    "All",
-    "Web Applications",
-    "Mobile & SaaS",
-    "E-Commerce",
-    "Corporate Systems"
-  ];
+  const categories = useMemo(() => {
+    const set = new Set<string>(["All"]);
+    projects.forEach((p) => {
+      if (p.category && p.category.trim()) {
+        set.add(p.category.trim());
+      }
+    });
+    return Array.from(set);
+  }, [projects]);
 
   const handleCategoryChange = (cat: string) => {
     setSelectedCategory(cat);
@@ -181,27 +196,42 @@ export default function PortfolioPage() {
             </p>
           </div>
 
-          {/* Category Filter Pills (4px radius) */}
-          <div className="flex justify-center flex-wrap gap-2.5 mb-14">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => handleCategoryChange(cat)}
-                className={`text-xs font-bold px-5 py-2.5 rounded-[4px] transition-all duration-200 ${
-                  selectedCategory === cat
-                    ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20 border border-[#0167D6]"
-                    : "bg-slate-100 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-gray-700"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Category Filter Pills (4px radius) - Only shown when live data is loaded */}
+          {!loading && !error && projects.length > 0 && categories.length > 1 && (
+            <div className="flex justify-center flex-wrap gap-2.5 mb-14">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => handleCategoryChange(cat)}
+                  className={`text-xs font-bold px-5 py-2.5 rounded-[4px] transition-all duration-200 ${
+                    selectedCategory === cat
+                      ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20 border border-[#0167D6]"
+                      : "bg-slate-100 dark:bg-[#181A1E] border border-slate-200 dark:border-gray-800 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:border-slate-300 dark:hover:border-gray-700"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
 
-          {/* Completed Projects Grid with 2px radius in all boxes */}
-          {paginatedProjects.length === 0 ? (
-            <div className="bg-[#16171B] border border-gray-800 rounded-[2px] p-12 text-center text-gray-400 text-sm">
-              No projects found in category <span className="text-white font-semibold">{selectedCategory}</span>.
+          {/* Completed Projects Grid with Loading & Error Guards */}
+          {loading ? (
+            <div className="py-24 flex flex-col items-center justify-center">
+              <SectionLoader size="md" />
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-3 font-medium">
+                Loading portfolio projects...
+              </p>
+            </div>
+          ) : error ? (
+            <DataLoadError
+              title="Portfolio Projects Couldn't Load"
+              message="We were unable to retrieve live portfolio projects from the server. Please check your connection or try again."
+              onRetry={fetchLiveProjects}
+            />
+          ) : paginatedProjects.length === 0 ? (
+            <div className="bg-slate-50 dark:bg-[#16171B] border border-slate-200 dark:border-gray-800 rounded-[4px] p-12 text-center text-slate-500 dark:text-gray-400 text-sm">
+              No projects found in category <span className="text-slate-900 dark:text-white font-semibold">{selectedCategory}</span>.
             </div>
           ) : (
             <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">

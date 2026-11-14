@@ -40,11 +40,31 @@ export default function TechnologyIconPicker({
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [search, setSearch] = useState("");
   const [activeCategory, setActiveCategory] = useState<CategoryFilter>("all");
+  const [initialSelectedWhenOpened, setInitialSelectedWhenOpened] = useState<string[]>([]);
+
+  const handleOpenModal = () => {
+    setInitialSelectedWhenOpened([...selected]);
+    setIsModalOpen(true);
+  };
 
   // Normalize selected list for comparison
   const selectedSet = useMemo(() => {
     return new Set(selected.map((item) => item.toLowerCase().trim()));
   }, [selected]);
+
+  // Set of items that were already selected when the modal opened
+  const initialSelectedSet = useMemo(() => {
+    return new Set(initialSelectedWhenOpened.map((item) => item.toLowerCase().trim()));
+  }, [initialSelectedWhenOpened]);
+
+  // Count how many new technologies have been added since opening the modal
+  const newlyAddedCount = useMemo(() => {
+    return selected.filter(
+      (item) => !initialSelectedSet.has(item.toLowerCase().trim())
+    ).length;
+  }, [selected, initialSelectedSet]);
+
+  const hasNewAdded = newlyAddedCount > 0;
 
   // Filter catalog by search query and category
   const filteredCatalog = useMemo(() => {
@@ -120,7 +140,7 @@ export default function TechnologyIconPicker({
 
           <button
             type="button"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenModal}
             className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs cursor-pointer"
           >
             <Plus size={14} />
@@ -166,7 +186,7 @@ export default function TechnologyIconPicker({
           </p>
           <button
             type="button"
-            onClick={() => setIsModalOpen(true)}
+            onClick={handleOpenModal}
             className="inline-flex items-center gap-1.5 px-3.5 py-1.5 rounded-[4px] bg-blue-50 text-[#0167D6] dark:bg-blue-950/40 dark:text-blue-400 border border-blue-200 dark:border-blue-900/40 hover:bg-blue-100 dark:hover:bg-blue-900/50 text-xs font-bold transition cursor-pointer"
           >
             <Plus size={13} />
@@ -297,17 +317,31 @@ export default function TechnologyIconPicker({
 
             {/* Modal Footer */}
             <div className="flex items-center justify-between px-5 py-3 border-t border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-[#101114]">
-              <span className="text-xs text-slate-500 dark:text-gray-400 font-medium">
-                {selected.length} {selected.length === 1 ? "technology" : "technologies"} currently selected
-              </span>
+              <div className="flex items-center gap-2">
+                <span className="text-xs text-slate-500 dark:text-gray-400 font-medium">
+                  {selected.length} {selected.length === 1 ? "technology" : "technologies"} currently selected
+                </span>
+                {newlyAddedCount > 0 && (
+                  <span className="px-1.5 py-0.5 rounded text-[10px] font-bold bg-blue-50 text-[#0167D6] dark:bg-emerald-950/80 dark:text-emerald-400 border border-blue-200 dark:border-emerald-800/60">
+                    +{newlyAddedCount} new
+                  </span>
+                )}
+              </div>
 
               <div className="flex items-center gap-2">
                 <button
                   type="button"
+                  disabled={!hasNewAdded}
                   onClick={() => setIsModalOpen(false)}
-                  className="px-4 py-2 rounded-[4px] bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-xs font-semibold text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700 cursor-pointer"
+                  className={`px-4 py-2 rounded-[4px] text-xs font-bold transition flex items-center gap-1.5 shadow-2xs ${
+                    hasNewAdded
+                      ? "bg-[#0167D6] hover:bg-blue-600 text-white dark:bg-emerald-600 dark:hover:bg-emerald-500 dark:text-white cursor-pointer active:scale-95"
+                      : "bg-slate-200 text-slate-400 dark:bg-gray-800 dark:text-gray-500 border border-slate-200 dark:border-gray-700/60 cursor-not-allowed opacity-50"
+                  }`}
+                  title={hasNewAdded ? "Done selecting technologies" : "Select at least one new technology to complete"}
                 >
-                  Done
+                  <Check size={14} className={hasNewAdded ? "stroke-[2.5]" : "stroke-[2] opacity-40"} />
+                  <span>Done</span>
                 </button>
               </div>
             </div>

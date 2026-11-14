@@ -21,7 +21,8 @@ import {
   CheckCircle2,
   Globe,
   Tag,
-  DollarSign
+  DollarSign,
+  AlertCircle
 } from "lucide-react";
 import RichTextEditor from "@/components/RichTextEditor";
 import TechnologyIconPicker from "@/components/TechnologyIconPicker";
@@ -29,18 +30,22 @@ import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/
 import { createSlug } from "@/lib/slug";
 import { toast } from "@/lib/toast";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaShowcase } from "@/components/MediaShowcase";
+import { getClientLink } from "@/lib/clientUrl";
 
 export interface PortfolioFormData {
   _id?: string;
   websiteTitle: string;
   slug: string;
   category: string;
+  customCategory?: string;
   clientName: string;
   mediaType: "image" | "video";
   price: number;
   discountPrice: number;
   websiteLink: string;
   photo: string;
+  images: string[];
   video: string;
   videoThumbnail: string;
   youtubeUrl: string;
@@ -57,12 +62,14 @@ const DEFAULT_FORM: PortfolioFormData = {
   websiteTitle: "",
   slug: "",
   category: "Web Applications",
+  customCategory: "",
   clientName: "",
   mediaType: "image",
   price: 0,
   discountPrice: 0,
   websiteLink: "",
   photo: "",
+  images: [],
   video: "",
   videoThumbnail: "",
   youtubeUrl: "",
@@ -83,7 +90,7 @@ const CATEGORIES = [
   "UI/UX Design Systems",
   "FinTech & POS Solutions",
   "Healthcare & Clinic ERP",
-  "Custom Software"
+  "Custom"
 ];
 
 interface PortfolioFormProps {
@@ -96,29 +103,34 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
   const [form, setForm] = useState<PortfolioFormData>(DEFAULT_FORM);
   const [saving, setSaving] = useState(false);
 
-  // File Upload states
-  const [uploadingImage, setUploadingImage] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [uploadingVideoThumb, setUploadingVideoThumb] = useState(false);
-
-  const imageInputRef = useRef<HTMLInputElement | null>(null);
-  const videoInputRef = useRef<HTMLInputElement | null>(null);
-  const videoThumbInputRef = useRef<HTMLInputElement | null>(null);
-
   useEffect(() => {
     if (initialData) {
       const isYt = isYouTubeUrl(initialData.video);
+      const isKnownCategory = CATEGORIES.includes(initialData.category) && initialData.category !== "Custom";
+      const initialCat = initialData.category === "Custom Software" || initialData.category === "Custom"
+        ? "Custom"
+        : isKnownCategory
+        ? initialData.category
+        : (initialData.category ? "Custom" : "Web Applications");
+      const initialCustomCat = !isKnownCategory
+        ? (initialData.category === "Custom Software" ? "" : (initialData.category || ""))
+        : "";
+
       setForm({
         _id: initialData._id,
         websiteTitle: initialData.websiteTitle || "",
         slug: initialData.slug || createSlug(initialData.websiteTitle || ""),
-        category: initialData.category || "Web Applications",
+        category: initialCat,
+        customCategory: initialCustomCat,
         clientName: initialData.clientName || "",
         mediaType: initialData.mediaType || (initialData.video ? "video" : "image"),
         price: Number(initialData.price) || 0,
         discountPrice: Number(initialData.discountPrice) || 0,
         websiteLink: initialData.websiteLink || "",
-        photo: initialData.photo || "",
+        photo: initialData.photo || (Array.isArray(initialData.images) && initialData.images[0]) || "",
+        images: Array.isArray(initialData.images) && initialData.images.length > 0
+          ? initialData.images
+          : (initialData.photo ? [initialData.photo] : []),
         video: isYt ? "" : initialData.video || "",
         videoThumbnail: initialData.videoThumbnail || "",
         youtubeUrl: isYt ? initialData.video : "",
@@ -147,53 +159,15 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
     });
   };
 
-  const handleUpload = async (file: File, type: "photo" | "video" | "videoThumbnail") => {
-    if (!file) return;
-
-    if (type === "video") {
-      if (file.size > 50 * 1024 * 1024) {
-        toast.error("Video file size cannot exceed 50MB");
-        return;
-      }
-      setUploadingVideo(true);
-    } else if (type === "videoThumbnail") {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Thumbnail size cannot exceed 5MB");
-        return;
-      }
-      setUploadingVideoThumb(true);
-    } else {
-      if (file.size > 5 * 1024 * 1024) {
-        toast.error("Image size cannot exceed 5MB");
-        return;
-      }
-      setUploadingImage(true);
-    }
-
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (data.success && data.url) {
-        setForm((prev) => ({ ...prev, [type]: data.url }));
-        toast.success(`${type === "photo" ? "Image" : type === "video" ? "Video" : "Thumbnail"} uploaded!`);
-      } else {
-        toast.error(data.error || "Upload failed");
-      }
-    } catch (e: any) {
-      toast.error(e.message || "Network upload error");
-    } finally {
-      if (type === "video") setUploadingVideo(false);
-      else if (type === "videoThumbnail") setUploadingVideoThumb(false);
-      else setUploadingImage(false);
-    }
-  };
-
   const handleSubmit = async (e?: React.FormEvent) => {
     if (e) e.preventDefault();
     if (!form.websiteTitle.trim()) {
       toast.error("Please enter a project title");
+      return;
+    }
+
+    if (form.category === "Custom" && (!form.customCategory || !form.customCategory.trim())) {
+      toast.error("Please enter a custom category name before saving.");
       return;
     }
 
@@ -212,14 +186,22 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
     }
 
     const finalSlug = createSlug(form.slug || form.websiteTitle || "project");
+    const activePhoto = form.photo || (form.images.length > 0 ? form.images[0] : "");
+
+    const finalCategory =
+      form.category === "Custom" && form.customCategory?.trim()
+        ? form.customCategory.trim()
+        : form.category;
 
     const payload = {
       ...form,
       websiteTitle: form.websiteTitle.trim(),
       slug: finalSlug,
+      category: finalCategory,
       video: activeVideo,
       videoThumbnail: activeThumb,
-      photo: form.mediaType === "video" ? (activeThumb || form.photo || "") : form.photo,
+      photo: form.mediaType === "video" ? (activeThumb || activePhoto || "") : activePhoto,
+      images: form.images.length > 0 ? form.images : (activePhoto ? [activePhoto] : []),
       features: form.featuresText.split("\n").map((f) => f.trim()).filter(Boolean),
     };
 
@@ -303,11 +285,22 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
             </a>
           )}
 
+          {(isEdit || form.slug) && (
+            <a
+              href={getClientLink(`/portfolio/${form.slug || form._id}`)}
+              target="_blank"
+              rel="noreferrer"
+              className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[4px] border border-blue-200 dark:border-blue-800 text-[#0167D6] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
+            >
+              <ExternalLink size={13} /> View Live
+            </a>
+          )}
+
           <button
             type="button"
             onClick={() => handleSubmit()}
-            disabled={saving}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer disabled:opacity-50"
+            disabled={saving || (form.category === "Custom" && !form.customCategory?.trim())}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             <span>{isEdit ? "Update Project" : "Publish Project"}</span>
@@ -387,6 +380,29 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
                         </option>
                       ))}
                     </select>
+
+                    {form.category === "Custom" && (
+                      <div className="mt-2 space-y-1">
+                        <input
+                          type="text"
+                          required
+                          placeholder="Type custom category name..."
+                          value={form.customCategory || ""}
+                          onChange={(e) => setForm({ ...form, customCategory: e.target.value })}
+                          className={`w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none transition ${
+                            !form.customCategory?.trim()
+                              ? "border-red-500 focus:border-red-500"
+                              : "border-slate-300 dark:border-gray-700 focus:border-[#0167D6]"
+                          }`}
+                        />
+                        {!form.customCategory?.trim() && (
+                          <p className="text-[11px] text-red-500 font-medium flex items-center gap-1">
+                            <AlertCircle size={12} className="shrink-0" />
+                            Custom category name is required
+                          </p>
+                        )}
+                      </div>
+                    )}
                   </div>
                 </div>
 
@@ -499,181 +515,21 @@ export function PortfolioForm({ initialData, isEdit = false }: PortfolioFormProp
           <div className="lg:col-span-4 bg-slate-50/50 dark:bg-[#15171B]/50 p-6 space-y-6">
             
             {/* Media Assets Showcase */}
-            <div className="space-y-4">
-              <h2 className="text-xs font-bold uppercase tracking-wider text-slate-900 dark:text-white flex items-center gap-2 border-b border-slate-200 dark:border-gray-800 pb-2.5">
-                <ImageIcon size={14} className="text-[#0167D6]" />
-                Media Assets &amp; Video
-              </h2>
-
-              <div>
-                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
-                  Primary Media Type
-                </label>
-                <div className="grid grid-cols-2 gap-2">
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, mediaType: "image" })}
-                    className={`py-2 px-3 rounded-[4px] text-xs font-bold flex items-center justify-center gap-2 border transition cursor-pointer ${
-                      form.mediaType === "image"
-                        ? "border-[#0167D6] bg-blue-50 text-[#0167D6] dark:bg-blue-950/40 dark:text-blue-400"
-                        : "border-slate-300 dark:border-gray-700 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-800"
-                    }`}
-                  >
-                    <ImageIcon size={14} /> Still Image
-                  </button>
-                  <button
-                    type="button"
-                    onClick={() => setForm({ ...form, mediaType: "video" })}
-                    className={`py-2 px-3 rounded-[4px] text-xs font-bold flex items-center justify-center gap-2 border transition cursor-pointer ${
-                      form.mediaType === "video"
-                        ? "border-[#0167D6] bg-blue-50 text-[#0167D6] dark:bg-blue-950/40 dark:text-blue-400"
-                        : "border-slate-300 dark:border-gray-700 text-slate-600 dark:text-gray-400 hover:bg-slate-100 dark:hover:bg-gray-800"
-                    }`}
-                  >
-                    <Video size={14} /> Video / Demo
-                  </button>
-                </div>
-              </div>
-
-              {/* Still Image Upload (NO URL INPUT FIELD) */}
-              {form.mediaType === "image" && (
-                <div className="space-y-3">
-                  <label className="block text-xs font-bold text-slate-700 dark:text-gray-300">
-                    Project Featured Screenshot
-                  </label>
-                  
-                  <div className="border-2 border-dashed border-slate-300 dark:border-gray-700 rounded-[6px] p-4 text-center bg-white dark:bg-[#18191D]">
-                    {form.photo ? (
-                      <div className="relative group rounded-[4px] overflow-hidden bg-black flex items-center justify-center aspect-video mb-3">
-                        <img src={form.photo} alt="Screenshot Preview" className="w-full h-full object-cover" />
-                        <button
-                          type="button"
-                          onClick={() => setForm({ ...form, photo: "" })}
-                          className="absolute top-2 right-2 p-1.5 bg-red-600 hover:bg-red-700 text-white rounded-[4px] opacity-90 hover:opacity-100 transition shadow cursor-pointer"
-                          title="Remove Screenshot"
-                        >
-                          <Trash2 size={13} />
-                        </button>
-                      </div>
-                    ) : (
-                      <div className="py-6">
-                        <ImageIcon className="mx-auto text-slate-400 dark:text-gray-600 mb-2" size={36} />
-                        <p className="text-xs font-medium text-slate-600 dark:text-gray-300">No screenshot uploaded</p>
-                        <p className="text-[11px] text-slate-400 dark:text-gray-500 mt-0.5">PNG, JPG, or WEBP up to 5MB</p>
-                      </div>
-                    )}
-
-                    <input
-                      ref={imageInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleUpload(file, "photo");
-                      }}
-                    />
-                    <button
-                      type="button"
-                      disabled={uploadingImage}
-                      onClick={() => imageInputRef.current?.click()}
-                      className="w-full inline-flex items-center justify-center gap-2 px-4 py-2.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold transition shadow-xs cursor-pointer disabled:opacity-50"
-                    >
-                      {uploadingImage ? <Loader2 size={14} className="animate-spin" /> : <UploadCloud size={14} />}
-                      <span>{uploadingImage ? "Uploading Screenshot..." : form.photo ? "Replace Screenshot" : "Upload Screenshot"}</span>
-                    </button>
-                  </div>
-                </div>
-              )}
-
-              {/* Video Settings */}
-              {form.mediaType === "video" && (
-                <div className="space-y-4">
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                      YouTube Video URL (Preferred)
-                    </label>
-                    <input
-                      type="url"
-                      placeholder="https://www.youtube.com/watch?v=..."
-                      value={form.youtubeUrl}
-                      onChange={(e) => setForm({ ...form, youtubeUrl: e.target.value })}
-                      className="w-full px-3 py-2 bg-white dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs font-mono text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-                    />
-                    {form.youtubeUrl && isYouTubeUrl(form.youtubeUrl) && (
-                      <div className="mt-2 aspect-video rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 bg-black">
-                        <iframe
-                          src={getYouTubeEmbedUrl(form.youtubeUrl) || undefined}
-                          className="w-full h-full"
-                          title="YouTube Preview"
-                          allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                          allowFullScreen
-                        />
-                      </div>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                      Or Upload Direct MP4 Video
-                    </label>
-                    <input
-                      ref={videoInputRef}
-                      type="file"
-                      accept="video/mp4,video/webm"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleUpload(file, "video");
-                      }}
-                    />
-                    <button
-                      type="button"
-                      disabled={uploadingVideo}
-                      onClick={() => videoInputRef.current?.click()}
-                      className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 hover:border-slate-400 text-slate-700 dark:text-gray-200 text-xs font-semibold rounded-[4px] transition cursor-pointer"
-                    >
-                      {uploadingVideo ? <Loader2 size={13} className="animate-spin" /> : <UploadCloud size={13} />}
-                      <span>{uploadingVideo ? "Uploading Video..." : form.video ? "Change Uploaded Video" : "Upload MP4 Video"}</span>
-                    </button>
-                    {form.video && (
-                      <p className="text-[11px] font-mono text-emerald-600 dark:text-emerald-400 mt-1 truncate">
-                        File: {form.video.split("/").pop()}
-                      </p>
-                    )}
-                  </div>
-
-                  <div>
-                    <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                      Video Thumbnail Image
-                    </label>
-                    <input
-                      ref={videoThumbInputRef}
-                      type="file"
-                      accept="image/*"
-                      className="hidden"
-                      onChange={(e) => {
-                        const file = e.target.files?.[0];
-                        if (file) handleUpload(file, "videoThumbnail");
-                      }}
-                    />
-                    <button
-                      type="button"
-                      disabled={uploadingVideoThumb}
-                      onClick={() => videoThumbInputRef.current?.click()}
-                      className="w-full inline-flex items-center justify-center gap-2 px-3 py-2 bg-white dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 hover:border-slate-400 text-slate-700 dark:text-gray-200 text-xs font-semibold rounded-[4px] transition cursor-pointer"
-                    >
-                      {uploadingVideoThumb ? <Loader2 size={13} className="animate-spin" /> : <UploadCloud size={13} />}
-                      <span>{uploadingVideoThumb ? "Uploading Thumbnail..." : form.videoThumbnail ? "Change Video Thumbnail" : "Upload Video Thumbnail"}</span>
-                    </button>
-                    {form.videoThumbnail && (
-                      <div className="mt-2 aspect-video rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 bg-black">
-                        <img src={form.videoThumbnail} alt="Thumbnail Preview" className="w-full h-full object-cover" />
-                      </div>
-                    )}
-                  </div>
-                </div>
-              )}
+            <div className="bg-white dark:bg-[#18191D] p-5 rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-xs">
+              <MediaShowcase
+                title="Media Assets & Video"
+                mediaType={form.mediaType}
+                onMediaTypeChange={(type) => setForm((prev) => ({ ...prev, mediaType: type }))}
+                images={form.images}
+                featuredImage={form.photo}
+                onImagesChange={(images, featuredImage) =>
+                  setForm((prev) => ({ ...prev, images, photo: featuredImage }))
+                }
+                video={form.video}
+                youtubeUrl={form.youtubeUrl}
+                videoThumbnail={form.videoThumbnail}
+                onVideoChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
+              />
             </div>
 
             {/* Badges & Visibility */}

@@ -17,9 +17,11 @@ import {
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { getBlogs } from "@/lib/api";
 import { BlogItem } from "@/data/mockData";
 import { renderRichText } from "@/lib/richText";
+import { createSlug } from "@/lib/slug";
 
 export default function BlogDetailPage() {
   const params = useParams();
@@ -27,6 +29,8 @@ export default function BlogDetailPage() {
 
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
   const [blog, setBlog] = useState<BlogItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [shareUrl, setShareUrl] = useState("");
 
   useEffect(() => {
@@ -35,18 +39,63 @@ export default function BlogDetailPage() {
     }
   }, [blogId]);
 
-  useEffect(() => {
-    getBlogs().then((data) => {
-      if (data && data.length > 0) {
+  const fetchBlog = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const data = await getBlogs();
+      if (Array.isArray(data) && data.length > 0) {
         setBlogs(data);
-        const match = data.find((b) => b._id === blogId || b.slug === blogId) || data[0];
-        setBlog(match);
+        const cleanId = (blogId || "").toLowerCase();
+        const match = data.find(
+          (b) =>
+            b._id === blogId ||
+            (b.slug && b.slug.toLowerCase() === cleanId) ||
+            createSlug(b.title) === cleanId
+        );
+        if (match) {
+          setBlog(match);
+        } else {
+          setError(true);
+        }
+      } else {
+        setError(true);
       }
-    });
+    } catch (e) {
+      console.warn("Failed to fetch blog details:", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchBlog();
   }, [blogId]);
 
-  if (!blog) {
+  if (loading) {
     return <UniversalLoader fullScreen size="lg" />;
+  }
+
+  if (error || !blog) {
+    return (
+      <div className="bg-black text-white min-h-screen">
+        <PageBanner title="Article Details" subtitle="News & Insights" />
+        <div className="max-w-2xl mx-auto px-4 py-20 flex flex-col items-center">
+          <DataLoadError
+            title="Article Couldn't Load"
+            message="The requested blog article could not be found or failed to load from the server."
+            onRetry={fetchBlog}
+          />
+          <Link
+            href="/blog"
+            className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-slate-800 text-gray-200 hover:bg-slate-700 text-xs font-semibold transition"
+          >
+            <ArrowLeft size={14} /> Back to Articles
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const currentShareUrl =

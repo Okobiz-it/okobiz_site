@@ -846,13 +846,13 @@
       "websiteTitle": "Nexlin IoT Smart Sensor & Factory Automation Dashboard",
       "category": "Corporate Systems",
       "clientName": "Nexlin Industrial",
-      "mediaType": "image",
+      "mediaType": "video",
       "price": 25000,
       "discountPrice": 20000,
       "websiteLink": "https://nexlin.com",
-      "photo": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
-      "video": "",
-      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png",
+      "photo": "https://img.youtube.com/vi/ukKDHxG1cUQ/hqdefault.jpg",
+      "video": "https://www.youtube.com/watch?v=ukKDHxG1cUQ",
+      "videoThumbnail": "https://img.youtube.com/vi/ukKDHxG1cUQ/hqdefault.jpg",
       "popularBadge": true,
       "featuredBadge": true,
       "description": "<p>Visualizing high frequency telemetry data from over 400 factory sensors without browser memory leaks or sluggish charts.</p>",
@@ -865,9 +865,18 @@
         "Emergency machine shutdown trigger with dual authorization"
       ],
       "createdAt": "2026-10-01T10:13:57.941Z",
-      "youtubeUrl": "",
+      "youtubeUrl": "https://www.youtube.com/watch?v=ukKDHxG1cUQ",
       "featuresText": "Live multi-channel telemetry gauges and time-series graphs\nMachine failure predictive alerts via statistical thresholding\nShift-by-shift energy consumption analytics report generator\nEmergency machine shutdown trigger with dual authorization",
-      "slug": "nexlin-iot-smart-sensor-and-factory-automation-dashboard"
+      "slug": "nexlin-iot-smart-sensor-and-factory-automation-dashboard",
+      "images": [
+        "https://res.cloudinary.com/dccui8s58/image/upload/v1790852868/okobiz/assets/nexlin-BRcx3pr3.png"
+      ],
+      "techStack": [
+        "Next.js",
+        "TypeScript",
+        "Tailwind CSS",
+        "MongoDB"
+      ]
     }
   ],
   "blogs": [
@@ -1263,7 +1272,15 @@
           ],
           "isPopular": false
         }
-      ]
+      ],
+      "thumbnail": "/assets/website-app-DOXr3sR7.webp",
+      "mediaType": "image",
+      "images": [
+        "/assets/website-app-DOXr3sR7.webp",
+        "https://res.cloudinary.com/dccui8s58/image/upload/v1794644596/okobiz/1737557857751_1794644598476.jpg"
+      ],
+      "video": "",
+      "videoThumbnail": ""
     },
     {
       "_id": "srv-2",
@@ -1763,6 +1780,42 @@
   ],
   "media": [
     {
+      "_id": "med-1794644600569",
+      "name": "1737557857751.jpg",
+      "filename": "1737557857751_1794644598475.jpg",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1794644596/okobiz/1737557857751_1794644598476.jpg",
+      "type": "image",
+      "size": 188642,
+      "mimeType": "image/jpeg",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1794644596/okobiz/1737557857751_1794644598476.jpg",
+      "publicId": "okobiz/1737557857751_1794644598476",
+      "createdAt": "2026-11-14T08:23:20.570Z"
+    },
+    {
+      "_id": "med-1794639319899",
+      "name": "1737557857751.jpg",
+      "filename": "1737557857751_1794639315832.jpg",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639316/okobiz/1737557857751_1794639315832.jpg",
+      "type": "image",
+      "size": 188642,
+      "mimeType": "image/jpeg",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639316/okobiz/1737557857751_1794639315832.jpg",
+      "publicId": "okobiz/1737557857751_1794639315832",
+      "createdAt": "2026-11-14T06:55:19.899Z"
+    },
+    {
+      "_id": "med-1794639250708",
+      "name": "1737557857751.jpg",
+      "filename": "1737557857751_1794639247188.jpg",
+      "path": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639247/okobiz/1737557857751_1794639247189.jpg",
+      "type": "image",
+      "size": 188642,
+      "mimeType": "image/jpeg",
+      "url": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639247/okobiz/1737557857751_1794639247189.jpg",
+      "publicId": "okobiz/1737557857751_1794639247189",
+      "createdAt": "2026-11-14T06:54:10.708Z"
+    },
+    {
       "_id": "med-1791355929187",
       "name": "www.beatsnoop.com-3000-MJzN4BhWpk_xq8vlp.jpg",
       "filename": "www_beatsnoop_com-3000-MJzN4BhWpk_xq8vlp_1791355925685.jpg",
@@ -2157,14 +2210,14 @@
       "tagline": "Complete Cloud Pharmacy & Medical Store POS, Batch Expiry Tracker, Generic Drug Search & Accounting ERP",
       "category": "Custom",
       "mediaType": "video",
-      "thumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+      "thumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639316/okobiz/1737557857751_1794639315832.jpg",
       "images": [
         "/assets/web-2-DujjTO8C.webp",
         "/assets/about-BPfvng5e.webp",
         "/assets/about-33-B_PGTXVg.webp"
       ],
       "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
-      "videoThumbnail": "https://img.youtube.com/vi/dQw4w9WgXcQ/hqdefault.jpg",
+      "videoThumbnail": "https://res.cloudinary.com/dccui8s58/image/upload/v1794639316/okobiz/1737557857751_1794639315832.jpg",
       "description": "<h2>Enterprise Pharmacy Management System (PharmaCare Pro)</h2><p>PharmaCare Pro is an all-in-one, highly scalable SaaS software designed specifically for retail pharmacies, pharmacy chains, and hospital drug dispensaries. Eliminate medicine expiry losses, streamline supplier procurement, and accelerate checkout with instant barcode POS billing.</p><h3>Key Business Capabilities:</h3><ul><li><strong>Intelligent Batch &amp; Expiry Alert:</strong> Automatic advance warnings before medicines reach expiration date, preventing inventory waste.</li><li><strong>Generic Alternative Lookup:</strong> Instant generic substitute suggestion when a branded drug is out of stock.</li><li><strong>High-Speed Barcode POS:</strong> Fast checkout billing with thermal receipt printers, itemized VAT, and customer change calculators.</li><li><strong>Supplier &amp; Purchase Ledger:</strong> Track drug purchase orders, payment terms, and vendor return vouchers effortlessly.</li><li><strong>Complete Financial Accounting:</strong> Daily cash register reconciliation, profit-and-loss reports, and stock valuation audits.</li></ul><blockquote><span style=\"font-style: normal;\">Note: This is a privacy and policy</span></blockquote>",
       "features": [
         "Automated Batch & Expiry Date Alert",
@@ -2251,7 +2304,7 @@
       "order": 1,
       "status": "active",
       "createdAt": "2024-03-01T10:00:00.000Z",
-      "updatedAt": "2026-10-10T12:25:15.972Z",
+      "updatedAt": "2026-11-14T06:55:33.921Z",
       "slug": "pharmacare-pro-pharmacy-management-system",
       "reviews": [
         {
@@ -2272,13 +2325,20 @@
           "comment": "The kitchen order token (KOT) and table occupancy system transformed our dining service. Zero order mistakes and fast billing.",
           "tag": "SaaS & ERP"
         }
+      ],
+      "techStack": [
+        "Next.js",
+        "React",
+        "Node.js",
+        "PostgreSQL",
+        "Tailwind CSS"
       ]
     },
     {
       "_id": "prod-2",
       "title": "RestoMaster - Restaurant POS & Cloud Kitchen ERP",
       "tagline": "Modern Dine-In, Table QR Ordering, Kitchen Display System (KDS), Parcel POS & Multi-Branch Cloud Management",
-      "category": "Restaurant & Food",
+      "category": "Custom",
       "mediaType": "image",
       "thumbnail": "/assets/about-BPfvng5e.webp",
       "images": [
@@ -2286,7 +2346,7 @@
         "/assets/web-2-DujjTO8C.webp",
         "/assets/clientsfotter-o_Y4RCBU.webp"
       ],
-      "video": "https://www.youtube.com/watch?v=dQw4w9WgXcQ",
+      "video": "",
       "videoThumbnail": "/assets/about-BPfvng5e.webp",
       "description": "<h2>Complete Restaurant POS & Management System (RestoMaster)</h2><p>RestoMaster is built to deliver fast, mistake-free dining service for cafes, fine dining restaurants, fast-food outlets, and cloud kitchens. From table reservation to kitchen token generation and automated VAT billing, manage everything from any device.</p><h3>Why Leading Restaurants Trust RestoMaster:</h3><ul><li><strong>Interactive Floor Plan & Table Management:</strong> Real-time visual table occupancy, waiter order taking, and bill splitting.</li><li><strong>Kitchen Display System (KDS) & KOT:</strong> Instant kitchen ticket printing or screen display directly on kitchen tablets.</li><li><strong>Menu & Recipe Food Costing:</strong> Track raw ingredient usage (meat, oil, vegetables) with every food order to prevent wastage.</li><li><strong>Online Delivery Aggregator Integration:</strong> Centralize dine-in, takeaway, and delivery orders into a unified dashboard.</li><li><strong>Daily Shift & Cash Drawer Closeout:</strong> Detailed daily register settlement reports with cash, card, and mobile banking reconciliation.</li></ul>",
       "features": [
@@ -2360,7 +2420,16 @@
       "order": 2,
       "status": "active",
       "createdAt": "2024-03-05T10:00:00.000Z",
-      "slug": "restomaster-restaurant-pos-and-cloud-kitchen-erp"
+      "slug": "restomaster-restaurant-pos-and-cloud-kitchen-erp",
+      "techStack": [
+        "Next.js",
+        "React",
+        "Node.js",
+        "PostgreSQL",
+        "Tailwind CSS"
+      ],
+      "reviews": [],
+      "updatedAt": "2026-11-14T08:57:37.390Z"
     },
     {
       "_id": "prod-3",

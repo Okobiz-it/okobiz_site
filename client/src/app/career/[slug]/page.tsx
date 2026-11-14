@@ -30,6 +30,7 @@ import {
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { getJobBySlug, applyForJob, JobItem } from "@/lib/api";
 
 export default function JobDetailPage() {
@@ -39,6 +40,7 @@ export default function JobDetailPage() {
 
   const [job, setJob] = useState<JobItem | null>(null);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [copiedLink, setCopiedLink] = useState<boolean>(false);
 
   // Form State
@@ -59,25 +61,30 @@ export default function JobDetailPage() {
   const [submitSuccess, setSubmitSuccess] = useState(false);
   const [submitError, setSubmitError] = useState("");
 
-  useEffect(() => {
-    let isMounted = true;
-    async function fetchJob() {
-      try {
-        setLoading(true);
-        if (slug) {
-          const item = await getJobBySlug(slug);
-          if (isMounted) setJob(item);
+  const fetchJob = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      if (slug) {
+        const item = await getJobBySlug(slug);
+        if (item) {
+          setJob(item);
+        } else {
+          setError(true);
         }
-      } catch (err) {
-        console.warn("Failed to fetch job details:", err);
-      } finally {
-        if (isMounted) setLoading(false);
+      } else {
+        setError(true);
       }
+    } catch (err) {
+      console.warn("Failed to fetch job details:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchJob();
-    return () => {
-      isMounted = false;
-    };
   }, [slug]);
 
   const handleCopyLink = () => {
@@ -147,20 +154,24 @@ export default function JobDetailPage() {
     return <UniversalLoader fullScreen size="lg" />;
   }
 
-  if (!job) {
+  if (error || !job) {
     return (
       <div className="min-h-screen bg-slate-50 dark:bg-black text-slate-900 dark:text-white flex flex-col items-center justify-center p-6 text-center">
-        <Briefcase className="w-16 h-16 text-slate-400 dark:text-gray-600 mb-4" />
-        <h2 className="text-2xl font-bold mb-2 text-slate-900 dark:text-white">Job Opening Not Found</h2>
-        <p className="text-slate-600 dark:text-gray-400 text-sm max-w-md mb-6">
-          The position you are looking for may have been filled or closed. Please explore our other open roles.
-        </p>
-        <Link
-          href="/career"
-          className="px-6 py-2.5 bg-[#0167D6] hover:bg-blue-600 !text-white text-white text-white-always text-xs font-bold uppercase rounded-[4px] shadow-md transition"
-        >
-          View All Openings
-        </Link>
+        <div className="max-w-md w-full">
+          <DataLoadError
+            title="Position Couldn't Load"
+            message="We were unable to locate this specific job opening or fetch live details from the database. Please check your connection or explore our active career openings."
+            onRetry={fetchJob}
+          />
+          <div className="mt-4">
+            <Link
+              href="/career"
+              className="inline-flex items-center gap-2 px-6 py-2.5 bg-[#0167D6] hover:bg-blue-600 !text-white text-xs font-bold uppercase rounded-[4px] shadow-md transition"
+            >
+              <ArrowLeft size={14} /> View All Openings
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }

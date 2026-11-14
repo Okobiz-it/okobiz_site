@@ -15,6 +15,7 @@ import {
   ArrowRight
 } from "lucide-react";
 import { JobItem } from "@/lib/api";
+import DataLoadError from "@/components/DataLoadError";
 
 interface JobOpeningsSectionProps {
   jobs: JobItem[];
@@ -25,6 +26,8 @@ interface JobOpeningsSectionProps {
   searchQuery: string;
   setSearchQuery: (query: string) => void;
   loading: boolean;
+  error?: boolean;
+  onRetry?: () => void;
 }
 
 const JobOpeningsSection = forwardRef<HTMLElement, JobOpeningsSectionProps>(
@@ -37,7 +40,9 @@ const JobOpeningsSection = forwardRef<HTMLElement, JobOpeningsSectionProps>(
       setSelectedDepartment,
       searchQuery,
       setSearchQuery,
-      loading
+      loading,
+      error = false,
+      onRetry
     },
     ref
   ) => {
@@ -59,60 +64,66 @@ const JobOpeningsSection = forwardRef<HTMLElement, JobOpeningsSectionProps>(
             </p>
           </div>
 
-          {/* Filtering & Search Bar */}
-          <div className="bg-white dark:bg-[#121316] p-4 rounded-[4px] border border-slate-200 dark:border-gray-800 mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-sm">
-            {/* Department Pills */}
-            <div className="flex flex-wrap items-center gap-2">
-              {departments.map((dept) => {
-                const isSelected = selectedDepartment.toLowerCase() === dept.toLowerCase();
-                return (
-                  <button
-                    key={dept}
-                    onClick={() => setSelectedDepartment(dept)}
-                    className={`px-4 py-2 rounded-[4px] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
-                      isSelected
-                        ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20"
-                        : "bg-slate-100 dark:bg-black/60 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-800 border border-slate-300 dark:border-gray-800"
-                    }`}
-                  >
-                    {dept}
-                  </button>
-                );
-              })}
-            </div>
+          {/* Filtering & Search Bar - Only shown when live jobs are loaded */}
+          {!loading && !error && jobs.length > 0 && (
+            <>
+              <div className="bg-white dark:bg-[#121316] p-4 rounded-[4px] border border-slate-200 dark:border-gray-800 mb-8 flex flex-col lg:flex-row lg:items-center justify-between gap-4 shadow-sm">
+                {/* Department Pills - Only rendered when multiple departments exist */}
+                {departments.length > 1 && (
+                  <div className="flex flex-wrap items-center gap-2">
+                    {departments.map((dept) => {
+                      const isSelected = selectedDepartment.toLowerCase() === dept.toLowerCase();
+                      return (
+                        <button
+                          key={dept}
+                          onClick={() => setSelectedDepartment(dept)}
+                          className={`px-4 py-2 rounded-[4px] text-xs font-bold uppercase tracking-wider transition-all cursor-pointer ${
+                            isSelected
+                              ? "bg-[#0167D6] text-white shadow-md shadow-blue-500/20"
+                              : "bg-slate-100 dark:bg-black/60 text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-gray-800 border border-slate-300 dark:border-gray-800"
+                          }`}
+                        >
+                          {dept}
+                        </button>
+                      );
+                    })}
+                  </div>
+                )}
 
-            {/* Search Input */}
-            <div className="relative min-w-[280px]">
-              <Search className="w-4 h-4 text-slate-400 dark:text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
-              <input
-                type="text"
-                placeholder="Search by role, skills or location..."
-                value={searchQuery}
-                onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-10 pr-8 py-2 bg-slate-50 dark:bg-black border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] transition-colors"
-              />
-              {searchQuery && (
-                <button
-                  onClick={() => setSearchQuery("")}
-                  className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
-                  title="Clear search"
-                >
-                  <X className="w-3.5 h-3.5" />
-                </button>
-              )}
-            </div>
-          </div>
+                {/* Search Input */}
+                <div className="relative min-w-[280px]">
+                  <Search className="w-4 h-4 text-slate-400 dark:text-gray-400 absolute left-3.5 top-1/2 -translate-y-1/2 pointer-events-none" />
+                  <input
+                    type="text"
+                    placeholder="Search by role, skills or location..."
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="w-full pl-10 pr-8 py-2 bg-slate-50 dark:bg-black border border-slate-300 dark:border-gray-800 rounded-[4px] text-xs sm:text-sm text-slate-900 dark:text-white placeholder-slate-400 dark:placeholder-gray-500 focus:outline-none focus:border-[#0167D6] transition-colors"
+                  />
+                  {searchQuery && (
+                    <button
+                      onClick={() => setSearchQuery("")}
+                      className="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-gray-500 hover:text-slate-900 dark:hover:text-white cursor-pointer"
+                      title="Clear search"
+                    >
+                      <X className="w-3.5 h-3.5" />
+                    </button>
+                  )}
+                </div>
+              </div>
 
-          {/* Job Counter */}
-          <div className="flex items-center justify-between text-xs text-slate-600 dark:text-gray-400 mb-6 px-1">
-            <span>
-              Showing <strong className="text-slate-900 dark:text-white">{filteredJobs.length}</strong> available opening{filteredJobs.length === 1 ? "" : "s"}
-            </span>
-            <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
-              <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
-              Actively Interviewing
-            </span>
-          </div>
+              {/* Job Counter */}
+              <div className="flex items-center justify-between text-xs text-slate-600 dark:text-gray-400 mb-6 px-1">
+                <span>
+                  Showing <strong className="text-slate-900 dark:text-white">{filteredJobs.length}</strong> available opening{filteredJobs.length === 1 ? "" : "s"}
+                </span>
+                <span className="text-emerald-600 dark:text-emerald-400 font-semibold flex items-center gap-1">
+                  <span className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse" />
+                  Actively Interviewing
+                </span>
+              </div>
+            </>
+          )}
 
           {/* Jobs Listing */}
           {loading ? (
@@ -120,6 +131,12 @@ const JobOpeningsSection = forwardRef<HTMLElement, JobOpeningsSectionProps>(
               <Loader2 className="w-8 h-8 text-[#0167D6] animate-spin mb-3" />
               <p className="text-xs sm:text-sm text-slate-500 dark:text-gray-400">Fetching live openings...</p>
             </div>
+          ) : error ? (
+            <DataLoadError
+              title="Openings Couldn't Load"
+              message="We were unable to retrieve current job openings from the server. Please check your connection or try again."
+              onRetry={onRetry}
+            />
           ) : filteredJobs.length === 0 ? (
             <div className="py-16 px-6 text-center bg-white dark:bg-[#131418] border border-slate-200 dark:border-gray-800 rounded-[4px] shadow-sm">
               <Briefcase className="w-12 h-12 text-slate-400 dark:text-gray-600 mx-auto mb-4" />

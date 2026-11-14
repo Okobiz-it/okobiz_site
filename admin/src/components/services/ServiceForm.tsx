@@ -35,6 +35,8 @@ import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/
 import { createSlug } from "@/lib/slug";
 import { toast } from "@/lib/toast";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaShowcase } from "@/components/MediaShowcase";
+import { getClientLink } from "@/lib/clientUrl";
 
 export interface WhyChooseItem {
   title: string;
@@ -122,16 +124,9 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
   const [saving, setSaving] = useState(false);
   const [existingServices, setExistingServices] = useState<any[]>([]);
 
-  // Media upload states
-  const [uploadingMultiImages, setUploadingMultiImages] = useState(false);
-  const [uploadingVideo, setUploadingVideo] = useState(false);
+  // Banner upload state
   const [uploadingBanner, setUploadingBanner] = useState(false);
-
-  // File input refs
-  const multiImagesInputRef = useRef<HTMLInputElement>(null);
-  const videoInputRef = useRef<HTMLInputElement>(null);
   const bannerInputRef = useRef<HTMLInputElement>(null);
-  const directImageUrlRef = useRef<HTMLInputElement>(null);
 
   // Fetch list of services to check slug collisions
   useEffect(() => {
@@ -211,132 +206,6 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
       }
       return { ...prev, ...updates };
     });
-  };
-
-  // ─────────────────────────────────────────────────────────────
-  // MEDIA UPLOADS & HANDLERS
-  // ─────────────────────────────────────────────────────────────
-  const handleMultipleImagesUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    setUploadingMultiImages(true);
-    const uploadedUrls: string[] = [];
-
-    try {
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.size > 10 * 1024 * 1024) continue;
-        const fd = new FormData();
-        fd.append("file", file);
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const data = await res.json();
-        if (data.success && data.url) {
-          uploadedUrls.push(data.url);
-        }
-      }
-
-      if (uploadedUrls.length > 0) {
-        setForm((prev) => {
-          const nextImages = [...prev.images, ...uploadedUrls];
-          const newThumb = prev.thumbnail || nextImages[0];
-          return {
-            ...prev,
-            images: nextImages,
-            thumbnail: newThumb,
-            image: newThumb,
-          };
-        });
-        toast.success(`Successfully uploaded ${uploadedUrls.length} image(s)!`);
-      }
-    } catch (err: any) {
-      toast.error("Error uploading images: " + err.message);
-    } finally {
-      setUploadingMultiImages(false);
-      if (multiImagesInputRef.current) multiImagesInputRef.current.value = "";
-    }
-  };
-
-  const handleAddDirectImageUrl = () => {
-    const input = directImageUrlRef.current;
-    if (!input) return;
-    const val = input.value.trim();
-    if (!val) return;
-
-    setForm((prev) => {
-      const nextImages = [...prev.images, val];
-      const newThumb = prev.thumbnail || val;
-      return {
-        ...prev,
-        images: nextImages,
-        thumbnail: newThumb,
-        image: newThumb,
-      };
-    });
-    input.value = "";
-    toast.success("Image URL added to gallery!");
-  };
-
-  const handleRemoveImage = (idx: number) => {
-    setForm((prev) => {
-      const removedUrl = prev.images[idx];
-      const nextImages = prev.images.filter((_, i) => i !== idx);
-      const isCurrentThumb = prev.thumbnail === removedUrl || prev.image === removedUrl;
-      const newThumb = isCurrentThumb ? (nextImages[0] || "") : prev.thumbnail;
-      return {
-        ...prev,
-        images: nextImages,
-        thumbnail: newThumb,
-        image: newThumb,
-      };
-    });
-  };
-
-  const handleSetFrontThumbnail = (url: string) => {
-    setForm((prev) => ({
-      ...prev,
-      thumbnail: url,
-      image: url,
-      mediaType: "image",
-    }));
-    toast.success("Front thumbnail updated!");
-  };
-
-  const handleSetVideoAsFront = () => {
-    setForm((prev) => ({
-      ...prev,
-      mediaType: "video",
-    }));
-    toast.success("Video set as primary front showcase!");
-  };
-
-  const handleVideoUpload = async (file: File) => {
-    if (!file) return;
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error("Video file size must be less than 50MB.");
-      return;
-    }
-    setUploadingVideo(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (data.success && data.url) {
-        setForm((prev) => ({
-          ...prev,
-          video: data.url,
-          youtubeUrl: "",
-          mediaType: "video",
-        }));
-        toast.success("Video showcase uploaded successfully!");
-      } else {
-        toast.error("Failed to upload video.");
-      }
-    } catch (err: any) {
-      toast.error("Error uploading video: " + err.message);
-    } finally {
-      setUploadingVideo(false);
-      if (videoInputRef.current) videoInputRef.current.value = "";
-    }
   };
 
   const handleBannerUpload = async (file: File) => {
@@ -465,9 +334,12 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
     const toastId = toast.loading(isEdit ? "Updating service..." : "Creating service...");
 
     const activeVideo = form.youtubeUrl.trim() || form.video.trim();
-    const activeVideoThumb = form.youtubeUrl ? getYouTubeThumbnailUrl(form.youtubeUrl) || "" : form.videoThumbnail;
+    const ytThumb = form.youtubeUrl ? getYouTubeThumbnailUrl(form.youtubeUrl) || "" : "";
+    const activeVideoThumb = form.videoThumbnail?.trim() || ytThumb;
 
-    const primaryThumb = form.thumbnail || form.image || form.images[0] || "";
+    const primaryThumb = form.mediaType === "video" && activeVideoThumb
+      ? activeVideoThumb
+      : (form.thumbnail || form.image || form.images[0] || "");
 
     const payload = {
       title: form.title.trim(),
@@ -570,7 +442,7 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
 
           {isEdit && form.slug && (
             <a
-              href={`http://localhost:3000/services/${form.slug}`}
+              href={getClientLink(`/services/${form.slug}`)}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[4px] border border-blue-200 dark:border-blue-800 text-[#0167D6] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
@@ -1057,292 +929,20 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
         <div className="lg:col-span-4 space-y-6">
           {/* Card A: Media Assets & Visual Showcase (Videos & Multiple Images) */}
           <div className="bg-white dark:bg-[#131417] p-5 rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-[4px] bg-blue-50 text-[#0167D6] dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold">
-                  A
-                </span>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Media Showcase
-                </h2>
-              </div>
-              <span className="text-[11px] font-mono text-slate-500 dark:text-gray-400">
-                {form.images.length + (hasVideo ? 1 : 0)} Asset(s)
-              </span>
-            </div>
-
-
-            {/* ── VIDEO SECTION (Clearly Single Slot) ── */}
-            <div className="p-3.5 bg-slate-50 dark:bg-[#18191D] border border-slate-200 dark:border-gray-800 rounded-[4px] space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Film size={14} className="text-[#0167D6]" />
-                  <span className="text-xs font-bold text-slate-800 dark:text-gray-200 uppercase tracking-wider">
-                    Demo / Walkthrough Video
-                  </span>
-                </div>
-                {hasVideo && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
-                    Ready
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                  YouTube Video Link
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  value={form.youtubeUrl}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setForm((prev) => ({
-                      ...prev,
-                      youtubeUrl: val,
-                      mediaType: val ? "video" : prev.mediaType,
-                    }));
-                  }}
-                  className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1 flex items-center justify-between">
-                  <span>Or Upload MP4 File</span>
-                  {uploadingVideo && <Loader2 size={12} className="animate-spin text-[#0167D6]" />}
-                </label>
-                <input
-                  type="file"
-                  accept="video/*"
-                  ref={videoInputRef}
-                  onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0])}
-                  className="hidden"
-                />
-                <div className="flex gap-1.5">
-                  <input
-                    type="text"
-                    placeholder="Direct MP4 video URL"
-                    value={form.video}
-                    onChange={(e) => setForm((prev) => ({ ...prev, video: e.target.value, mediaType: "video" }))}
-                    className="flex-1 px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => videoInputRef.current?.click()}
-                    disabled={uploadingVideo}
-                    className="px-3 py-1.5 bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-xs font-bold rounded-[4px] shrink-0 cursor-pointer"
-                  >
-                    Upload
-                  </button>
-                </div>
-              </div>
-
-              {/* Video Preview */}
-              {(form.youtubeUrl || form.video) && (
-                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-gray-800">
-                  <div className="relative aspect-video rounded overflow-hidden bg-black border border-slate-300 dark:border-gray-700">
-                    {isYouTubeUrl(form.youtubeUrl || form.video) ? (
-                      <iframe
-                        src={getYouTubeEmbedUrl(form.youtubeUrl || form.video) || ""}
-                        title="YouTube Preview"
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : form.video ? (
-                      <video src={form.video} controls className="w-full h-full object-cover" />
-                    ) : null}
-                  </div>
-                  {form.mediaType !== "video" && (
-                    <button
-                      type="button"
-                      onClick={handleSetVideoAsFront}
-                      className="mt-2 w-full py-1 text-center text-[11px] font-bold text-[#0167D6] bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 rounded transition"
-                    >
-                      Set Video as Front Showcase
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* ── MULTIPLE IMAGES SECTION (CLEAR VISUAL CLUE WITHOUT TEXT) ── */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Images size={15} className="text-[#0167D6]" />
-                  <span className="text-xs font-bold text-slate-800 dark:text-gray-200 uppercase tracking-wider">
-                    Gallery &amp; Screenshots ({form.images.length})
-                  </span>
-                </div>
-                <span className="text-[10px] font-semibold text-slate-500 dark:text-gray-400">
-                  Select Multiple Files
-                </span>
-              </div>
-
-              {/* Visual Multi-Image Drag & Drop / Upload Area */}
-              <input
-                ref={multiImagesInputRef}
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleMultipleImagesUpload(e.target.files)}
-              />
-
-              <div
-                onClick={() => multiImagesInputRef.current?.click()}
-                className="relative group border-2 border-dashed border-[#0167D6]/40 hover:border-[#0167D6] bg-blue-50/20 hover:bg-blue-50/40 dark:bg-blue-950/10 dark:hover:bg-blue-950/20 rounded-[4px] p-4 text-center cursor-pointer transition"
-              >
-                {/* Visual Stacked Multi-Photo Clue */}
-                <div className="flex items-center justify-center -space-x-3 mb-2.5">
-                  <div className="w-10 h-10 rounded border-2 border-white dark:border-[#131417] bg-blue-200/80 dark:bg-blue-900/40 shadow-sm flex items-center justify-center -rotate-6 transform transition group-hover:-rotate-12">
-                    <ImageIcon size={18} className="text-[#0167D6]" />
-                  </div>
-                  <div className="w-11 h-11 rounded border-2 border-white dark:border-[#131417] bg-[#0167D6] text-white shadow-md flex items-center justify-center z-10 transform transition group-hover:scale-105">
-                    <Plus size={22} className="stroke-[2.5]" />
-                  </div>
-                  <div className="w-10 h-10 rounded border-2 border-white dark:border-[#131417] bg-blue-300/80 dark:bg-blue-800/40 shadow-sm flex items-center justify-center rotate-6 transform transition group-hover:rotate-12">
-                    <Images size={18} className="text-[#0167D6]" />
-                  </div>
-                </div>
-
-                <div className="text-xs font-bold text-slate-800 dark:text-gray-200">
-                  {uploadingMultiImages ? (
-                    <span className="flex items-center justify-center gap-1.5 text-[#0167D6]">
-                      <Loader2 size={14} className="animate-spin" /> Uploading multiple files...
-                    </span>
-                  ) : (
-                    <span>Click or Drag to Upload Multiple Images</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    PNG
-                  </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    JPG
-                  </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    WEBP
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ── INTERACTIVE THUMBNAIL TRAY (SELECT FRONT THUMBNAIL) ── */}
-            <div className="pt-3 border-t border-slate-200 dark:border-gray-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Star size={13} className="text-amber-500 fill-amber-500" />
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
-                    Select Front Thumbnail:
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 dark:text-gray-400">
-                  Click thumbnail to set as front
-                </span>
-              </div>
-
-              {form.images.length === 0 && !hasVideo ? (
-                <div className="p-4 text-center border border-dashed border-slate-200 dark:border-gray-800 rounded bg-slate-50/50 dark:bg-[#18191D]/30">
-                  <p className="text-[11px] text-slate-400 dark:text-gray-500">
-                    No images or video uploaded yet. Upload media above to choose your front showcase thumbnail.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
-                  {/* Video Thumbnail (if present) */}
-                  {hasVideo && (
-                    <div
-                      onClick={handleSetVideoAsFront}
-                      className={`relative group aspect-square rounded-[4px] overflow-hidden border cursor-pointer transition ${
-                        form.mediaType === "video"
-                          ? "border-[#0167D6] ring-2 ring-[#0167D6]/50 shadow-md"
-                          : "border-slate-200 dark:border-gray-800 hover:border-slate-400"
-                      }`}
-                    >
-                      <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
-                        {form.youtubeUrl ? (
-                          <img
-                            src={getYouTubeThumbnailUrl(form.youtubeUrl) || ""}
-                            alt="Video Thumbnail"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-slate-900 text-white">
-                            <Video size={20} className="text-blue-400" />
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                          <Play size={18} className="text-white fill-white" />
-                        </div>
-                      </div>
-
-                      {form.mediaType === "video" ? (
-                        <span className="absolute top-1 left-1 bg-[#0167D6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 z-10">
-                          <Star size={9} className="fill-white" /> Front
-                        </span>
-                      ) : (
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                          <span className="text-[9px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded">
-                            Set Front
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Image Thumbnails */}
-                  {form.images.map((img, idx) => {
-                    const isFront = form.mediaType === "image" && (form.thumbnail === img || form.image === img);
-                    return (
-                      <div
-                        key={idx}
-                        className={`relative group aspect-square rounded-[4px] overflow-hidden border bg-slate-100 dark:bg-black cursor-pointer transition ${
-                          isFront
-                            ? "border-[#0167D6] ring-2 ring-[#0167D6]/50 shadow-md"
-                            : "border-slate-200 dark:border-gray-800 hover:border-slate-400"
-                        }`}
-                        onClick={() => handleSetFrontThumbnail(img)}
-                      >
-                        <img
-                          src={img}
-                          alt={`Service ${idx + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition"
-                        />
-
-                        {isFront ? (
-                          <span className="absolute top-1 left-1 bg-[#0167D6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 z-10">
-                            <Star size={9} className="fill-white" /> Front
-                          </span>
-                        ) : (
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                            <span className="text-[9px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded">
-                              Set Front
-                            </span>
-                          </div>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            handleRemoveImage(idx);
-                          }}
-                          className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-700 z-20"
-                          title="Remove image"
-                        >
-                          <Trash2 size={11} />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <MediaShowcase
+              title="Media Showcase"
+              mediaType={form.mediaType}
+              onMediaTypeChange={(type) => setForm((prev) => ({ ...prev, mediaType: type }))}
+              images={form.images}
+              featuredImage={form.thumbnail || form.image}
+              onImagesChange={(images, featuredImage) =>
+                setForm((prev) => ({ ...prev, images, thumbnail: featuredImage, image: featuredImage }))
+              }
+              video={form.video}
+              youtubeUrl={form.youtubeUrl}
+              videoThumbnail={form.videoThumbnail}
+              onVideoChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
+            />
 
             {/* ── HERO BANNER BACKGROUND IMAGE ── */}
             <div className="pt-3 border-t border-slate-200 dark:border-gray-800 space-y-2">
@@ -1415,7 +1015,7 @@ export function ServiceForm({ initialData, isEdit = false }: ServiceFormProps) {
             {isEdit && form.slug && (
               <div className="pt-2 border-t border-slate-100 dark:border-gray-800">
                 <a
-                  href={`http://localhost:3000/services/${form.slug}`}
+                  href={getClientLink(`/services/${form.slug}`)}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full py-2 px-3 rounded-[4px] bg-blue-50 dark:bg-blue-900/20 text-[#0167D6] dark:text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-blue-100 transition"

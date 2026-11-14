@@ -5,39 +5,53 @@ import Link from "next/link";
 import { Calendar, User, ArrowRight, ChevronLeft, ChevronRight } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
+import SectionLoader from "@/components/SectionLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { BlogItem } from "@/data/mockData";
 import { getBlogs } from "@/lib/api";
 import { cleanSnippet } from "@/lib/richText";
 
 export default function BlogPage() {
   const [blogs, setBlogs] = useState<BlogItem[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [selectedCat, setSelectedCat] = useState("All");
   const [currentPage, setCurrentPage] = useState(1);
   const itemsPerPage = 9;
   const gridTopRef = useRef<HTMLDivElement>(null);
 
-  // Fetch live blogs from admin/MongoDB
-  useEffect(() => {
-    const fetchLiveBlogs = async () => {
-      try {
-        const liveBlogs = await getBlogs();
-        if (Array.isArray(liveBlogs) && liveBlogs.length > 0) {
-          setBlogs(liveBlogs);
-        }
-      } catch (e) {
-        console.warn("Failed to fetch live blogs:", e);
+  const fetchLiveBlogs = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const liveBlogs = await getBlogs();
+      if (Array.isArray(liveBlogs)) {
+        setBlogs(liveBlogs);
+      } else {
+        setError(true);
       }
-    };
+    } catch (e) {
+      console.warn("Failed to fetch live blogs:", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     fetchLiveBlogs();
   }, []);
 
 
-  const categories = [
-    "All",
-    "Web Development",
-    "Digital Marketing",
-    "Graphics Solution",
-  ];
+  const categories = useMemo(() => {
+    const set = new Set<string>(["All"]);
+    blogs.forEach((b) => {
+      if (b.category && b.category.trim()) {
+        set.add(b.category.trim());
+      }
+    });
+    return Array.from(set);
+  }, [blogs]);
 
   // Reset to page 1 on category filter change
   useEffect(() => {
@@ -87,25 +101,45 @@ export default function BlogPage() {
             </p>
           </div>
 
-          {/* Categories bar */}
-          <div className="flex justify-center flex-wrap gap-2 mb-14">
-            {categories.map((cat) => (
-              <button
-                key={cat}
-                onClick={() => setSelectedCat(cat)}
-                className={`text-xs font-semibold px-5 py-2.5 rounded-[4px] transition-all duration-200 ${
-                  selectedCat === cat
-                    ? "bg-[#3368B2] text-white shadow-lg shadow-blue-900/40"
-                    : "bg-[#181A1D] border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
-                }`}
-              >
-                {cat}
-              </button>
-            ))}
-          </div>
+          {/* Categories bar - Only shown when live articles are loaded */}
+          {!loading && !error && blogs.length > 0 && categories.length > 1 && (
+            <div className="flex justify-center flex-wrap gap-2 mb-14">
+              {categories.map((cat) => (
+                <button
+                  key={cat}
+                  onClick={() => setSelectedCat(cat)}
+                  className={`text-xs font-semibold px-5 py-2.5 rounded-[4px] transition-all duration-200 ${
+                    selectedCat === cat
+                      ? "bg-[#3368B2] text-white shadow-lg shadow-blue-900/40"
+                      : "bg-[#181A1D] border border-gray-800 text-gray-400 hover:text-white hover:border-gray-700"
+                  }`}
+                >
+                  {cat}
+                </button>
+              ))}
+            </div>
+          )}
 
           {/* Blogs Grid */}
-          <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+          {loading ? (
+            <div className="py-24 flex flex-col items-center justify-center">
+              <SectionLoader size="md" />
+              <p className="text-xs text-slate-500 dark:text-gray-400 mt-3 font-medium">
+                Loading articles & insights...
+              </p>
+            </div>
+          ) : error ? (
+            <DataLoadError
+              title="Articles Couldn't Load"
+              message="We were unable to connect to the server to fetch our latest blog articles. Please check your connection or try again."
+              onRetry={fetchLiveBlogs}
+            />
+          ) : paginatedBlogs.length === 0 ? (
+            <div className="bg-[#181A1D] border border-gray-800 rounded-[4px] p-12 text-center text-gray-400 text-sm">
+              No articles found in category <span className="text-white font-semibold">{selectedCat}</span>.
+            </div>
+          ) : (
+            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
             {paginatedBlogs.map((blog) => (
               <div
                 key={blog._id}
@@ -160,6 +194,7 @@ export default function BlogPage() {
               </div>
             ))}
           </div>
+          )}
 
           {/* 9 items per page Pagination Bar */}
           {totalPages > 1 && (

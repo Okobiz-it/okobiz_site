@@ -16,6 +16,7 @@ import {
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { useEffect } from "react";
 import PreviewModal from "@/components/PreviewModal";
 import { ThemeItem } from "@/data/mockData";
@@ -28,14 +29,33 @@ export default function WebThemeDetailPage() {
   const themeId = params.id as string;
 
   const [theme, setTheme] = useState<ThemeItem | null>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchTheme = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const data = await getThemes();
+      if (Array.isArray(data)) {
+        const match = data.find((t) => t._id === themeId || (t as any).slug === themeId);
+        if (match) {
+          setTheme(match);
+        } else {
+          setError(true);
+        }
+      } else {
+        setError(true);
+      }
+    } catch {
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getThemes().then((data) => {
-      if (data && data.length > 0) {
-        const match = data.find((t) => t._id === themeId) || data[0];
-        setTheme(match);
-      }
-    });
+    fetchTheme();
   }, [themeId]);
 
   const [isPreviewOpen, setIsPreviewOpen] = useState(false);
@@ -71,8 +91,34 @@ export default function WebThemeDetailPage() {
     }
   };
 
-  if (!theme) {
+  if (loading) {
     return <UniversalLoader fullScreen size="lg" />;
+  }
+
+  if (error || !theme) {
+    return (
+      <div className="bg-black text-white min-h-screen">
+        <PageBanner
+          title="Theme Not Found"
+          subtitle="Theme Specifications & Direct Deployment Order"
+        />
+        <div className="max-w-screen-md mx-auto px-4 py-20">
+          <DataLoadError
+            title="Theme Couldn't Load"
+            message="We were unable to locate this specific theme or retrieve live details from the database. Please check your connection or return to products."
+            onRetry={fetchTheme}
+          />
+          <div className="text-center mt-6">
+            <Link
+              href="/products"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-sm bg-zinc-800 hover:bg-zinc-700 text-white text-xs font-bold uppercase tracking-wider transition-colors"
+            >
+              <ArrowLeft size={14} /> Back to Products
+            </Link>
+          </div>
+        </div>
+      </div>
+    );
   }
 
   return (

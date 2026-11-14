@@ -1,4 +1,4 @@
-import React from "react";
+import React, { Suspense } from "react";
 import type { Metadata } from "next";
 import ServiceDetailView from "@/components/ServiceDetailView";
 import { getServiceBySlug, getServices } from "@/lib/api";
@@ -31,5 +31,9 @@ export default async function DynamicServicePage({ params }: ServiceSlugPageProp
   const { slug } = await params;
   const initialService = await getServiceBySlug(slug);
 
-  return <ServiceDetailView slug={slug} initialService={initialService} />;
+  return (
+    <Suspense fallback={null}>
+      <ServiceDetailView slug={slug} initialService={initialService} />
+    </Suspense>
+  );
 }

@@ -13,12 +13,16 @@ export interface ClientPartner {
 export interface ThemeItem {
   _id: string;
   websiteTitle: string;
+  title?: string;
   slug?: string;
   category: string;
   price: number;
   discountPrice: number;
   websiteLink: string;
   photo: string;
+  images?: string[];
+  youtubeUrl?: string;
+  techStack?: string[];
   popularBadge?: boolean;
   featuredBadge?: boolean;
   createdAt?: string;

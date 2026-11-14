@@ -56,7 +56,8 @@ export async function POST(req: Request) {
       price: Number(body.price) || 0,
       discountPrice: Number(body.discountPrice) || 0,
       websiteLink: body.websiteLink || "",
-      photo: body.photo || "/assets/bdhajj-D468QQtK.png",
+      photo: body.photo || (Array.isArray(body.images) && body.images[0]) || "/assets/bdhajj-D468QQtK.png",
+      images: Array.isArray(body.images) ? body.images : (body.photo ? [body.photo] : []),
       video: body.video || "",
       videoThumbnail: body.videoThumbnail || "",
       popularBadge: Boolean(body.popularBadge),
@@ -111,6 +112,14 @@ export async function PUT(req: Request) {
     }
     if (updates.price !== undefined) updates.price = Number(updates.price);
     if (updates.discountPrice !== undefined) updates.discountPrice = Number(updates.discountPrice);
+
+    if (updates.images && Array.isArray(updates.images)) {
+      if (!updates.photo && updates.images.length > 0) {
+        updates.photo = updates.images[0];
+      }
+    } else if (updates.photo && !updates.images) {
+      updates.images = [updates.photo];
+    }
 
     const store = getDataStore();
     const idx = store.themes.findIndex(t => t._id === _id);

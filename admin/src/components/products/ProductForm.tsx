@@ -45,6 +45,8 @@ import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/
 import { createSlug } from "@/lib/slug";
 import { toast } from "@/lib/toast";
 import { Textarea } from "@/components/ui/textarea";
+import { MediaShowcase } from "@/components/MediaShowcase";
+import { getClientLink } from "@/lib/clientUrl";
 
 interface ProductFormProps {
   initialData?: any;
@@ -57,15 +59,6 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   const [saving, setSaving] = useState(false);
   const [slugError, setSlugError] = useState("");
   const [productsList, setProductsList] = useState<any[]>([]);
-
-  // Media upload states
-  const [uploadingVideo, setUploadingVideo] = useState(false);
-  const [uploadingMultiImages, setUploadingMultiImages] = useState(false);
-
-  // File input refs
-  const multiImagesInputRef = useRef<HTMLInputElement | null>(null);
-  const videoInputRef = useRef<HTMLInputElement | null>(null);
-  const directImageUrlRef = useRef<HTMLInputElement | null>(null);
 
   useEffect(() => {
     fetch("/api/products")
@@ -81,12 +74,17 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   useEffect(() => {
     if (initialData) {
       const isYt = isYouTubeUrl(initialData.video);
+      const predefinedCategories = ["SaaS & ERP", "Healthcare & Pharmacy", "Restaurant & Food", "Retail & Supermarket", "Education & School", "Accounting & Billing"];
+      const isKnown = predefinedCategories.includes(initialData.category);
+      const initCat = initialData.category === "Custom" || !isKnown ? "Custom" : initialData.category;
+      const initCustomCat = !isKnown && initialData.category !== "Custom" ? (initialData.category || "") : (initialData.customCategory || "");
+
       setForm({
         title: initialData.title || "",
         slug: initialData.slug || initialData._id || "",
         tagline: initialData.tagline || "",
-        category: initialData.category || "SaaS & ERP",
-        customCategory: "",
+        category: initCat || "SaaS & ERP",
+        customCategory: initCustomCat,
         mediaType: initialData.mediaType || (initialData.video ? "video" : "image"),
         thumbnail: initialData.thumbnail || initialData.images?.[0] || "",
         images: Array.isArray(initialData.images) ? initialData.images : [],
@@ -175,129 +173,60 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
   };
 
   // ─────────────────────────────────────────────────────────────
-  // MEDIA HANDLERS
-  // ─────────────────────────────────────────────────────────────
-  const handleMultipleImagesUpload = async (files: FileList | null) => {
-    if (!files || files.length === 0) return;
-    setUploadingMultiImages(true);
-    try {
-      const uploadedUrls: string[] = [];
-      for (let i = 0; i < files.length; i++) {
-        const file = files[i];
-        if (file.size > 10 * 1024 * 1024) continue;
-        const fd = new FormData();
-        fd.append("file", file);
-        const res = await fetch("/api/upload", { method: "POST", body: fd });
-        const data = await res.json();
-        if (data.success && data.url) {
-          uploadedUrls.push(data.url);
-        }
-      }
-      if (uploadedUrls.length > 0) {
-        setForm((prev) => ({
-          ...prev,
-          thumbnail: prev.thumbnail || uploadedUrls[0],
-          images: [...prev.images, ...uploadedUrls],
-        }));
-        toast.success(`Uploaded ${uploadedUrls.length} screenshot(s)!`);
-      }
-    } catch (e: any) {
-      toast.error("Upload failed: " + e.message);
-    } finally {
-      setUploadingMultiImages(false);
-      if (multiImagesInputRef.current) multiImagesInputRef.current.value = "";
-    }
-  };
-
-  const handleAddDirectImageUrl = () => {
-    const input = directImageUrlRef.current;
-    if (!input) return;
-    const val = input.value.trim();
-    if (!val) return;
-
-    setForm((prev) => ({
-      ...prev,
-      thumbnail: prev.thumbnail || val,
-      images: [...prev.images, val],
-    }));
-    input.value = "";
-    toast.success("Image URL added to gallery!");
-  };
-
-  const handleVideoUpload = async (file: File) => {
-    if (!file) return;
-    if (file.size > 50 * 1024 * 1024) {
-      toast.error("Video file size cannot exceed 50MB");
-      return;
-    }
-    setUploadingVideo(true);
-    try {
-      const fd = new FormData();
-      fd.append("file", file);
-      const res = await fetch("/api/upload", { method: "POST", body: fd });
-      const data = await res.json();
-      if (data.success && data.url) {
-        setForm((prev) => ({ ...prev, video: data.url, mediaType: "video" }));
-        toast.success("Demo video uploaded!");
-      } else {
-        toast.error(data.error || "Failed to upload video.");
-      }
-    } catch (e: any) {
-      toast.error("Video upload error: " + e.message);
-    } finally {
-      setUploadingVideo(false);
-      if (videoInputRef.current) videoInputRef.current.value = "";
-    }
-  };
-
-  const setImageAsCover = (imgUrl: string) => {
-    setForm((prev) => ({ ...prev, thumbnail: imgUrl, mediaType: "image" }));
-    toast.success("Set as primary front thumbnail!");
-  };
-
-  const setVideoAsCover = () => {
-    setForm((prev) => ({ ...prev, mediaType: "video" }));
-    toast.success("Set video as primary front showcase!");
-  };
-
-  const removeGalleryImage = (idx: number) => {
-    setForm((prev) => {
-      const nextImages = prev.images.filter((_, i) => i !== idx);
-      const nextThumb =
-        prev.thumbnail === prev.images[idx]
-          ? nextImages[0] || ""
-          : prev.thumbnail;
-      return { ...prev, images: nextImages, thumbnail: nextThumb };
-    });
-  };
-
-  // ─────────────────────────────────────────────────────────────
   // REVIEWS & PRICING PLANS HANDLERS
   // ─────────────────────────────────────────────────────────────
-  const addReview = () => {
-    setForm((prev) => ({
-      ...prev,
-      reviews: [
-        ...prev.reviews,
-        {
-          name: "",
-          designation: "Founder & CEO",
-          company: "",
-          location: "Dhaka, Bangladesh",
-          rating: 5,
-          comment: "",
-          tag: "Verified Client",
-        },
-      ],
-    }));
+  // Review Modal State
+  const [isReviewModalOpen, setIsReviewModalOpen] = useState(false);
+  const [editingReviewIndex, setEditingReviewIndex] = useState<number | null>(null);
+  const [reviewDraft, setReviewDraft] = useState<ProductReviewForm>({
+    name: "",
+    designation: "Managing Director",
+    company: "",
+    location: "Dhaka, Bangladesh",
+    rating: 5,
+    comment: "",
+    tag: "Verified Client",
+  });
+
+  const handleOpenAddReview = () => {
+    setReviewDraft({
+      name: "",
+      designation: "Managing Director",
+      company: "",
+      location: "Dhaka, Bangladesh",
+      rating: 5,
+      comment: "",
+      tag: "Verified Client",
+    });
+    setEditingReviewIndex(null);
+    setIsReviewModalOpen(true);
   };
 
-  const updateReview = (index: number, field: keyof ProductReviewForm, value: any) => {
+  const handleOpenEditReview = (idx: number) => {
+    setReviewDraft({ ...form.reviews[idx] });
+    setEditingReviewIndex(idx);
+    setIsReviewModalOpen(true);
+  };
+
+  const handleSaveReviewDraft = () => {
+    if (!reviewDraft.name.trim()) {
+      toast.error("Please provide client name");
+      return;
+    }
+    if (!reviewDraft.comment.trim()) {
+      toast.error("Please provide testimonial / review text");
+      return;
+    }
     setForm((prev) => {
-      const copy = [...prev.reviews];
-      copy[index] = { ...copy[index], [field]: value };
-      return { ...prev, reviews: copy };
+      const nextReviews = [...prev.reviews];
+      if (editingReviewIndex !== null && editingReviewIndex >= 0) {
+        nextReviews[editingReviewIndex] = reviewDraft;
+      } else {
+        nextReviews.push(reviewDraft);
+      }
+      return { ...prev, reviews: nextReviews };
     });
+    setIsReviewModalOpen(false);
   };
 
   const removeReview = (index: number) => {
@@ -392,6 +321,11 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
       return;
     }
 
+    if (form.category === "Custom" && (!form.customCategory || !form.customCategory.trim())) {
+      toast.error("Please enter a custom category name before saving.");
+      return;
+    }
+
     setSaving(true);
     const toastId = toast.loading(isEdit ? "Updating product..." : "Creating product...");
 
@@ -405,10 +339,10 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
         }
       }
 
-      let activeVideoThumb = form.videoThumbnail;
+      let activeVideoThumb = form.videoThumbnail?.trim() || "";
       if (form.mediaType === "video" && isYouTubeUrl(activeVideo)) {
         const ytThumb = getYouTubeThumbnailUrl(activeVideo);
-        if (ytThumb && (!activeVideoThumb || activeVideoThumb.startsWith("/assets/") || activeVideoThumb === form.thumbnail)) {
+        if (ytThumb && (!activeVideoThumb || activeVideoThumb.startsWith("/assets/"))) {
           activeVideoThumb = ytThumb;
         }
       }
@@ -528,7 +462,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
 
           {isEdit && form.slug && (
             <a
-              href={`http://localhost:3000/products/${form.slug}`}
+              href={getClientLink(`/products/${form.slug}`)}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[4px] border border-blue-200 dark:border-blue-800 text-[#0167D6] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"
@@ -540,8 +474,8 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
           <button
             type="button"
             onClick={() => handleSubmit()}
-            disabled={saving || Boolean(slugError)}
-            className="inline-flex items-center gap-2 px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer disabled:opacity-50"
+            disabled={saving || Boolean(slugError) || (form.category === "Custom" && !form.customCategory?.trim())}
+            className="inline-flex items-center gap-2 px-5 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-white-always text-xs font-bold shadow-md shadow-blue-500/20 transition cursor-pointer disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {saving ? <Loader2 size={15} className="animate-spin" /> : <Save size={15} />}
             <span>{isEdit ? "Update Product" : "Publish Product"}</span>
@@ -576,56 +510,99 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               />
             </div>
 
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                Custom Page Slug (/products/slug) <span className="text-red-500">*</span>
-              </label>
-              <div className="flex items-center gap-2">
-                <div
-                  className={`flex items-center flex-1 rounded-[4px] border overflow-hidden transition ${
-                    slugError
-                      ? "border-red-500 bg-red-50/10"
-                      : "border-slate-300 dark:border-gray-700 bg-slate-50 dark:bg-[#18191D] focus-within:border-[#0167D6]"
-                  }`}
-                >
-                  <span className="px-3 py-2 bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-gray-400 text-xs font-mono border-r border-slate-300 dark:border-gray-700 shrink-0 select-none">
-                    /products/
-                  </span>
-                  <input
-                    type="text"
-                    required
-                    placeholder="pharmacare-pro"
-                    value={form.slug}
-                    onChange={(e) => handleSlugChange(e.target.value)}
-                    className="w-full px-3 py-2 bg-transparent text-xs text-slate-900 dark:text-white font-mono focus:outline-none"
-                  />
+            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                  Custom Page Slug (/products/slug) <span className="text-red-500">*</span>
+                </label>
+                <div className="flex items-center gap-2">
+                  <div
+                    className={`flex items-center flex-1 rounded-[4px] border overflow-hidden transition ${
+                      slugError
+                        ? "border-red-500 bg-red-50/10"
+                        : "border-slate-300 dark:border-gray-700 bg-slate-50 dark:bg-[#18191D] focus-within:border-[#0167D6]"
+                    }`}
+                  >
+                    <span className="px-2.5 py-2 bg-slate-100 dark:bg-gray-800 text-slate-500 dark:text-gray-400 text-xs font-mono border-r border-slate-300 dark:border-gray-700 shrink-0 select-none">
+                      /products/
+                    </span>
+                    <input
+                      type="text"
+                      required
+                      placeholder="pharmacare-pro"
+                      value={form.slug}
+                      onChange={(e) => handleSlugChange(e.target.value)}
+                      className="w-full px-2.5 py-2 bg-transparent text-xs text-slate-900 dark:text-white font-mono focus:outline-none"
+                    />
+                  </div>
+                  <button
+                    type="button"
+                    onClick={() => {
+                      const auto = createSlug(form.title);
+                      setForm((prev) => ({ ...prev, slug: auto }));
+                      validateSlug(auto, initialData?._id);
+                    }}
+                    className="px-2.5 py-2 bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-[4px] text-xs font-medium cursor-pointer shrink-0"
+                  >
+                    Auto
+                  </button>
                 </div>
-                <button
-                  type="button"
-                  onClick={() => {
-                    const auto = createSlug(form.title);
-                    setForm((prev) => ({ ...prev, slug: auto }));
-                    validateSlug(auto, initialData?._id);
-                  }}
-                  className="px-3 py-2 bg-slate-100 dark:bg-gray-800 text-slate-700 dark:text-gray-300 hover:bg-slate-200 dark:hover:bg-gray-700 rounded-[4px] text-xs font-medium cursor-pointer shrink-0"
-                >
-                  Auto-Generate
-                </button>
+
+                {slugError ? (
+                  <div className="flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 font-medium mt-1">
+                    <AlertCircle size={13} className="shrink-0" />
+                    <span>{slugError}</span>
+                  </div>
+                ) : form.slug ? (
+                  <p className="text-[11px] text-slate-600 dark:text-gray-400 flex items-center gap-1.5 mt-1">
+                    <CheckCircle2 size={12} className="text-emerald-500 shrink-0" />
+                    <span>
+                      URL available: <strong className="text-emerald-600 dark:text-emerald-300 font-mono">/products/{form.slug}</strong>
+                    </span>
+                  </p>
+                ) : null}
               </div>
 
-              {slugError ? (
-                <div className="flex items-center gap-1.5 text-xs text-red-600 dark:text-red-400 font-medium mt-1">
-                  <AlertCircle size={13} className="shrink-0" />
-                  <span>{slugError}</span>
-                </div>
-              ) : form.slug ? (
-                <p className="text-[11px] text-slate-600 dark:text-gray-400 flex items-center gap-1.5 mt-1">
-                  <CheckCircle2 size={12} className="text-emerald-500 shrink-0" />
-                  <span>
-                    URL available: <strong className="text-emerald-600 dark:text-emerald-300 font-mono">/products/{form.slug}</strong>
-                  </span>
-                </p>
-              ) : null}
+              <div>
+                <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                  Category <span className="text-red-500">*</span>
+                </label>
+                <select
+                  value={form.category}
+                  onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
+                  className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6] cursor-pointer"
+                >
+                  <option value="SaaS & ERP">SaaS &amp; ERP</option>
+                  <option value="Healthcare & Pharmacy">Healthcare &amp; Pharmacy</option>
+                  <option value="Restaurant & Food">Restaurant &amp; Food</option>
+                  <option value="Retail & Supermarket">Retail &amp; Supermarket</option>
+                  <option value="Education & School">Education &amp; School</option>
+                  <option value="Accounting & Billing">Accounting &amp; Billing</option>
+                  <option value="Custom">Custom</option>
+                </select>
+                {form.category === "Custom" && (
+                  <div className="mt-2 space-y-1">
+                    <input
+                      type="text"
+                      required
+                      placeholder="Type custom category name..."
+                      value={form.customCategory}
+                      onChange={(e) => setForm((prev) => ({ ...prev, customCategory: e.target.value }))}
+                      className={`w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none transition ${
+                        !form.customCategory?.trim()
+                          ? "border-red-500 focus:border-red-500"
+                          : "border-slate-300 dark:border-gray-700 focus:border-[#0167D6]"
+                      }`}
+                    />
+                    {!form.customCategory?.trim() && (
+                      <p className="text-[11px] text-red-500 font-medium flex items-center gap-1">
+                        <AlertCircle size={12} className="shrink-0" />
+                        Custom category name is required
+                      </p>
+                    )}
+                  </div>
+                )}
+              </div>
             </div>
 
             <div>
@@ -1003,7 +980,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
 
               <button
                 type="button"
-                onClick={addReview}
+                onClick={handleOpenAddReview}
                 className="inline-flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold transition shadow-xs cursor-pointer"
               >
                 <Plus size={14} /> Add Review
@@ -1016,88 +993,249 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
                 <p className="text-xs font-semibold text-slate-800 dark:text-gray-300">No client reviews added yet</p>
                 <button
                   type="button"
-                  onClick={addReview}
+                  onClick={handleOpenAddReview}
                   className="mt-3 px-3 py-1.5 bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold rounded-[4px] cursor-pointer"
                 >
                   Add First Review
                 </button>
               </div>
             ) : (
-              <div className="space-y-3">
+              <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3">
                 {form.reviews.map((rev, revIdx) => (
                   <div
                     key={revIdx}
-                    className="bg-slate-50 dark:bg-[#18191D] border border-slate-200 dark:border-gray-800 rounded-[4px] p-4 space-y-3"
+                    className="p-3.5 rounded-[4px] border border-slate-200 dark:border-gray-800 bg-white dark:bg-[#15171B] flex flex-col justify-between transition shadow-2xs hover:border-slate-300 dark:hover:border-gray-700"
                   >
-                    <div className="flex items-center justify-between pb-2 border-b border-slate-200 dark:border-gray-800">
-                      <div className="flex items-center gap-3">
-                        <span className="w-5 h-5 rounded bg-blue-100 text-[#0167D6] text-xs font-bold flex items-center justify-center">
-                          #{revIdx + 1}
+                    <div className="space-y-1.5">
+                      <div className="flex items-center justify-between">
+                        <span className="text-[10px] font-bold text-slate-400 dark:text-gray-500 uppercase tracking-wider">
+                          Review #{revIdx + 1}
                         </span>
+                        <div className="flex items-center gap-0.5">
+                          {[1, 2, 3, 4, 5].map((starVal) => (
+                            <Star
+                              key={starVal}
+                              size={11}
+                              className={
+                                starVal <= rev.rating
+                                  ? "text-amber-400 fill-amber-400"
+                                  : "text-slate-200 dark:text-gray-700"
+                              }
+                            />
+                          ))}
+                        </div>
+                      </div>
+
+                      <h4 className="text-sm font-bold text-slate-900 dark:text-white truncate" title={rev.name}>
+                        {rev.name || "Untitled Client"}
+                      </h4>
+
+                      {(rev.designation || rev.company) && (
+                        <p className="text-[11px] text-[#0167D6] dark:text-blue-400 font-medium truncate" title={[rev.designation, rev.company].filter(Boolean).join(" • ")}>
+                          {[rev.designation, rev.company].filter(Boolean).join(" • ")}
+                        </p>
+                      )}
+
+                      {rev.comment && (
+                        <p className="text-[11px] text-slate-500 dark:text-gray-400 line-clamp-2 italic pt-0.5" title={rev.comment}>
+                          &ldquo;{rev.comment}&rdquo;
+                        </p>
+                      )}
+                    </div>
+
+                    <div className="flex items-center justify-end gap-1.5 pt-3 mt-3 border-t border-slate-100 dark:border-gray-800/80">
+                      <button
+                        type="button"
+                        onClick={() => handleOpenEditReview(revIdx)}
+                        className="flex items-center gap-1 px-2.5 py-1 rounded-[4px] bg-slate-100 dark:bg-white/5 hover:bg-[#0167D6] hover:text-white text-slate-700 dark:text-gray-300 dark:hover:text-white text-xs font-semibold border border-slate-200 dark:border-transparent transition cursor-pointer"
+                        title="Edit Review"
+                      >
+                        <Edit2 size={12} />
+                        <span>Edit</span>
+                      </button>
+                      <button
+                        type="button"
+                        onClick={() => removeReview(revIdx)}
+                        className="p-1 rounded-[4px] text-slate-400 hover:text-red-500 hover:bg-red-50 dark:hover:bg-red-950/30 transition cursor-pointer"
+                        title="Delete Review"
+                      >
+                        <Trash2 size={14} />
+                      </button>
+                    </div>
+                  </div>
+                ))}
+              </div>
+            )}
+
+            {/* Client Review Edit / Add Modal */}
+            {isReviewModalOpen && (
+              <div
+                onClick={() => setIsReviewModalOpen(false)}
+                className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/60 backdrop-blur-xs animate-in fade-in-50 duration-150 cursor-pointer"
+              >
+                <div
+                  onClick={(e) => e.stopPropagation()}
+                  className="w-full max-w-lg bg-white dark:bg-[#131417] border border-slate-200 dark:border-gray-800 rounded-lg shadow-2xl flex flex-col max-h-[90vh] cursor-default overflow-hidden"
+                >
+                  {/* Modal Header */}
+                  <div className="flex items-center justify-between px-5 py-4 border-b border-slate-200 dark:border-gray-800">
+                    <div className="flex items-center gap-2">
+                      <Quote className="w-5 h-5 text-[#0167D6]" />
+                      <h3 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
+                        {editingReviewIndex !== null ? "Edit Client Review" : "Add Client Review"}
+                      </h3>
+                    </div>
+                    <button
+                      type="button"
+                      onClick={() => setIsReviewModalOpen(false)}
+                      className="p-1.5 rounded-[4px] text-slate-400 hover:text-slate-700 dark:hover:text-white hover:bg-slate-100 dark:hover:bg-gray-800 transition cursor-pointer"
+                    >
+                      <X size={18} />
+                    </button>
+                  </div>
+
+                  {/* Modal Body */}
+                  <div className="p-5 space-y-3.5 overflow-y-auto">
+                    {/* Star Rating Selector */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1.5">
+                        Rating Score <span className="text-red-500">*</span>
+                      </label>
+                      <div className="flex items-center gap-3 p-2.5 rounded-[4px] bg-slate-50 dark:bg-[#18191D] border border-slate-200 dark:border-gray-800">
                         <div className="flex items-center gap-1">
                           {[1, 2, 3, 4, 5].map((starVal) => (
                             <button
                               key={starVal}
                               type="button"
-                              onClick={() => updateReview(revIdx, "rating", starVal)}
-                              className="focus:outline-none"
+                              onClick={() => setReviewDraft({ ...reviewDraft, rating: starVal })}
+                              className="p-1 hover:scale-125 transition cursor-pointer focus:outline-none"
+                              title={`${starVal} Star${starVal > 1 ? "s" : ""}`}
                             >
                               <Star
-                                size={14}
+                                size={20}
                                 className={
-                                  starVal <= rev.rating
-                                    ? "text-amber-400 fill-amber-400"
+                                  starVal <= reviewDraft.rating
+                                    ? "text-amber-400 fill-amber-400 drop-shadow-xs"
                                     : "text-slate-300 dark:text-gray-600"
                                 }
                               />
                             </button>
                           ))}
                         </div>
+                        <span className="text-xs font-bold text-slate-700 dark:text-gray-300 font-mono">
+                          {reviewDraft.rating} of 5 Stars
+                        </span>
+                      </div>
+                    </div>
+
+                    {/* Client Name */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                        Client Name <span className="text-red-500">*</span>
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="e.g. Dr. Rafiqul Islam, Tanvir Ahmed"
+                        value={reviewDraft.name}
+                        onChange={(e) => setReviewDraft({ ...reviewDraft, name: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                        required
+                        autoFocus
+                      />
+                    </div>
+
+                    {/* Designation & Company */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Designation / Role
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Managing Director"
+                          value={reviewDraft.designation}
+                          onChange={(e) => setReviewDraft({ ...reviewDraft, designation: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                        />
                       </div>
 
-                      <button
-                        type="button"
-                        onClick={() => removeReview(revIdx)}
-                        className="text-slate-400 hover:text-red-500 transition cursor-pointer"
-                        title="Remove Review"
-                      >
-                        <Trash2 size={15} />
-                      </button>
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Company / Business
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Al-Madina Pharma Care Ltd."
+                          value={reviewDraft.company}
+                          onChange={(e) => setReviewDraft({ ...reviewDraft, company: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                        />
+                      </div>
                     </div>
 
-                    <div className="grid grid-cols-1 sm:grid-cols-3 gap-2.5">
-                      <input
-                        type="text"
-                        placeholder="Client Name (e.g. Tanvir Ahmed)"
-                        value={rev.name}
-                        onChange={(e) => updateReview(revIdx, "name", e.target.value)}
-                        className="px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-semibold"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Designation / Role"
-                        value={rev.designation}
-                        onChange={(e) => updateReview(revIdx, "designation", e.target.value)}
-                        className="px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                      />
-                      <input
-                        type="text"
-                        placeholder="Company / Organization"
-                        value={rev.company}
-                        onChange={(e) => updateReview(revIdx, "company", e.target.value)}
-                        className="px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                      />
+                    {/* Location & Tag */}
+                    <div className="grid grid-cols-2 gap-3">
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Location (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Dhaka, Bangladesh"
+                          value={reviewDraft.location || ""}
+                          onChange={(e) => setReviewDraft({ ...reviewDraft, location: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                        />
+                      </div>
+
+                      <div>
+                        <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                          Badge / Tag (Optional)
+                        </label>
+                        <input
+                          type="text"
+                          placeholder="e.g. Verified Client, Enterprise"
+                          value={reviewDraft.tag || ""}
+                          onChange={(e) => setReviewDraft({ ...reviewDraft, tag: e.target.value })}
+                          className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white font-medium focus:outline-none focus:border-[#0167D6]"
+                        />
+                      </div>
                     </div>
 
-                    <Textarea
-                      rows={2}
-                      placeholder="Client testimonial / review text..."
-                      value={rev.comment}
-                      onChange={(e) => updateReview(revIdx, "comment", e.target.value)}
-                      className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                    />
+                    {/* Testimonial Text */}
+                    <div>
+                      <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
+                        Review / Testimonial Text <span className="text-red-500">*</span>
+                      </label>
+                      <Textarea
+                        rows={3}
+                        placeholder="Write what the client said about the product, key metrics improved, or workflow solved..."
+                        value={reviewDraft.comment}
+                        onChange={(e) => setReviewDraft({ ...reviewDraft, comment: e.target.value })}
+                        className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
+                        required
+                      />
+                    </div>
                   </div>
-                ))}
+
+                  {/* Modal Footer */}
+                  <div className="flex items-center justify-end gap-2 px-5 py-3 border-t border-slate-200 dark:border-gray-800 bg-slate-50 dark:bg-[#101114]">
+                    <button
+                      type="button"
+                      onClick={() => setIsReviewModalOpen(false)}
+                      className="px-4 py-2 rounded-[4px] bg-white dark:bg-gray-800 border border-slate-300 dark:border-gray-700 text-xs font-semibold text-slate-700 dark:text-gray-300 hover:bg-slate-100 dark:hover:bg-gray-700 cursor-pointer"
+                    >
+                      Cancel
+                    </button>
+                    <button
+                      type="button"
+                      onClick={handleSaveReviewDraft}
+                      className="px-4 py-2 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold cursor-pointer shadow-xs"
+                    >
+                      Save Review
+                    </button>
+                  </div>
+                </div>
               </div>
             )}
           </div>
@@ -1107,292 +1245,20 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
         <div className="lg:col-span-4 space-y-6">
           {/* Card A: Visual Media, Video & Gallery Showcase */}
           <div className="bg-white dark:bg-[#131417] p-5 rounded-[4px] border border-slate-200 dark:border-gray-800 shadow-xs space-y-4">
-            <div className="flex items-center justify-between pb-3 border-b border-slate-200 dark:border-gray-800">
-              <div className="flex items-center gap-2">
-                <span className="w-6 h-6 rounded-[4px] bg-blue-50 text-[#0167D6] dark:bg-blue-900/30 flex items-center justify-center text-xs font-bold">
-                  A
-                </span>
-                <h2 className="text-sm font-bold text-slate-900 dark:text-white uppercase tracking-wider">
-                  Media Showcase
-                </h2>
-              </div>
-              <span className="text-[11px] font-mono text-slate-500 dark:text-gray-400">
-                {form.images.length + (hasVideo ? 1 : 0)} Asset(s)
-              </span>
-            </div>
-
-
-            {/* ── VIDEO SECTION (Clearly Single Slot) ── */}
-            <div className="p-3.5 bg-slate-50 dark:bg-[#18191D] border border-slate-200 dark:border-gray-800 rounded-[4px] space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Film size={14} className="text-[#0167D6]" />
-                  <span className="text-xs font-bold text-slate-800 dark:text-gray-200 uppercase tracking-wider">
-                    Product Demo Video
-                  </span>
-                </div>
-                {hasVideo && (
-                  <span className="text-[10px] font-bold px-1.5 py-0.5 rounded bg-emerald-50 text-emerald-600 dark:bg-emerald-950/30 dark:text-emerald-400">
-                    Ready
-                  </span>
-                )}
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1">
-                  YouTube Video Link
-                </label>
-                <input
-                  type="url"
-                  placeholder="https://www.youtube.com/watch?v=..."
-                  value={form.youtubeUrl}
-                  onChange={(e) => {
-                    const val = e.target.value;
-                    setForm((prev) => ({
-                      ...prev,
-                      youtubeUrl: val,
-                      mediaType: val ? "video" : prev.mediaType,
-                    }));
-                  }}
-                  className="w-full px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-                />
-              </div>
-
-              <div>
-                <label className="block text-[11px] font-bold text-slate-600 dark:text-gray-400 mb-1 flex items-center justify-between">
-                  <span>Or Upload MP4 / WebM File</span>
-                  {uploadingVideo && <Loader2 size={12} className="animate-spin text-[#0167D6]" />}
-                </label>
-                <input
-                  type="file"
-                  accept="video/*"
-                  ref={videoInputRef}
-                  onChange={(e) => e.target.files?.[0] && handleVideoUpload(e.target.files[0])}
-                  className="hidden"
-                />
-                <div className="flex gap-1.5">
-                  <input
-                    type="text"
-                    placeholder="Direct MP4 video URL"
-                    value={form.video}
-                    onChange={(e) => setForm((prev) => ({ ...prev, video: e.target.value, mediaType: "video" }))}
-                    className="flex-1 px-2.5 py-1.5 bg-white dark:bg-[#131417] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                  />
-                  <button
-                    type="button"
-                    onClick={() => videoInputRef.current?.click()}
-                    disabled={uploadingVideo}
-                    className="px-3 py-1.5 bg-slate-200 dark:bg-gray-800 hover:bg-slate-300 dark:hover:bg-gray-700 text-slate-800 dark:text-white text-xs font-bold rounded-[4px] shrink-0 cursor-pointer"
-                  >
-                    Upload
-                  </button>
-                </div>
-              </div>
-
-              {/* Video Preview */}
-              {(form.youtubeUrl || form.video) && (
-                <div className="mt-2 pt-2 border-t border-slate-200 dark:border-gray-800">
-                  <div className="relative aspect-video rounded overflow-hidden bg-black border border-slate-300 dark:border-gray-700">
-                    {isYouTubeUrl(form.youtubeUrl || form.video) ? (
-                      <iframe
-                        src={getYouTubeEmbedUrl(form.youtubeUrl || form.video) || ""}
-                        title="YouTube Preview"
-                        className="w-full h-full border-0"
-                        allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                        allowFullScreen
-                      />
-                    ) : form.video ? (
-                      <video src={form.video} controls className="w-full h-full object-cover" />
-                    ) : null}
-                  </div>
-                  {form.mediaType !== "video" && (
-                    <button
-                      type="button"
-                      onClick={setVideoAsCover}
-                      className="mt-2 w-full py-1 text-center text-[11px] font-bold text-[#0167D6] bg-blue-50 dark:bg-blue-900/20 hover:bg-blue-100 rounded transition"
-                    >
-                      Set Video as Front Showcase
-                    </button>
-                  )}
-                </div>
-              )}
-            </div>
-
-            {/* ── MULTIPLE IMAGES SECTION (CLEAR VISUAL CLUE WITHOUT TEXT) ── */}
-            <div className="space-y-3">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Images size={15} className="text-[#0167D6]" />
-                  <span className="text-xs font-bold text-slate-800 dark:text-gray-200 uppercase tracking-wider">
-                    Screenshots &amp; Mockups ({form.images.length})
-                  </span>
-                </div>
-                <span className="text-[10px] font-semibold text-slate-500 dark:text-gray-400">
-                  Select Multiple Files
-                </span>
-              </div>
-
-              {/* Visual Multi-Image Drag & Drop Area */}
-              <input
-                ref={multiImagesInputRef}
-                type="file"
-                multiple
-                accept="image/*"
-                className="hidden"
-                onChange={(e) => handleMultipleImagesUpload(e.target.files)}
-              />
-
-              <div
-                onClick={() => multiImagesInputRef.current?.click()}
-                className="relative group border-2 border-dashed border-[#0167D6]/40 hover:border-[#0167D6] bg-blue-50/20 hover:bg-blue-50/40 dark:bg-blue-950/10 dark:hover:bg-blue-950/20 rounded-[4px] p-4 text-center cursor-pointer transition"
-              >
-                {/* Visual Stacked Photo Cards Clue */}
-                <div className="flex items-center justify-center -space-x-3 mb-2.5">
-                  <div className="w-10 h-10 rounded border-2 border-white dark:border-[#131417] bg-blue-200/80 dark:bg-blue-900/40 shadow-sm flex items-center justify-center -rotate-6 transform transition group-hover:-rotate-12">
-                    <ImageIcon size={18} className="text-[#0167D6]" />
-                  </div>
-                  <div className="w-11 h-11 rounded border-2 border-white dark:border-[#131417] bg-[#0167D6] text-white shadow-md flex items-center justify-center z-10 transform transition group-hover:scale-105">
-                    <Plus size={22} className="stroke-[2.5]" />
-                  </div>
-                  <div className="w-10 h-10 rounded border-2 border-white dark:border-[#131417] bg-blue-300/80 dark:bg-blue-800/40 shadow-sm flex items-center justify-center rotate-6 transform transition group-hover:rotate-12">
-                    <Images size={18} className="text-[#0167D6]" />
-                  </div>
-                </div>
-
-                <div className="text-xs font-bold text-slate-800 dark:text-gray-200">
-                  {uploadingMultiImages ? (
-                    <span className="flex items-center justify-center gap-1.5 text-[#0167D6]">
-                      <Loader2 size={14} className="animate-spin" /> Uploading multiple files...
-                    </span>
-                  ) : (
-                    <span>Click or Drag to Upload Multiple Screenshots</span>
-                  )}
-                </div>
-                <div className="flex items-center justify-center gap-2 mt-1">
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    PNG
-                  </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    JPG
-                  </span>
-                  <span className="text-[10px] font-mono px-1.5 py-0.5 rounded bg-blue-100 text-[#0167D6] dark:bg-blue-900/30 dark:text-blue-300 font-bold">
-                    WEBP
-                  </span>
-                </div>
-              </div>
-            </div>
-
-            {/* ── INTERACTIVE THUMBNAIL TRAY (SELECT FRONT THUMBNAIL) ── */}
-            <div className="pt-3 border-t border-slate-200 dark:border-gray-800 space-y-2">
-              <div className="flex items-center justify-between">
-                <div className="flex items-center gap-1.5">
-                  <Star size={13} className="text-amber-500 fill-amber-500" />
-                  <span className="text-[11px] font-bold text-slate-700 dark:text-gray-300 uppercase tracking-wider">
-                    Select Front Thumbnail:
-                  </span>
-                </div>
-                <span className="text-[10px] text-slate-500 dark:text-gray-400">
-                  Click thumbnail to set as front
-                </span>
-              </div>
-
-              {form.images.length === 0 && !hasVideo ? (
-                <div className="p-4 text-center border border-dashed border-slate-200 dark:border-gray-800 rounded bg-slate-50/50 dark:bg-[#18191D]/30">
-                  <p className="text-[11px] text-slate-400 dark:text-gray-500">
-                    No images or video uploaded yet. Add media above to choose your primary front showcase thumbnail.
-                  </p>
-                </div>
-              ) : (
-                <div className="grid grid-cols-3 sm:grid-cols-4 gap-2 pt-1">
-                  {/* Video Thumbnail (if present) */}
-                  {hasVideo && (
-                    <div
-                      onClick={setVideoAsCover}
-                      className={`relative group aspect-square rounded-[4px] overflow-hidden border cursor-pointer transition ${
-                        form.mediaType === "video"
-                          ? "border-[#0167D6] ring-2 ring-[#0167D6]/50 shadow-md"
-                          : "border-slate-200 dark:border-gray-800 hover:border-slate-400"
-                      }`}
-                    >
-                      <div className="w-full h-full bg-slate-900 flex items-center justify-center relative">
-                        {form.youtubeUrl ? (
-                          <img
-                            src={getYouTubeThumbnailUrl(form.youtubeUrl) || ""}
-                            alt="Video Thumbnail"
-                            className="w-full h-full object-cover"
-                          />
-                        ) : (
-                          <div className="w-full h-full flex items-center justify-center bg-slate-900 text-white">
-                            <Video size={20} className="text-blue-400" />
-                          </div>
-                        )}
-                        <div className="absolute inset-0 bg-black/40 flex items-center justify-center">
-                          <Play size={18} className="text-white fill-white" />
-                        </div>
-                      </div>
-
-                      {form.mediaType === "video" ? (
-                        <span className="absolute top-1 left-1 bg-[#0167D6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 z-10">
-                          <Star size={9} className="fill-white" /> Front
-                        </span>
-                      ) : (
-                        <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                          <span className="text-[9px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded">
-                            Set Front
-                          </span>
-                        </div>
-                      )}
-                    </div>
-                  )}
-
-                  {/* Image Thumbnails */}
-                  {form.images.map((img, idx) => {
-                    const isFront = form.mediaType === "image" && form.thumbnail === img;
-                    return (
-                      <div
-                        key={idx}
-                        className={`relative group aspect-square rounded-[4px] overflow-hidden border bg-slate-100 dark:bg-black cursor-pointer transition ${
-                          isFront
-                            ? "border-[#0167D6] ring-2 ring-[#0167D6]/50 shadow-md"
-                            : "border-slate-200 dark:border-gray-800 hover:border-slate-400"
-                        }`}
-                        onClick={() => setImageAsCover(img)}
-                      >
-                        <img
-                          src={img}
-                          alt={`Product ${idx + 1}`}
-                          className="w-full h-full object-cover group-hover:scale-105 transition"
-                        />
-
-                        {isFront ? (
-                          <span className="absolute top-1 left-1 bg-[#0167D6] text-white text-[9px] font-bold px-1.5 py-0.5 rounded shadow flex items-center gap-0.5 z-10">
-                            <Star size={9} className="fill-white" /> Front
-                          </span>
-                        ) : (
-                          <div className="absolute inset-0 bg-black/60 opacity-0 group-hover:opacity-100 flex items-center justify-center transition">
-                            <span className="text-[9px] font-bold text-white bg-blue-600 px-1.5 py-0.5 rounded">
-                              Set Front
-                            </span>
-                          </div>
-                        )}
-
-                        <button
-                          type="button"
-                          onClick={(e) => {
-                            e.stopPropagation();
-                            removeGalleryImage(idx);
-                          }}
-                          className="absolute top-1 right-1 p-1 bg-red-600 text-white rounded opacity-0 group-hover:opacity-100 transition shadow hover:bg-red-700 z-20"
-                          title="Remove image"
-                        >
-                          <Trash2 size={11} />
-                        </button>
-                      </div>
-                    );
-                  })}
-                </div>
-              )}
-            </div>
+            <MediaShowcase
+              title="Media Showcase"
+              mediaType={form.mediaType}
+              onMediaTypeChange={(type) => setForm((prev) => ({ ...prev, mediaType: type }))}
+              images={form.images}
+              featuredImage={form.thumbnail}
+              onImagesChange={(images, featuredImage) =>
+                setForm((prev) => ({ ...prev, images, thumbnail: featuredImage }))
+              }
+              video={form.video}
+              youtubeUrl={form.youtubeUrl}
+              videoThumbnail={form.videoThumbnail}
+              onVideoChange={(updates) => setForm((prev) => ({ ...prev, ...updates }))}
+            />
           </div>
 
           {/* Card B: Publishing & Commercial Settings */}
@@ -1403,35 +1269,6 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
               </span>
               Commercial &amp; Visibility Settings
             </h2>
-
-            {/* Category */}
-            <div>
-              <label className="block text-xs font-bold text-slate-700 dark:text-gray-300 mb-1">
-                Category
-              </label>
-              <select
-                value={form.category}
-                onChange={(e) => setForm((prev) => ({ ...prev, category: e.target.value }))}
-                className="w-full px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white focus:outline-none focus:border-[#0167D6]"
-              >
-                <option value="SaaS & ERP">SaaS &amp; ERP</option>
-                <option value="Healthcare & Pharmacy">Healthcare &amp; Pharmacy</option>
-                <option value="Restaurant & Food">Restaurant &amp; Food</option>
-                <option value="Retail & Supermarket">Retail &amp; Supermarket</option>
-                <option value="Education & School">Education &amp; School</option>
-                <option value="Accounting & Billing">Accounting &amp; Billing</option>
-                <option value="Custom">Custom Category...</option>
-              </select>
-              {form.category === "Custom" && (
-                <input
-                  type="text"
-                  placeholder="Type custom category name..."
-                  value={form.customCategory}
-                  onChange={(e) => setForm((prev) => ({ ...prev, customCategory: e.target.value }))}
-                  className="w-full mt-2 px-3 py-2 bg-slate-50 dark:bg-[#18191D] border border-slate-300 dark:border-gray-700 rounded-[4px] text-xs text-slate-900 dark:text-white"
-                />
-              )}
-            </div>
 
             {/* Display Order */}
             <div>
@@ -1527,7 +1364,7 @@ export function ProductForm({ initialData, isEdit = false }: ProductFormProps) {
             {isEdit && form.slug && (
               <div className="pt-2 border-t border-slate-100 dark:border-gray-800">
                 <a
-                  href={`http://localhost:3000/products/${form.slug}`}
+                  href={getClientLink(`/products/${form.slug}`)}
                   target="_blank"
                   rel="noreferrer"
                   className="w-full py-2 px-3 rounded-[4px] bg-blue-50 dark:bg-blue-900/20 text-[#0167D6] dark:text-blue-300 text-xs font-bold flex items-center justify-center gap-1.5 hover:bg-blue-100 transition"

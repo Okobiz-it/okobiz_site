@@ -11,9 +11,12 @@ import {
   Loader2,
   Layers,
   Sparkles,
-  ArrowRight
+  ArrowRight,
+  Play
 } from "lucide-react";
 import { cleanSnippet } from "@/lib/richText";
+import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
+import { getClientLink } from "@/lib/clientUrl";
 
 export default function ServicesPage() {
   const [services, setServices] = useState<any[]>([]);
@@ -89,7 +92,13 @@ export default function ServicesPage() {
       ) : (
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 2xl:grid-cols-4 gap-6">
           {services.map((srv) => {
-            const displayImage = srv.image || srv.bannerImage || srv.thumbnail;
+            const hasVideo = Boolean(srv.video && srv.video.trim());
+            const isYt = isYouTubeUrl(srv.video);
+            const ytThumb = isYt ? getYouTubeThumbnailUrl(srv.video) : null;
+            const isVideoFirst = srv.mediaType === "video" && hasVideo;
+            const displayImage = isVideoFirst
+              ? (srv.videoThumbnail || ytThumb || srv.thumbnail || srv.image || srv.bannerImage || "/assets/website-app-DOXr3sR7.webp")
+              : (srv.thumbnail || srv.image || srv.videoThumbnail || ytThumb || srv.bannerImage || "/assets/website-app-DOXr3sR7.webp");
 
             return (
               <div
@@ -112,9 +121,16 @@ export default function ServicesPage() {
 
                   {/* Top-left Badges */}
                   <div className="absolute top-2.5 left-2.5 flex items-center gap-1.5">
-                    <span className="px-2.5 py-0.5 rounded-[4px] bg-[#0167D6] text-white text-white-always text-[10px] font-bold shadow-sm">
-                      ORDER #{srv.order || 1}
-                    </span>
+                    {hasVideo ? (
+                      <span className="px-2 py-0.5 rounded-[4px] bg-rose-600 text-white text-white-always text-[10px] font-bold flex items-center gap-1 shadow-sm border border-rose-500/30">
+                        <Play size={10} className="fill-white text-white text-white-always" />
+                        <span className="text-white text-white-always">VIDEO</span>
+                      </span>
+                    ) : (
+                      <span className="px-2.5 py-0.5 rounded-[4px] bg-[#0167D6] text-white text-white-always text-[10px] font-bold shadow-sm">
+                        ORDER #{srv.order || 1}
+                      </span>
+                    )}
                     {srv.pricingPlans && srv.pricingPlans.length > 0 && (
                       <span className="px-2.5 py-0.5 rounded-[4px] bg-emerald-600 text-white text-white-always text-[10px] font-bold shadow-sm">
                         {srv.pricingPlans.length} {srv.pricingPlans.length === 1 ? "PLAN" : "PLANS"}
@@ -133,7 +149,7 @@ export default function ServicesPage() {
                         Service Offering
                       </span>
                       <a
-                        href={`http://localhost:3000/services/${srv.slug}`}
+                        href={getClientLink(`/services/${srv.slug}`)}
                         target="_blank"
                         rel="noopener noreferrer"
                         className="text-[#0167D6] dark:text-[#3368B2] hover:underline flex items-center gap-1 text-[11px] font-medium"
@@ -158,7 +174,7 @@ export default function ServicesPage() {
                 {/* Card Footer Actions (Fixed height h-[52px]) */}
                 <div className="p-3.5 bg-slate-50/80 dark:bg-[#181A1F]/80 border-t border-slate-200 dark:border-gray-800/80 flex items-center justify-between shrink-0 h-[52px]">
                   <a
-                    href={`http://localhost:3000/services/${srv.slug}`}
+                    href={getClientLink(`/services/${srv.slug}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-[#0167D6] dark:text-gray-400 dark:hover:text-white transition font-medium"

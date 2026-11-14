@@ -22,7 +22,10 @@ import {
   Server
 } from "lucide-react";
 
+import { getClientUrl } from "@/lib/clientUrl";
+
 export default function SettingsPage() {
+  const clientUrl = getClientUrl();
   const [settings, setSettings] = useState<any>({
     siteName: "okobiz",
     contactPhone: "01973-590937",
@@ -90,7 +93,7 @@ export default function SettingsPage() {
 
         <div className="flex items-center gap-3">
           <a
-            href="http://localhost:3000"
+            href={clientUrl}
             target="_blank"
             rel="noopener noreferrer"
             className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-semibold rounded-[4px] border border-slate-200 dark:border-gray-700 bg-slate-50 dark:bg-gray-800 text-slate-700 dark:text-gray-200 hover:bg-slate-100 dark:hover:bg-gray-700 transition"

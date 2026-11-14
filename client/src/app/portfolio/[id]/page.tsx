@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -14,12 +14,16 @@ import {
   Sparkles,
   TrendingUp,
   Share2,
-  Cpu
+  Cpu,
+  ChevronLeft,
+  ChevronRight
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { PortfolioProject } from "@/data/mockData";
+import { getThemes } from "@/lib/api";
 import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import { renderRichText } from "@/lib/richText";
 import { createSlug } from "@/lib/slug";
@@ -33,60 +37,104 @@ function PortfolioDetailContent() {
   const autoPlayFromUrl = searchParams?.get("autoplay") === "true";
 
   const [project, setProject] = useState<any>(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [isPlaying, setIsPlaying] = useState(autoPlayFromUrl);
+  const [activeImageIndex, setActiveImageIndex] = useState(0);
+  const mediaFrameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (searchParams?.get("autoplay") === "true") {
+    if (searchParams?.get("autoplay") === "true" || autoPlayFromUrl) {
       setIsPlaying(true);
+      const timer = setTimeout(() => {
+        mediaFrameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 350);
+      return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [searchParams, autoPlayFromUrl]);
+
+  const fetchProject = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const themes = await getThemes();
+      if (Array.isArray(themes)) {
+        const cleanId = id.toLowerCase();
+        const match = themes.find(
+          (p: any) =>
+            p._id === id ||
+            (p.slug && p.slug.toLowerCase() === cleanId) ||
+            createSlug(p.websiteTitle || p.title || "") === cleanId
+        );
+        if (match) {
+          const rawImages = Array.isArray(match.images) && match.images.length > 0
+            ? match.images
+            : (match.photo ? [match.photo] : []);
+
+          setProject({
+            _id: match._id,
+            slug: match.slug || createSlug(match.websiteTitle || match.title || ""),
+            title: match.websiteTitle || match.title,
+            category: match.category || "Web Applications",
+            clientName: match.clientName || "Enterprise Client",
+            completionYear: "2024",
+            mediaType: match.mediaType || (match.video ? "video" : "image"),
+            thumbnail: match.photo || (rawImages[0] || "/assets/bdhajj-D468QQtK.png"),
+            images: rawImages,
+            videoUrl: match.video || "",
+            videoThumbnail: match.videoThumbnail || match.photo || "",
+            liveUrl: match.websiteLink || "",
+            shortDescription: match.description || "",
+            fullDescription: match.description || "",
+            challenge: match.challenge || "",
+            solution: match.solution || "",
+            features: match.features || [],
+            techStack: (Array.isArray(match.techStack) && match.techStack.length > 0)
+              ? match.techStack
+              : ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
+            results: ["High Performance Scalability", "99.9% Uptime Verified"]
+          });
+        } else {
+          setError(true);
+        }
+      } else {
+        setError(true);
+      }
+    } catch (e) {
+      console.warn("Failed to load project details:", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProject = async () => {
-      try {
-        const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001";
-        const res = await fetch(`${adminUrl}/api/themes`);
-        const json = await res.json();
-        if (json.success && Array.isArray(json.data)) {
-          const cleanId = id.toLowerCase();
-          const match = json.data.find(
-            (p: any) =>
-              p._id === id ||
-              (p.slug && p.slug.toLowerCase() === cleanId) ||
-              createSlug(p.websiteTitle || p.title || "") === cleanId
-          );
-          if (match) {
-            setProject({
-              _id: match._id,
-              slug: match.slug || createSlug(match.websiteTitle || match.title || ""),
-              title: match.websiteTitle || match.title,
-              category: match.category || "Web Applications",
-              clientName: match.clientName || "Enterprise Client",
-              completionYear: "2024",
-              mediaType: match.mediaType || (match.video ? "video" : "image"),
-              thumbnail: match.photo || "/assets/bdhajj-D468QQtK.png",
-              videoUrl: match.video || "",
-              videoThumbnail: match.videoThumbnail || match.photo || "",
-              liveUrl: match.websiteLink || "",
-              shortDescription: match.description || "",
-              fullDescription: match.description || "",
-              challenge: match.challenge || "",
-              solution: match.solution || "",
-              features: match.features || [],
-              techStack: (Array.isArray(match.techStack) && match.techStack.length > 0)
-                ? match.techStack
-                : ["Next.js", "TypeScript", "Tailwind CSS", "MongoDB"],
-              results: ["High Performance Scalability", "99.9% Uptime Verified"]
-            });
-          }
-        }
-      } catch (e) {}
-    };
     fetchProject();
   }, [id]);
 
-  if (!project) {
+  if (loading) {
     return <UniversalLoader fullScreen size="lg" />;
+  }
+
+  if (error || !project) {
+    return (
+      <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen">
+        <PageBanner title="Portfolio Details" subtitle="Project case study and architectural overview" />
+        <div className="max-w-2xl mx-auto px-4 py-20 flex flex-col items-center">
+          <DataLoadError
+            title="Project Couldn't Load"
+            message="The requested portfolio project could not be found or failed to load from the server."
+            onRetry={fetchProject}
+          />
+          <Link
+            href="/portfolio"
+            className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-slate-200 dark:bg-gray-800 text-slate-800 dark:text-gray-200 hover:bg-slate-300 dark:hover:bg-gray-700 text-xs font-semibold transition"
+          >
+            <ArrowLeft size={14} /> Back to Portfolio
+          </Link>
+        </div>
+      </div>
+    );
   }
 
   const isVideo = project.mediaType === "video" || !!project.videoUrl;
@@ -98,6 +146,10 @@ function PortfolioDetailContent() {
     (project.thumbnail && project.thumbnail.trim()) ||
     "/assets/bdhajj-D468QQtK.png";
   const displayPoster = rawPoster || "/assets/bdhajj-D468QQtK.png";
+  const projectImages = Array.isArray(project.images) && project.images.length > 0
+    ? project.images
+    : [displayPoster];
+  const currentScreenshot = projectImages[activeImageIndex] || displayPoster;
 
   return (
     <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen">
@@ -160,7 +212,7 @@ function PortfolioDetailContent() {
           </div>
 
           {/* Media Showcase: YouTube Iframe, HTML5 Video, or Image - Elegantly Scaled & Centered */}
-          <div className="max-w-4xl lg:max-w-5xl mx-auto mb-14 rounded-xl overflow-hidden border border-slate-200 dark:border-gray-800 bg-slate-100 dark:bg-black shadow-2xl relative aspect-[16/9] max-h-[460px] md:max-h-[500px] flex items-center justify-center">
+          <div ref={mediaFrameRef} className="max-w-4xl lg:max-w-5xl mx-auto mb-14 rounded-xl overflow-hidden border border-slate-200 dark:border-gray-800 bg-slate-100 dark:bg-black shadow-2xl relative aspect-[16/9] max-h-[460px] md:max-h-[500px] flex items-center justify-center">
             {isVideo && project.videoUrl ? (
               !isPlaying ? (
                 /* Paused state when user clicked outside video play frame */
@@ -218,7 +270,7 @@ function PortfolioDetailContent() {
             ) : (
               <div className="relative w-full h-full overflow-hidden bg-slate-100 dark:bg-gray-950 flex items-center justify-center p-3 sm:p-5">
                 <img
-                  src={displayPoster}
+                  src={currentScreenshot}
                   alt={project.title}
                   onError={(e) => {
                     const target = e.currentTarget;
@@ -228,9 +280,64 @@ function PortfolioDetailContent() {
                   }}
                   className="w-full h-full object-contain max-h-[460px] md:max-h-[500px] transition-all duration-300 rounded-[4px]"
                 />
+
+                {projectImages.length > 1 && (
+                  <>
+                    <span className="absolute bottom-3 left-3 bg-black/80 backdrop-blur-sm text-gray-200 text-[11px] font-bold px-2.5 py-1 rounded-[4px] border border-gray-700">
+                      Screenshot {activeImageIndex + 1} of {projectImages.length}
+                    </span>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveImageIndex((prev) =>
+                          prev === 0 ? projectImages.length - 1 : prev - 1
+                        )
+                      }
+                      className="absolute left-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-[4px] bg-black/70 hover:bg-black text-white flex items-center justify-center transition border border-gray-700 cursor-pointer"
+                      aria-label="Previous Screenshot"
+                    >
+                      <ChevronLeft size={18} />
+                    </button>
+                    <button
+                      type="button"
+                      onClick={() =>
+                        setActiveImageIndex((prev) =>
+                          prev === projectImages.length - 1 ? 0 : prev + 1
+                        )
+                      }
+                      className="absolute right-3 top-1/2 -translate-y-1/2 w-8 h-8 rounded-[4px] bg-black/70 hover:bg-black text-white flex items-center justify-center transition border border-gray-700 cursor-pointer"
+                      aria-label="Next Screenshot"
+                    >
+                      <ChevronRight size={18} />
+                    </button>
+                  </>
+                )}
               </div>
             )}
           </div>
+
+          {/* Thumbnail Gallery Strip when Multiple Screenshots Exist */}
+          {!isVideo && projectImages.length > 1 && (
+            <div className="max-w-4xl lg:max-w-5xl mx-auto -mt-10 mb-14 flex items-center gap-2 overflow-x-auto pb-2 scrollbar-thin">
+              {projectImages.map((img: string, idx: number) => {
+                const isActive = idx === activeImageIndex;
+                return (
+                  <button
+                    key={idx}
+                    type="button"
+                    onClick={() => setActiveImageIndex(idx)}
+                    className={`relative w-20 h-14 sm:w-24 sm:h-16 rounded-[4px] overflow-hidden shrink-0 border-2 transition cursor-pointer ${
+                      isActive
+                        ? "border-[#0167D6] ring-2 ring-blue-500/30 scale-105"
+                        : "border-slate-300 dark:border-gray-800 opacity-60 hover:opacity-100"
+                    }`}
+                  >
+                    <img src={img} alt={`Thumbnail ${idx + 1}`} className="w-full h-full object-cover" />
+                  </button>
+                );
+              })}
+            </div>
+          )}
 
           {/* Project Narrative */}
           <div className="space-y-12">

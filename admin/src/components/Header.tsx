@@ -2,6 +2,7 @@
 import React from "react";
 import { Menu, ExternalLink } from "lucide-react";
 import ThemeToggle from "@/components/ThemeToggle";
+import { getClientUrl } from "@/lib/clientUrl";
 
 interface HeaderProps {
   onMenuToggle?: () => void;
@@ -12,6 +13,8 @@ export default function Header({
   onMenuToggle,
   title
 }: HeaderProps) {
+  const clientUrl = getClientUrl();
+
   return (
     <header className="h-16 bg-white dark:bg-[#111216] border-b border-slate-200 dark:border-gray-800/80 flex items-center justify-between px-4 sm:px-6 shrink-0 z-20 transition-colors duration-200">
       <div className="flex items-center gap-2 sm:gap-3">
@@ -38,7 +41,7 @@ export default function Header({
 
         {/* Live site link */}
         <a
-          href="http://localhost:3000"
+          href={clientUrl}
           target="_blank"
           rel="noopener noreferrer"
           className="flex items-center gap-1.5 px-3 py-1.5 rounded-[4px] bg-slate-100 hover:bg-[#0167D6] hover:text-white text-slate-700 dark:bg-[#181A1F] dark:hover:bg-[#3368B2] dark:text-gray-300 dark:hover:text-white border border-slate-300 dark:border-gray-800 text-xs font-semibold transition duration-150"

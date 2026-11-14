@@ -3,16 +3,36 @@
 import React, { useState, useEffect } from "react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
+import SectionLoader from "@/components/SectionLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { getClients } from "@/lib/api";
 import { ClientPartner } from "@/data/mockData";
 
 export default function OurClientsPage() {
   const [clients, setClients] = useState<ClientPartner[]>([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
+
+  const fetchClients = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const data = await getClients();
+      if (Array.isArray(data)) {
+        setClients(data);
+      } else {
+        setError(true);
+      }
+    } catch (err) {
+      console.warn("Failed to fetch clients:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    getClients().then((data) => {
-      if (data && data.length > 0) setClients(data);
-    });
+    fetchClients();
   }, []);
 
   return (
@@ -39,23 +59,40 @@ export default function OurClientsPage() {
             </p>
           </div>
 
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
-            {clients.map((client, idx) => (
-              <div
-                key={client._id || idx}
-                className="bg-white rounded-xl p-6 flex flex-col items-center justify-center h-36 hover:scale-105 transition-transform duration-200 shadow-xl group border border-gray-100"
-              >
-                <img
-                  src={client.image}
-                  alt={client.name}
-                  className="max-h-16 max-w-[140px] w-auto object-contain group-hover:scale-105 transition-transform"
-                />
-                <span className="text-[11px] font-semibold text-gray-500 mt-2">
-                  {client.name}
-                </span>
-              </div>
-            ))}
-          </div>
+          {loading ? (
+            <div className="py-20 flex flex-col items-center justify-center">
+              <SectionLoader size="md" />
+              <p className="text-xs text-gray-400 mt-3 font-medium">Loading partner brands...</p>
+            </div>
+          ) : error ? (
+            <DataLoadError
+              title="Client Partners Couldn't Load"
+              message="We were unable to connect to the server to fetch our verified partner companies. Please check your connection or try again."
+              onRetry={fetchClients}
+            />
+          ) : clients.length === 0 ? (
+            <div className="bg-[#131418] border border-gray-800 rounded-[4px] p-12 text-center text-gray-400 text-sm">
+              No client partners available.
+            </div>
+          ) : (
+            <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
+              {clients.map((client, idx) => (
+                <div
+                  key={client._id || idx}
+                  className="bg-white rounded-xl p-6 flex flex-col items-center justify-center h-36 hover:scale-105 transition-transform duration-200 shadow-xl group border border-gray-100"
+                >
+                  <img
+                    src={client.image}
+                    alt={client.name}
+                    className="max-h-16 max-w-[140px] w-auto object-contain group-hover:scale-105 transition-transform"
+                  />
+                  <span className="text-[11px] font-semibold text-gray-500 mt-2">
+                    {client.name}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
         </div>
       </section>
 

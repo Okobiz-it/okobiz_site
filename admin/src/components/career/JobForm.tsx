@@ -95,6 +95,8 @@ const DEFAULT_FORM: JobFormData = {
   order: 1
 };
 
+import { getClientLink } from "@/lib/clientUrl";
+
 interface JobFormProps {
   initialData?: any;
   isEdit?: boolean;
@@ -248,7 +250,7 @@ export function JobForm({ initialData, isEdit = false }: JobFormProps) {
 
           {isEdit && form.slug && (
             <a
-              href={`http://localhost:3000/career/${form.slug}`}
+              href={getClientLink(`/career/${form.slug}`)}
               target="_blank"
               rel="noreferrer"
               className="inline-flex items-center gap-1.5 px-3 py-2 text-xs font-medium rounded-[4px] border border-blue-200 dark:border-blue-800 text-[#0167D6] dark:text-blue-400 hover:bg-blue-50 dark:hover:bg-blue-900/20 transition"

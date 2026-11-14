@@ -1,20 +1,23 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
+import { useSearchParams } from "next/navigation";
 import {
   Phone,
   ArrowRight,
   CheckCircle2,
   Cpu,
   ShieldCheck,
-  MessageSquare
+  MessageSquare,
+  Play
 } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import { getTechIcon } from "@/lib/techIcons";
-import { isYouTubeUrl, getYouTubeEmbedUrl } from "@/lib/youtube";
+import { isYouTubeUrl, getYouTubeEmbedUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 import {
   ServiceClientItem,
   getServices,
@@ -31,59 +34,105 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
   const [service, setService] = useState<ServiceClientItem | null>(initialService || null);
   const [allServices, setAllServices] = useState<ServiceClientItem[]>([]);
   const [loading, setLoading] = useState(!initialService);
+  const [error, setError] = useState(false);
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
 
+  const searchParams = useSearchParams();
+  const autoPlayFromUrl = searchParams?.get("autoplay") === "true";
+  const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("image");
+  const [isVideoPlaying, setIsVideoPlaying] = useState(autoPlayFromUrl);
+  const mediaFrameRef = useRef<HTMLDivElement>(null);
+
   useEffect(() => {
-    let isMounted = true;
-
-    async function loadData() {
-      try {
-        const [fetchedService, servicesList] = await Promise.all([
-          initialService ? Promise.resolve(initialService) : getServiceBySlug(slug),
-          getServices()
-        ]);
-
-        if (isMounted) {
-          if (fetchedService) {
-            setService(fetchedService);
-          } else {
-            const found = servicesList.find(
-              s => s.slug === slug ||
-                   s.slug === `${slug}-service` ||
-                   slug === `${s.slug}-service`
-            );
-            setService(found || null);
-          }
-          if (servicesList.length > 0) {
-            setAllServices(servicesList);
-          }
-        }
-      } catch (err) {
-        console.error("Error loading service detail:", err);
-      } finally {
-        if (isMounted) setLoading(false);
+    if (service || initialService) {
+      const current = service || initialService;
+      const hasVid = Boolean(current?.video && current.video.trim());
+      const isVidFirst = (current?.mediaType === "video" || !current?.mediaType) && hasVid;
+      if (autoPlayFromUrl || isVidFirst) {
+        setActiveMediaType("video");
+        setIsVideoPlaying(autoPlayFromUrl);
+      } else {
+        setActiveMediaType("image");
       }
     }
+  }, [service, initialService, autoPlayFromUrl]);
 
+  useEffect(() => {
+    if (autoPlayFromUrl) {
+      setActiveMediaType("video");
+      setIsVideoPlaying(true);
+      const timer = setTimeout(() => {
+        mediaFrameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 350);
+      return () => clearTimeout(timer);
+    }
+  }, [autoPlayFromUrl]);
+
+  const loadData = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const [fetchedService, servicesList] = await Promise.all([
+        initialService ? Promise.resolve(initialService) : getServiceBySlug(slug),
+        getServices().catch(() => [])
+      ]);
+
+      let resolved = fetchedService;
+      if (!resolved && Array.isArray(servicesList)) {
+        resolved = servicesList.find(
+          s => s.slug === slug ||
+               s.slug === `${slug}-service` ||
+               slug === `${s.slug}-service`
+        ) || null;
+      }
+
+      if (resolved) {
+        setService(resolved);
+      } else {
+        setError(true);
+      }
+
+      if (Array.isArray(servicesList) && servicesList.length > 0) {
+        setAllServices(servicesList);
+      }
+    } catch (err) {
+      console.error("Error loading service detail:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
+
+  useEffect(() => {
     loadData();
-
-    return () => {
-      isMounted = false;
-    };
   }, [slug, initialService]);
 
   if (loading) {
     return <UniversalLoader fullScreen size="lg" />;
   }
 
-  if (!service) {
+  if (error || !service) {
     return (
-      <div className="min-h-[60vh] flex flex-col items-center justify-center text-center px-4">
-        <h2 className="text-2xl font-bold text-slate-800 dark:text-white mb-2">Service Not Found</h2>
-        <p className="text-sm text-slate-600 dark:text-gray-400 mb-6">The requested service offering does not exist or has been removed.</p>
-        <Link href="/services" className="px-5 py-2.5 rounded-[4px] bg-[#0167D6] text-white font-semibold text-sm">
-          Browse All Services
-        </Link>
+      <div className="bg-slate-50 dark:bg-black text-slate-900 dark:text-white min-h-screen">
+        <PageBanner
+          title="Service Offering"
+          subtitle="Explore our full range of enterprise digital capabilities"
+        />
+        <div className="max-w-screen-md mx-auto px-4 py-20">
+          <DataLoadError
+            title="Service Couldn't Load"
+            message="We were unable to locate this specific service or retrieve live data from the server. Please check your connection or browse our services catalog."
+            onRetry={loadData}
+          />
+          <div className="text-center mt-6">
+            <Link
+              href="/services"
+              className="inline-flex items-center gap-2 px-5 py-2.5 rounded-[4px] bg-[#0167D6] hover:bg-blue-600 text-white text-xs font-bold uppercase tracking-wider transition-colors shadow-md"
+            >
+              Browse All Services
+            </Link>
+          </div>
+        </div>
       </div>
     );
   }
@@ -196,55 +245,136 @@ export default function ServiceDetailView({ slug, initialService }: ServiceDetai
 
             {/* Right Main Content - Reduced spacing & rounded-[4px] */}
             <main className="w-full lg:w-[68%] min-w-0">
-              {/* Cover Hero Banner Image / Video Showcase */}
-              {activeService.mediaType === "video" && activeService.video ? (
-                <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm mb-5 bg-black aspect-video">
-                  {isYouTubeUrl(activeService.video) ? (
-                    <iframe
-                      src={getYouTubeEmbedUrl(activeService.video) || ""}
-                      title={activeService.title}
-                      className="w-full h-full border-0"
-                      allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
-                      allowFullScreen
-                    />
-                  ) : (
-                    <video src={activeService.video} controls className="w-full h-full object-cover" />
-                  )}
-                </div>
-              ) : (
-                <div className="mb-5 space-y-2.5">
-                  <div className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm bg-white dark:bg-[#181A1D]">
-                    <img
-                      src={selectedImage || activeService.thumbnail || activeService.image || heroImage}
-                      alt={activeService.title}
-                      className="w-full h-auto max-h-[420px] object-cover rounded-[4px]"
-                    />
-                  </div>
+              {(() => {
+                const allImages: string[] = Array.isArray(activeService.images) && activeService.images.length > 0
+                  ? activeService.images
+                  : (activeService.thumbnail || activeService.image ? [activeService.thumbnail || activeService.image] : [heroImage]);
 
-                  {/* Thumbnail Row if multiple images uploaded */}
-                  {Array.isArray(activeService.images) && activeService.images.length > 1 && (
-                    <div className="flex items-center gap-2 overflow-x-auto pb-1">
-                      {activeService.images.map((imgUrl, i) => {
-                        const isCurrent = (selectedImage || activeService.thumbnail || activeService.image || heroImage) === imgUrl;
-                        return (
+                const hasVideo = Boolean(activeService.video && activeService.video.trim());
+                const isYt = isYouTubeUrl(activeService.video);
+                const ytThumb = isYt ? getYouTubeThumbnailUrl(activeService.video) : null;
+                const isCustomImage = (url?: string | null) =>
+                  Boolean(url && url.trim() && !url.startsWith("/assets/") && !url.includes("img.youtube.com"));
+
+                const videoPosterThumb =
+                  (isCustomImage(activeService.videoThumbnail) ? activeService.videoThumbnail : null) ||
+                  (isCustomImage(activeService.thumbnail) ? activeService.thumbnail : null) ||
+                  ytThumb ||
+                  activeService.videoThumbnail ||
+                  activeService.thumbnail ||
+                  activeService.image ||
+                  allImages[0];
+
+                return (
+                  <div>
+                    {/* Cover Hero Banner Image / Video Showcase */}
+                    <div ref={mediaFrameRef} className="rounded-[4px] overflow-hidden border border-slate-200 dark:border-gray-800 shadow-sm mb-3 bg-black">
+                      {activeMediaType === "video" && hasVideo ? (
+                        !isVideoPlaying ? (
+                          <div className="relative aspect-video w-full bg-slate-900 flex items-center justify-center group overflow-hidden">
+                            <img
+                              src={videoPosterThumb}
+                              alt={`${activeService.title} video preview`}
+                              className="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500"
+                            />
+                            <div className="absolute inset-0 bg-black/40 group-hover:bg-black/30 transition-colors pointer-events-none" />
+                            <button
+                              type="button"
+                              onClick={() => setIsVideoPlaying(true)}
+                              className="absolute z-10 w-16 h-16 sm:w-20 sm:h-20 rounded-full bg-[#0167D6] hover:bg-blue-600 text-white flex items-center justify-center shadow-xl shadow-blue-500/30 backdrop-blur-md border-2 border-white/70 hover:scale-110 transition-all cursor-pointer"
+                              aria-label="Click to play video"
+                            >
+                              <Play size={28} fill="white" className="ml-1 text-white" />
+                            </button>
+                            <div className="absolute bottom-4 left-4 z-10 text-xs font-semibold text-white/90 bg-black/60 px-3 py-1 rounded-[4px] border border-gray-700">
+                              Click to play video
+                            </div>
+                          </div>
+                        ) : (
+                          <div className="aspect-video w-full bg-black">
+                            {isYouTubeUrl(activeService.video) ? (
+                              <iframe
+                                src={getYouTubeEmbedUrl(activeService.video, true) || `${getYouTubeEmbedUrl(activeService.video)}?autoplay=1&rel=0`}
+                                title={activeService.title}
+                                className="w-full h-full border-0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture"
+                                allowFullScreen
+                              />
+                            ) : (
+                              <video
+                                src={activeService.video}
+                                poster={videoPosterThumb}
+                                controls
+                                autoPlay
+                                className="w-full h-full object-contain"
+                                onPlay={() => setIsVideoPlaying(true)}
+                                onPause={() => setIsVideoPlaying(false)}
+                              />
+                            )}
+                          </div>
+                        )
+                      ) : (
+                        <div className="relative aspect-video w-full overflow-hidden bg-white dark:bg-[#181A1D] flex items-center justify-center">
+                          <img
+                            src={selectedImage || activeService.thumbnail || activeService.image || heroImage}
+                            alt={activeService.title}
+                            className="w-full h-full object-cover"
+                          />
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Thumbnail Row if video or multiple images uploaded */}
+                    {(hasVideo || allImages.length > 1) && (
+                      <div className="flex items-center gap-2 overflow-x-auto pb-2 mb-5">
+                        {/* 1. Video Thumbnail */}
+                        {hasVideo && (
                           <button
-                            key={i}
                             type="button"
-                            onClick={() => setSelectedImage(imgUrl)}
-                            className={`w-16 h-12 rounded-[4px] overflow-hidden border shrink-0 transition ${
-                              isCurrent
-                                ? "border-[#0167D6] ring-2 ring-[#0167D6]/40"
+                            onClick={() => {
+                              setActiveMediaType("video");
+                              setIsVideoPlaying(true);
+                            }}
+                            className={`relative w-20 h-14 rounded-[4px] overflow-hidden border shrink-0 transition-all group ${
+                              activeMediaType === "video"
+                                ? "border-[#0167D6] ring-2 ring-[#0167D6]"
                                 : "border-slate-200 dark:border-gray-800 opacity-70 hover:opacity-100"
                             }`}
+                            title="Watch Video"
                           >
-                            <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                            <img src={videoPosterThumb} alt="Video Thumbnail" className="w-full h-full object-cover" />
+                            <div className="absolute inset-0 bg-black/30 flex items-center justify-center">
+                              <Play size={12} fill="white" className="text-white" />
+                            </div>
                           </button>
-                        );
-                      })}
-                    </div>
-                  )}
-                </div>
-              )}
+                        )}
+
+                        {/* 2. Photo Gallery Thumbnails */}
+                        {allImages.map((imgUrl, i) => {
+                          const isCurrent = activeMediaType === "image" && (selectedImage || activeService.thumbnail || activeService.image || heroImage) === imgUrl;
+                          return (
+                            <button
+                              key={i}
+                              type="button"
+                              onClick={() => {
+                                setActiveMediaType("image");
+                                setSelectedImage(imgUrl);
+                              }}
+                              className={`w-20 h-14 rounded-[4px] overflow-hidden border shrink-0 transition-all ${
+                                isCurrent
+                                  ? "border-[#0167D6] ring-2 ring-[#0167D6]/40"
+                                  : "border-slate-200 dark:border-gray-800 opacity-70 hover:opacity-100"
+                              }`}
+                            >
+                              <img src={imgUrl} alt="" className="w-full h-full object-cover" />
+                            </button>
+                          );
+                        })}
+                      </div>
+                    )}
+                  </div>
+                );
+              })()}
 
               {/* Service Full Narrative Description */}
               <div className="mb-5">

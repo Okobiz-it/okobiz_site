@@ -1,10 +1,12 @@
 import React from "react";
 import type { Metadata } from "next";
 import Link from "next/link";
+import { Play } from "lucide-react";
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import { getServices, ServiceClientItem } from "@/lib/api";
 import { cleanSnippet } from "@/lib/richText";
+import { isYouTubeUrl, getYouTubeThumbnailUrl } from "@/lib/youtube";
 
 export const dynamic = "force-dynamic";
 
@@ -52,24 +54,61 @@ export default async function ServicesPage() {
 
           <div className="grid grid-cols-12 gap-y-8 sm:gap-y-8 gap-x-0 sm:gap-x-8">
             {services.map((item, idx) => {
-              const detailUrl = `/services/${item.slug}`;
+              const hasVideo = Boolean(item.video && item.video.trim());
+              const isYt = isYouTubeUrl(item.video);
+              const ytThumb = isYt ? getYouTubeThumbnailUrl(item.video) : null;
+              const isVideoFirst = (item.mediaType === "video" || !item.mediaType) && hasVideo;
+              const isCustomImage = (url?: string | null) =>
+                Boolean(url && url.trim() && !url.startsWith("/assets/") && !url.includes("img.youtube.com"));
+
+              const videoThumb =
+                (isCustomImage(item.videoThumbnail) ? item.videoThumbnail : null) ||
+                (isCustomImage(item.thumbnail) ? item.thumbnail : null) ||
+                ytThumb ||
+                item.videoThumbnail ||
+                item.thumbnail ||
+                item.image ||
+                "/assets/website-app-DOXr3sR7.webp";
+
+              const displayThumb = isVideoFirst ? videoThumb : (item.image || item.thumbnail || videoThumb);
+              const detailUrl = hasVideo && isVideoFirst ? `/services/${item.slug}?autoplay=true` : `/services/${item.slug}`;
               const snippet = cleanSnippet(item.shortDesc || item.fullDesc, 220);
 
               return (
                 <div key={item._id || idx} className="col-span-12 sm:col-span-6 md:col-span-6 lg:col-span-4 group">
-                  <div className="pt-10 px-8 pb-7 flex flex-col justify-between bg-white dark:bg-[#181A1D] shadow-sm border border-slate-200 dark:border-gray-800/60 group-hover:border-[#0167D6] group-hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300 h-full rounded-[4px]">
+                  <div className="pt-8 px-7 pb-7 flex flex-col justify-between bg-white dark:bg-[#181A1D] shadow-sm border border-slate-200 dark:border-gray-800/60 group-hover:border-[#0167D6] group-hover:shadow-xl hover:shadow-blue-900/10 transition-all duration-300 h-full rounded-[4px]">
                     {/* Clickable Card Body linking to Details Page */}
                     <Link
                       href={detailUrl}
                       className="block group/link cursor-pointer focus:outline-none"
                     >
-                      <figure className="w-32 h-32 cardv2 rounded-[4px] transition-transform duration-300 group-hover/link:scale-105">
-                        <img
-                          className="w-full h-full object-contain"
-                          src={item.image || "/assets/website-app-DOXr3sR7.webp"}
-                          alt={item.title}
-                        />
-                      </figure>
+                      {isVideoFirst ? (
+                        <div className="relative w-full aspect-video rounded-[4px] overflow-hidden bg-slate-900 mb-4 group/cover">
+                          <img
+                            className="w-full h-full object-cover group-hover/cover:scale-105 transition-transform duration-500"
+                            src={displayThumb}
+                            alt={item.title}
+                          />
+                          <div className="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none" />
+                          <span className="absolute top-2.5 left-2.5 px-2 py-0.5 rounded-[4px] bg-rose-600 text-white text-[10px] font-bold flex items-center gap-1 shadow-sm">
+                            <Play size={10} className="fill-white text-white" />
+                            <span>VIDEO</span>
+                          </span>
+                          <div className="absolute inset-0 flex items-center justify-center group-hover/cover:scale-110 transition-transform duration-300">
+                            <div className="w-12 h-12 rounded-full bg-[#0167D6] hover:bg-blue-600 text-white flex items-center justify-center shadow-lg shadow-blue-500/30 backdrop-blur-md border-2 border-white/70">
+                              <Play size={20} fill="white" className="ml-0.5 text-white" />
+                            </div>
+                          </div>
+                        </div>
+                      ) : (
+                        <figure className="w-32 h-32 cardv2 rounded-[4px] transition-transform duration-300 group-hover/link:scale-105">
+                          <img
+                            className="w-full h-full object-contain"
+                            src={item.image || "/assets/website-app-DOXr3sR7.webp"}
+                            alt={item.title}
+                          />
+                        </figure>
+                      )}
                       <div className="mt-4">
                         <h2 className="capitalize text-base font-bold text-slate-900 dark:text-white group-hover/link:text-[#0167d6] transition-colors line-clamp-2 min-h-[3rem] max-h-[3rem] overflow-hidden text-ellipsis">
                           {item.title}

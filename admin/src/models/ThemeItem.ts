@@ -11,6 +11,7 @@ export interface IThemeItem {
   discountPrice: number;
   websiteLink: string;
   photo?: string;
+  images?: string[];
   video?: string;
   videoThumbnail?: string;
   popularBadge: boolean;
@@ -34,6 +35,7 @@ const ThemeItemSchema = new Schema<IThemeItem>({
   discountPrice: { type: Number, default: 0 },
   websiteLink: { type: String, default: "" },
   photo: { type: String, default: "" },
+  images: [{ type: String }],
   video: { type: String, default: "" },
   videoThumbnail: { type: String, default: "" },
   popularBadge: { type: Boolean, default: false },

@@ -6,7 +6,7 @@ const PRODUCTION_ADMIN_URL = "https://okobizadmin.vercel.app";
 export function getApiBase(): string {
   // 1. Explicit env var (strip any accidental trailing slashes)
   const envUrl = process.env.NEXT_PUBLIC_ADMIN_URL?.trim().replace(/\/+$/, "");
-  if (envUrl && envUrl !== "http://localhost:3001") {
+  if (envUrl) {
     return envUrl;
   }
 
@@ -17,8 +17,6 @@ export function getApiBase(): string {
     if (host.includes("vercel.app") || (host !== "localhost" && host !== "127.0.0.1")) {
       return PRODUCTION_ADMIN_URL;
     }
-    // In local dev, if NEXT_PUBLIC_ADMIN_URL was explicitly localhost:3001, use it
-    if (envUrl) return envUrl;
     return ""; // uses Next.js rewrites to local admin
   }
 
@@ -27,7 +25,7 @@ export function getApiBase(): string {
     return PRODUCTION_ADMIN_URL;
   }
 
-  return envUrl || "http://localhost:3001";
+  return "http://localhost:3001";
 }
 
 export async function apiFetch(endpoint: string, options?: RequestInit): Promise<Response> {
@@ -35,22 +33,8 @@ export async function apiFetch(endpoint: string, options?: RequestInit): Promise
   const base = getApiBase();
   const primaryUrl = `${base}${cleanEndpoint}`;
 
-  try {
-    const res = await fetch(primaryUrl, options);
-    // If request 404'd and we didn't already hit PRODUCTION_ADMIN_URL, fallback to production admin
-    if (!res.ok && res.status === 404 && base !== PRODUCTION_ADMIN_URL) {
-      console.warn(`[API] 404 on ${primaryUrl}, falling back to ${PRODUCTION_ADMIN_URL}${cleanEndpoint}`);
-      const fallbackRes = await fetch(`${PRODUCTION_ADMIN_URL}${cleanEndpoint}`, options);
-      if (fallbackRes.ok) return fallbackRes;
-    }
-    return res;
-  } catch (err) {
-    if (base !== PRODUCTION_ADMIN_URL) {
-      console.warn(`[API] Network error on ${primaryUrl}, falling back to ${PRODUCTION_ADMIN_URL}${cleanEndpoint}`);
-      return await fetch(`${PRODUCTION_ADMIN_URL}${cleanEndpoint}`, options);
-    }
-    throw err;
-  }
+  const res = await fetch(primaryUrl, options);
+  return res;
 }
 
 function isDynamicBailout(err: any): boolean {
@@ -68,11 +52,12 @@ export async function getProducts(): Promise<ProductItem[]> {
         slug: p.slug || createSlug(p.title)
       }));
     }
+    throw new Error(json.message || "Invalid products response");
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
-    console.warn("Failed to fetch products from MongoDB:", err?.message || err);
+    console.warn("Failed to fetch products:", err?.message || err);
+    throw err;
   }
-  return [];
 }
 
 export async function getProductById(id: string): Promise<ProductItem | null> {
@@ -118,22 +103,23 @@ export async function getThemes(): Promise<ThemeItem[]> {
         slug: t.slug || createSlug(t.websiteTitle)
       }));
     }
+    throw new Error(json.message || "Invalid themes response");
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
-    console.warn("Failed to fetch themes from MongoDB:", err?.message || err);
+    console.warn("Failed to fetch themes:", err?.message || err);
+    throw err;
   }
-  return [];
 }
 
 export async function getThemeById(id: string): Promise<ThemeItem | null> {
   try {
-    const themes = await getThemes();
     const cleanId = id.toLowerCase();
+    const themes = await getThemes();
     return themes.find((t) =>
       t._id === id ||
       (t.slug && t.slug.toLowerCase() === cleanId) ||
       createSlug(t.websiteTitle) === cleanId
-    ) || themes[0] || null;
+    ) || null;
   } catch (err) {
     return null;
   }
@@ -150,17 +136,18 @@ export async function getBlogs(): Promise<BlogItem[]> {
         slug: b.slug || createSlug(b.title)
       }));
     }
+    throw new Error(json.message || "Invalid blogs response");
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
-    console.warn("Failed to fetch blogs from MongoDB:", err?.message || err);
+    console.warn("Failed to fetch blogs:", err?.message || err);
+    throw err;
   }
-  return [];
 }
 
 export async function getBlogById(id: string): Promise<BlogItem | null> {
   try {
     const blogs = await getBlogs();
-    return blogs.find((b) => b._id === id || b.slug === id) || blogs[0] || null;
+    return blogs.find((b) => b._id === id || b.slug === id || createSlug(b.title) === id.toLowerCase()) || null;
   } catch (err) {
     return null;
   }
@@ -174,12 +161,12 @@ export async function getClients(): Promise<ClientPartner[]> {
     if (json.success && Array.isArray(json.data)) {
       return json.data;
     }
+    throw new Error(json.message || "Invalid clients response");
   } catch (err) {
-    console.warn("Failed to fetch clients from MongoDB:", err);
+    console.warn("Failed to fetch clients:", err);
+    throw err;
   }
-  return [];
 }
-
 
 export async function getGallery(): Promise<GalleryItem[]> {
   try {
@@ -189,10 +176,11 @@ export async function getGallery(): Promise<GalleryItem[]> {
     if (json.success && Array.isArray(json.data)) {
       return json.data;
     }
+    throw new Error(json.message || "Invalid gallery response");
   } catch (err) {
-    console.warn("Failed to fetch gallery from MongoDB:", err);
+    console.warn("Failed to fetch gallery:", err);
+    throw err;
   }
-  return [];
 }
 
 export interface HeroSlideItem {
@@ -356,11 +344,12 @@ export async function getServices(): Promise<ServiceClientItem[]> {
         slug: s.slug || createSlug(s.title)
       }));
     }
+    return [];
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
     console.warn("Failed to fetch services from API:", err?.message || err);
+    throw err;
   }
-  return [];
 }
 
 export async function getServiceBySlug(slug: string): Promise<ServiceClientItem | null> {
@@ -424,17 +413,18 @@ export async function getJobs(): Promise<JobItem[]> {
     const res = await apiFetch(`/api/jobs?active=true`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
-    if (json.success && Array.isArray(json.data) && json.data.length > 0) {
+    if (json.success && Array.isArray(json.data)) {
       return json.data.map((j: any) => ({
         ...j,
         slug: j.slug || createSlug(j.title)
       }));
     }
+    return [];
   } catch (err: any) {
     if (isDynamicBailout(err)) throw err;
     console.warn("Failed to fetch jobs from API:", err?.message || err);
+    throw err;
   }
-  return [];
 }
 
 export async function getJobBySlug(slug: string): Promise<JobItem | null> {

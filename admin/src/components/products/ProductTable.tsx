@@ -20,6 +20,8 @@ import {
   List
 } from "lucide-react";
 
+import { getClientLink } from "@/lib/clientUrl";
+
 interface ProductTableProps {
   products: any[];
   paginated: any[];
@@ -167,7 +169,7 @@ export default function ProductTable({
                 {/* Card Footer Actions (Fixed height h-[52px]) */}
                 <div className="p-3.5 bg-slate-50/80 dark:bg-[#181A1F]/80 border-t border-slate-200 dark:border-gray-800/80 flex items-center justify-between shrink-0 h-[52px]">
                   <a
-                    href={`http://localhost:3000/products/${product.slug}`}
+                    href={getClientLink(`/products/${product.slug}`)}
                     target="_blank"
                     rel="noopener noreferrer"
                     className="inline-flex items-center gap-1 text-xs text-slate-600 hover:text-[#0167D6] dark:text-gray-400 dark:hover:text-white transition font-medium"

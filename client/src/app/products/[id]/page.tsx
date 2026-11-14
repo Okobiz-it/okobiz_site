@@ -1,6 +1,6 @@
 "use client";
 
-import React, { useState, useEffect, Suspense } from "react";
+import React, { useState, useEffect, useRef, Suspense } from "react";
 import Link from "next/link";
 import { useParams, useRouter, useSearchParams } from "next/navigation";
 import {
@@ -17,6 +17,7 @@ import {
 import PageBanner from "@/components/PageBanner";
 import TalkCta from "@/components/TalkCta";
 import UniversalLoader from "@/components/UniversalLoader";
+import DataLoadError from "@/components/DataLoadError";
 import ProductPricingSection from "@/components/ProductPricingSection";
 import ProductReviewsSection from "@/components/ProductReviewsSection";
 import { ProductItem } from "@/data/mockData";
@@ -34,53 +35,66 @@ function ProductDetailContent() {
 
   const [product, setProduct] = useState<ProductItem | null>(null);
   const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(false);
   const [activeMediaType, setActiveMediaType] = useState<"video" | "image">("image");
   const [isVideoPlaying, setIsVideoPlaying] = useState(autoPlayFromUrl);
   const [selectedImageIndex, setSelectedImageIndex] = useState(0);
+  const mediaFrameRef = useRef<HTMLDivElement>(null);
 
   useEffect(() => {
-    if (searchParams?.get("autoplay") === "true") {
+    if (searchParams?.get("autoplay") === "true" || autoPlayFromUrl) {
       setActiveMediaType("video");
       setIsVideoPlaying(true);
+      const timer = setTimeout(() => {
+        mediaFrameRef.current?.scrollIntoView({ behavior: "smooth", block: "center" });
+      }, 350);
+      return () => clearTimeout(timer);
     }
-  }, [searchParams]);
+  }, [searchParams, autoPlayFromUrl]);
+
+  const fetchProduct = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      if (id) {
+        const data = await getProductById(id);
+        if (data) {
+          setProduct(data);
+          const hasVid = Boolean(data.video && data.video.trim());
+          const isVideoFirst = data.mediaType === "video" && hasVid;
+
+          // If "Show Video First" is configured in admin or user clicked play button (?autoplay=true)
+          if (isVideoFirst) {
+            setActiveMediaType("video");
+            setIsVideoPlaying(autoPlayFromUrl);
+          } else if (hasVid && autoPlayFromUrl) {
+            setActiveMediaType("video");
+            setIsVideoPlaying(true);
+          } else if (data.images && data.images.length > 0) {
+            setActiveMediaType("image");
+            setIsVideoPlaying(false);
+          } else if (hasVid) {
+            setActiveMediaType("video");
+            setIsVideoPlaying(false);
+          } else {
+            setActiveMediaType("image");
+            setIsVideoPlaying(false);
+          }
+        } else {
+          setError(true);
+        }
+      } else {
+        setError(true);
+      }
+    } catch (e) {
+      console.warn("Failed to load product details:", e);
+      setError(true);
+    } finally {
+      setLoading(false);
+    }
+  };
 
   useEffect(() => {
-    const fetchProduct = async () => {
-      try {
-        setLoading(true);
-        if (id) {
-          const data = await getProductById(id);
-          if (data) {
-            setProduct(data);
-            const hasVid = Boolean(data.video && data.video.trim());
-            const isVideoFirst = data.mediaType === "video" && hasVid;
-
-            // If "Show Video First" is configured in admin or user clicked play button (?autoplay=true)
-            if (isVideoFirst) {
-              setActiveMediaType("video");
-              setIsVideoPlaying(autoPlayFromUrl);
-            } else if (hasVid && autoPlayFromUrl) {
-              setActiveMediaType("video");
-              setIsVideoPlaying(true);
-            } else if (data.images && data.images.length > 0) {
-              setActiveMediaType("image");
-              setIsVideoPlaying(false);
-            } else if (hasVid) {
-              setActiveMediaType("video");
-              setIsVideoPlaying(false);
-            } else {
-              setActiveMediaType("image");
-              setIsVideoPlaying(false);
-            }
-          }
-        }
-      } catch (e) {
-        console.warn("Failed to load product details:", e);
-      } finally {
-        setLoading(false);
-      }
-    };
     fetchProduct();
   }, [id, autoPlayFromUrl]);
 
@@ -88,17 +102,23 @@ function ProductDetailContent() {
     return <UniversalLoader fullScreen size="lg" />;
   }
 
-  if (!product) {
+  if (error || !product) {
     return (
-      <div className="bg-black text-white min-h-screen flex flex-col items-center justify-center p-4">
-        <h2 className="text-xl font-bold mb-2">Product Not Found</h2>
-        <p className="text-gray-400 text-sm mb-6">The product you are looking for does not exist or has been removed.</p>
-        <Link
-          href="/products"
-          className="px-5 py-2.5 bg-[#3368B2] text-white text-xs font-bold rounded-[4px]"
-        >
-          Back to Products Catalog
-        </Link>
+      <div className="bg-[#F8FAFC] dark:bg-black text-slate-900 dark:text-white min-h-screen">
+        <PageBanner title="Product Details" subtitle="Software overview, architecture, and live demo access" />
+        <div className="max-w-2xl mx-auto px-4 py-20 flex flex-col items-center">
+          <DataLoadError
+            title="Product Couldn't Load"
+            message="The requested software product could not be found or failed to load from the server."
+            onRetry={fetchProduct}
+          />
+          <Link
+            href="/products"
+            className="mt-4 inline-flex items-center gap-1.5 px-4 py-2 rounded-[4px] bg-slate-200 dark:bg-gray-800 text-slate-800 dark:text-gray-200 hover:bg-slate-300 dark:hover:bg-gray-700 text-xs font-semibold transition"
+          >
+            <ArrowLeft size={14} /> Back to Products Catalog
+          </Link>
+        </div>
       </div>
     );
   }
@@ -111,15 +131,24 @@ function ProductDetailContent() {
   const isYt = isYouTubeUrl(product.video);
   const ytEmbedUrl = isYt ? getYouTubeEmbedUrl(product.video) : null;
   const ytThumb = isYt ? getYouTubeThumbnailUrl(product.video) : null;
-  const isCustomVideoThumb = Boolean(
-    product.videoThumbnail &&
-    !product.videoThumbnail.startsWith("/assets/") &&
-    product.videoThumbnail !== product.thumbnail &&
-    !product.videoThumbnail.includes("web-2-DujjTO8C")
-  );
-  const videoPosterThumb = isCustomVideoThumb
-    ? product.videoThumbnail
-    : (ytThumb || product.videoThumbnail || product.thumbnail || allImages[0]);
+
+  const isCustomImage = (url?: string | null) =>
+    Boolean(
+      url &&
+      url.trim() &&
+      !url.startsWith("/assets/") &&
+      !url.includes("web-2-DujjTO8C") &&
+      !url.includes("img.youtube.com")
+    );
+
+  const videoPosterThumb =
+    (isCustomImage(product.videoThumbnail) ? product.videoThumbnail : null) ||
+    (isCustomImage(product.thumbnail) ? product.thumbnail : null) ||
+    ytThumb ||
+    product.videoThumbnail ||
+    product.thumbnail ||
+    allImages[0] ||
+    "/assets/web-2-DujjTO8C.webp";
 
   const lowestPrice = product.pricingPlans?.length > 0
     ? Math.min(...product.pricingPlans.map((p) => p.price))
@@ -165,7 +194,7 @@ function ProductDetailContent() {
             {/* LEFT COLUMN: Media (Video & Multi-Image Gallery alongside) - 7 cols */}
             <div className="lg:col-span-7 space-y-4">
               {/* Main Media Player / Image Viewer Container */}
-              <div className="relative rounded-[4px] overflow-hidden bg-slate-100 dark:bg-black border border-slate-200 dark:border-gray-800 shadow-lg">
+              <div ref={mediaFrameRef} className="relative rounded-[4px] overflow-hidden bg-slate-100 dark:bg-black border border-slate-200 dark:border-gray-800 shadow-lg">
                 {activeMediaType === "video" && hasVideo ? (
                   !isVideoPlaying ? (
                     /* Paused state when user clicked outside video play frame */

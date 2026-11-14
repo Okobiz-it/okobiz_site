@@ -14,31 +14,33 @@ import CareerFaq from "./components/CareerFaq";
 export default function CareerPage() {
   const [jobs, setJobs] = useState<JobItem[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
+  const [error, setError] = useState<boolean>(false);
   const [selectedDepartment, setSelectedDepartment] = useState<string>("All");
   const [searchQuery, setSearchQuery] = useState<string>("");
 
   const openingsRef = useRef<HTMLElement>(null);
   const lifeRef = useRef<HTMLElement>(null);
 
-  useEffect(() => {
-    let isMounted = true;
-    async function fetchJobsList() {
-      try {
-        setLoading(true);
-        const data = await getJobs();
-        if (isMounted) {
-          setJobs(data || []);
-        }
-      } catch (err) {
-        console.warn("Failed to fetch jobs:", err);
-      } finally {
-        if (isMounted) setLoading(false);
+  const fetchJobsList = async () => {
+    try {
+      setLoading(true);
+      setError(false);
+      const data = await getJobs();
+      if (Array.isArray(data)) {
+        setJobs(data);
+      } else {
+        setError(true);
       }
+    } catch (err) {
+      console.warn("Failed to fetch jobs:", err);
+      setError(true);
+    } finally {
+      setLoading(false);
     }
+  };
+
+  useEffect(() => {
     fetchJobsList();
-    return () => {
-      isMounted = false;
-    };
   }, []);
 
   const departments = useMemo(() => {
@@ -106,6 +108,8 @@ export default function CareerPage() {
         searchQuery={searchQuery}
         setSearchQuery={setSearchQuery}
         loading={loading}
+        error={error}
+        onRetry={fetchJobsList}
       />
 
       {/* 7. FAQs (On-site Workspace) */}
