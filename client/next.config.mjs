@@ -11,7 +11,8 @@ const nextConfig = {
     ],
   },
   async rewrites() {
-    const adminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001";
+    const rawAdminUrl = process.env.NEXT_PUBLIC_ADMIN_URL || (process.env.VERCEL || process.env.NODE_ENV === "production" ? "https://okobizadmin.vercel.app" : "http://localhost:3001");
+    const adminUrl = rawAdminUrl.replace(/\/+$/, "");
     return [
       {
         source: "/api/:path*",

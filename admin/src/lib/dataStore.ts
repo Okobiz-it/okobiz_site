@@ -1506,12 +1506,16 @@ const DEFAULT_STORE: DataStoreSchema = {
 };
 
 function ensureStoreExists() {
-  const dir = path.dirname(DATA_FILE);
-  if (!fs.existsSync(dir)) {
-    fs.mkdirSync(dir, { recursive: true });
-  }
-  if (!fs.existsSync(DATA_FILE)) {
-    fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULT_STORE, null, 2), "utf8");
+  try {
+    const dir = path.dirname(DATA_FILE);
+    if (!fs.existsSync(dir)) {
+      fs.mkdirSync(dir, { recursive: true });
+    }
+    if (!fs.existsSync(DATA_FILE)) {
+      fs.writeFileSync(DATA_FILE, JSON.stringify(DEFAULT_STORE, null, 2), "utf8");
+    }
+  } catch (err) {
+    // Read-only filesystem on serverless environments (Vercel)
   }
 }
 
@@ -1595,6 +1599,11 @@ export function getDataStore(): DataStoreSchema {
 }
 
 export function saveDatastore(data: DataStoreSchema) {
-  ensureStoreExists();
-  fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf8");
+  try {
+    ensureStoreExists();
+    fs.writeFileSync(DATA_FILE, JSON.stringify(data, null, 2), "utf8");
+  } catch (err) {
+    // Read-only filesystem on serverless cloud platforms (Vercel)
+    // Live data is safely persisted in MongoDB Atlas
+  }
 }

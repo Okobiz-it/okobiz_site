@@ -1,7 +1,57 @@
 import { ThemeItem, BlogItem, ClientPartner, GalleryItem, ProductItem, PricingPlan } from "../data/mockData";
 import { createSlug } from "./slug";
 
-const API_BASE = typeof window !== "undefined" ? "" : (process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001");
+const PRODUCTION_ADMIN_URL = "https://okobizadmin.vercel.app";
+
+export function getApiBase(): string {
+  // 1. Explicit env var (strip any accidental trailing slashes)
+  const envUrl = process.env.NEXT_PUBLIC_ADMIN_URL?.trim().replace(/\/+$/, "");
+  if (envUrl && envUrl !== "http://localhost:3001") {
+    return envUrl;
+  }
+
+  // 2. Client-side browser execution
+  if (typeof window !== "undefined") {
+    const host = window.location.hostname;
+    // If running on Vercel or any live host other than localhost
+    if (host.includes("vercel.app") || (host !== "localhost" && host !== "127.0.0.1")) {
+      return PRODUCTION_ADMIN_URL;
+    }
+    // In local dev, if NEXT_PUBLIC_ADMIN_URL was explicitly localhost:3001, use it
+    if (envUrl) return envUrl;
+    return ""; // uses Next.js rewrites to local admin
+  }
+
+  // 3. Server-side (SSR / Node) execution
+  if (process.env.VERCEL || process.env.NODE_ENV === "production") {
+    return PRODUCTION_ADMIN_URL;
+  }
+
+  return envUrl || "http://localhost:3001";
+}
+
+export async function apiFetch(endpoint: string, options?: RequestInit): Promise<Response> {
+  const cleanEndpoint = endpoint.startsWith("/") ? endpoint : `/${endpoint}`;
+  const base = getApiBase();
+  const primaryUrl = `${base}${cleanEndpoint}`;
+
+  try {
+    const res = await fetch(primaryUrl, options);
+    // If request 404'd and we didn't already hit PRODUCTION_ADMIN_URL, fallback to production admin
+    if (!res.ok && res.status === 404 && base !== PRODUCTION_ADMIN_URL) {
+      console.warn(`[API] 404 on ${primaryUrl}, falling back to ${PRODUCTION_ADMIN_URL}${cleanEndpoint}`);
+      const fallbackRes = await fetch(`${PRODUCTION_ADMIN_URL}${cleanEndpoint}`, options);
+      if (fallbackRes.ok) return fallbackRes;
+    }
+    return res;
+  } catch (err) {
+    if (base !== PRODUCTION_ADMIN_URL) {
+      console.warn(`[API] Network error on ${primaryUrl}, falling back to ${PRODUCTION_ADMIN_URL}${cleanEndpoint}`);
+      return await fetch(`${PRODUCTION_ADMIN_URL}${cleanEndpoint}`, options);
+    }
+    throw err;
+  }
+}
 
 function isDynamicBailout(err: any): boolean {
   return err?.digest === "DYNAMIC_SERVER_USAGE" || err?.message?.includes("Dynamic server usage");
@@ -9,7 +59,7 @@ function isDynamicBailout(err: any): boolean {
 
 export async function getProducts(): Promise<ProductItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/products`, { cache: "no-store" });
+    const res = await apiFetch(`/api/products`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
@@ -27,7 +77,7 @@ export async function getProducts(): Promise<ProductItem[]> {
 
 export async function getProductById(id: string): Promise<ProductItem | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/products/${id}`, { cache: "no-store" });
+    const res = await apiFetch(`/api/products/${id}`, { cache: "no-store" });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {
@@ -59,7 +109,7 @@ export function getProductWhatsAppUrl(productTitle: string, customNumber?: strin
 
 export async function getThemes(): Promise<ThemeItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/themes`, { cache: "no-store" });
+    const res = await apiFetch(`/api/themes`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
@@ -91,7 +141,7 @@ export async function getThemeById(id: string): Promise<ThemeItem | null> {
 
 export async function getBlogs(): Promise<BlogItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/blogs`, { cache: "no-store" });
+    const res = await apiFetch(`/api/blogs`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
@@ -118,7 +168,7 @@ export async function getBlogById(id: string): Promise<BlogItem | null> {
 
 export async function getClients(): Promise<ClientPartner[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/clients`, { cache: "no-store" });
+    const res = await apiFetch(`/api/clients`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
@@ -133,7 +183,7 @@ export async function getClients(): Promise<ClientPartner[]> {
 
 export async function getGallery(): Promise<GalleryItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/gallery`, { cache: "no-store" });
+    const res = await apiFetch(`/api/gallery`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data)) {
@@ -163,7 +213,7 @@ export interface FaqItemType {
 
 export async function getHeroSlides(): Promise<HeroSlideItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/hero`, { cache: "no-store" });
+    const res = await apiFetch(`/api/hero`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -177,7 +227,7 @@ export async function getHeroSlides(): Promise<HeroSlideItem[]> {
 
 export async function getFaqs(): Promise<FaqItemType[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/faqs`, { cache: "no-store" });
+    const res = await apiFetch(`/api/faqs`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -198,7 +248,7 @@ export async function sendContactMessage(data: {
   message: string;
 }) {
   try {
-    const res = await fetch(`${API_BASE}/api/inquiries`, {
+    const res = await apiFetch(`/api/inquiries`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -223,7 +273,7 @@ export async function sendOrder(formData: FormData) {
     const message = formData.get("message") as string;
     const themeTitle = formData.get("themeTitle") as string;
 
-    const res = await fetch(`${API_BASE}/api/inquiries`, {
+    const res = await apiFetch(`/api/inquiries`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({
@@ -257,7 +307,7 @@ export async function getPortfolioPdf(): Promise<PortfolioPdfData> {
   };
 
   try {
-    const res = await fetch(`${API_BASE}/api/portfolio-pdf`, { cache: "no-store" });
+    const res = await apiFetch(`/api/portfolio-pdf`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && json.data) {
@@ -297,7 +347,7 @@ export interface ServiceClientItem {
 
 export async function getServices(): Promise<ServiceClientItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/services`, { cache: "no-store" });
+    const res = await apiFetch(`/api/services`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -315,7 +365,7 @@ export async function getServices(): Promise<ServiceClientItem[]> {
 
 export async function getServiceBySlug(slug: string): Promise<ServiceClientItem | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/services?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+    const res = await apiFetch(`/api/services?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {
@@ -371,7 +421,7 @@ export interface JobItem {
 
 export async function getJobs(): Promise<JobItem[]> {
   try {
-    const res = await fetch(`${API_BASE}/api/jobs?active=true`, { cache: "no-store" });
+    const res = await apiFetch(`/api/jobs?active=true`, { cache: "no-store" });
     if (!res.ok) throw new Error(`HTTP error! status: ${res.status}`);
     const json = await res.json();
     if (json.success && Array.isArray(json.data) && json.data.length > 0) {
@@ -389,7 +439,7 @@ export async function getJobs(): Promise<JobItem[]> {
 
 export async function getJobBySlug(slug: string): Promise<JobItem | null> {
   try {
-    const res = await fetch(`${API_BASE}/api/jobs?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
+    const res = await apiFetch(`/api/jobs?slug=${encodeURIComponent(slug)}`, { cache: "no-store" });
     if (res.ok) {
       const json = await res.json();
       if (json.success && json.data) {
@@ -429,7 +479,7 @@ export async function applyForJob(payload: {
   noticePeriod?: string;
 }): Promise<{ success: boolean; message: string }> {
   try {
-    const res = await fetch(`${API_BASE}/api/applications`, {
+    const res = await apiFetch(`/api/applications`, {
       method: "POST",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify(payload)
