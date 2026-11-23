@@ -3,7 +3,23 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import TalkCta from "@/components/TalkCta";
-import { Play, ArrowRight, Monitor, PenTool, BarChart, Plus, Minus, Phone } from "lucide-react";
+import {
+  Play,
+  ArrowRight,
+  Monitor,
+  PenTool,
+  BarChart,
+  Plus,
+  Minus,
+  Phone,
+  CalendarDays,
+  Users,
+  UsersRound,
+  Award,
+  Paintbrush,
+  Lightbulb,
+  MonitorSmartphone
+} from "lucide-react";
 import ClientStepSlider from "@/components/ClientStepSlider";
 import { getHeroSlides, getFaqs, HeroSlideItem, FaqItemType } from "@/lib/api";
 
@@ -141,21 +157,40 @@ export default function HomePage() {
       {/* 2. Stats Section */}
       <section className="bg-[#181A1D] py-16 border-b border-gray-800">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 grid grid-cols-2 md:grid-cols-4 gap-8">
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm group hover:border-[#3368B2]/60 transition-all duration-300">
+            <div className="relative mb-3 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#3368B2]/30 blur-md rounded-full pointer-events-none" />
+              <CalendarDays className="w-10 h-10 text-[#38bdf8] relative z-10 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)]" />
+            </div>
             <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">2018</span>
-            <span className="text-slate-300 text-sm sm:text-base font-semibold">Journey Started</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold text-center">Journey Started</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm group hover:border-[#3368B2]/60 transition-all duration-300">
+            <div className="relative mb-3 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#3368B2]/30 blur-md rounded-full pointer-events-none" />
+              <Users className="w-10 h-10 text-[#38bdf8] relative z-10 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)]" />
+            </div>
             <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">150</span>
-            <span className="text-slate-300 text-sm sm:text-base font-semibold">Happy Clients</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold text-center">Happy Clients</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm group hover:border-[#3368B2]/60 transition-all duration-300">
+            <div className="relative mb-3 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#3368B2]/30 blur-md rounded-full pointer-events-none" />
+              <UsersRound className="w-10 h-10 text-[#38bdf8] relative z-10 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)]" />
+            </div>
             <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">20</span>
-            <span className="text-slate-300 text-sm sm:text-base font-semibold">Team Members</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold text-center">Team Members</span>
           </div>
-          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm">
+
+          <div className="flex flex-col items-center border border-gray-800 p-8 rounded-md bg-[#131417] shadow-sm group hover:border-[#3368B2]/60 transition-all duration-300">
+            <div className="relative mb-3 flex items-center justify-center">
+              <div className="absolute inset-0 bg-[#3368B2]/30 blur-md rounded-full pointer-events-none" />
+              <Award className="w-10 h-10 text-[#38bdf8] relative z-10 drop-shadow-[0_0_12px_rgba(56,189,248,0.75)]" />
+            </div>
             <span className="text-4xl sm:text-5xl font-black text-white mb-2 tracking-tight">6+</span>
-            <span className="text-slate-300 text-sm sm:text-base font-semibold">Years of Excellence</span>
+            <span className="text-slate-300 text-sm sm:text-base font-semibold text-center">Years of Excellence</span>
           </div>
         </div>
       </section>
@@ -192,18 +227,75 @@ export default function HomePage() {
       <section className="py-16 bg-[#131417]">
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 grid grid-cols-1 md:grid-cols-3 gap-8">
           {[
-            { title: 'Website & App Development', desc: 'We offer professional website and app development services that are suited to your business requirements.', icon: Monitor, link: '/website-app-development-service' },
-            { title: 'Creative Solution', desc: 'Our visual and motion design solutions will help to elevate your brand. We bring your ideas to life.', icon: PenTool, link: '/graphics-solution-service' },
-            { title: 'Digital Marketing', desc: 'Our digital marketing services will help you increase your internet visibility. We specialize in connecting you with your target audience.', icon: BarChart, link: '/digital-marketing-service' }
+            {
+              title: "Website & App Development",
+              desc: "We offer professional website and app development services that are suited to your business requirements. From dynamic website to easy-to-use mobile apps, our skilled team provides innovative, scalable, and secure solutions. Let us help you establish a digital presence that enhances the user experience and drives growth for your brand.",
+              link: "/website-app-development-service",
+              renderIcon: () => (
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" className="text-white shrink-0">
+                  <rect x="2" y="4" width="20" height="16" rx="3" stroke="currentColor" strokeWidth="2" />
+                  <path d="M7 8H9.5M7 12H9M7 16H9.5" stroke="currentColor" strokeWidth="2" strokeLinecap="round" />
+                  <path d="M13 8H15C16.1046 8 17 8.89543 17 10V14C17 15.1046 16.1046 16 15 16H13V8Z" stroke="currentColor" strokeWidth="2" />
+                </svg>
+              )
+            },
+            {
+              title: "Graphics Solution",
+              desc: "Our visual and motion design solutions will help to elevate your brand. We bring your ideas to life through attractive logos and banners, dynamic animations, and video content. Our designs are specifically crafted to captivate your audience, enhance your message, and leave a lasting visual impression for your company.",
+              link: "/graphics-solution-service",
+              renderIcon: () => (
+                <svg width="32" height="32" viewBox="0 0 24 24" fill="currentColor" xmlns="http://www.w3.org/2000/svg" className="text-white shrink-0">
+                  <path d="M19.4 3.6a3.3 3.3 0 0 0-4.7 0L8.2 10.1a4.8 4.8 0 0 0-1.2 2.2L6 16.5l4.2-1a4.8 4.8 0 0 0 2.2-1.2l6.5-6.5a3.3 3.3 0 0 0 0-4.7zM7.5 17.5a2.5 2.5 0 0 0-3.5 3.5c1 .5 2.5 0 3-1 .5-1 .5-2.5.5-2.5z" />
+                </svg>
+              )
+            },
+            {
+              title: "Digital Marketing",
+              desc: "Our digital marketing services will help you increase your internet visibility. We specialize in connecting you with your target audience through SEO, social media marketing, email campaigns, and targeted adverts. In today's competitive digital market, our data-driven initiatives boost engagement, brand visibility, and business growth.",
+              link: "/digital-marketing-service",
+              renderIcon: () => (
+                <svg width="34" height="34" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className="text-white shrink-0">
+                  <circle cx="12" cy="12" r="5" />
+                  <line x1="12" y1="1" x2="12" y2="3" />
+                  <line x1="12" y1="21" x2="12" y2="23" />
+                  <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" />
+                  <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" />
+                  <line x1="1" y1="12" x2="3" y2="12" />
+                  <line x1="21" y1="12" x2="23" y2="12" />
+                  <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" />
+                  <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" />
+                </svg>
+              )
+            }
           ].map((srv, i) => (
-            <div key={i} className="bg-[#18191D] border border-gray-800 p-10 rounded-lg hover:-translate-y-2 transition-transform duration-300 group flex flex-col justify-between h-full">
+            <div
+              key={i}
+              className="bg-[#121316] border border-white/5 hover:border-zinc-700/80 p-8 sm:p-9 rounded-2xl transition-all duration-300 flex flex-col justify-between h-full shadow-lg"
+            >
               <div>
-                <srv.icon size={48} className="text-[#3368B2] mb-6 group-hover:scale-110 transition-transform" />
-                <h3 className="text-2xl font-bold mb-4 line-clamp-2 text-white">{srv.title}</h3>
-                <p className="text-slate-300 mb-8 leading-relaxed text-[15px] sm:text-base line-clamp-3 overflow-hidden text-ellipsis font-normal">{srv.desc}</p>
+                {/* Horizontal Header: Icon on Left, Title on Right */}
+                <div className="flex items-center gap-3.5 mb-5">
+                  <div className="text-white shrink-0">
+                    {srv.renderIcon()}
+                  </div>
+                  <h3 className="text-lg sm:text-xl font-bold text-white tracking-tight leading-snug">
+                    {srv.title}
+                  </h3>
+                </div>
+
+                {/* Full Unclipped Paragraph Description */}
+                <p className="text-slate-300/90 text-xs sm:text-[13px] leading-relaxed mb-8 font-normal">
+                  {srv.desc}
+                </p>
               </div>
-              <Link href={srv.link} className="inline-block bg-[#222327] hover:bg-[#3368B2] text-white px-6 py-2 rounded font-semibold text-sm transition-colors border border-gray-700 hover:border-[#3368B2] self-start">
-                READ MORE <span className="text-[#3368B2] group-hover:text-white ml-1">+</span>
+
+              {/* Read More Button matching design */}
+              <Link
+                href={srv.link}
+                className="inline-flex items-center gap-1.5 bg-[#202227] hover:bg-[#3368B2] text-white px-5 py-2.5 rounded-[4px] font-semibold text-xs uppercase tracking-wider transition-all duration-200 border border-zinc-700/80 hover:border-[#3368B2] self-start group"
+              >
+                <span>READ MORE</span>
+                <span className="text-[#3368B2] group-hover:text-white font-bold ml-0.5">+</span>
               </Link>
             </div>
           ))}
@@ -225,17 +317,13 @@ export default function HomePage() {
         <div className="max-w-screen-2xl mx-auto px-4 lg:px-12 xl:px-20 relative z-10 grid grid-cols-1 lg:grid-cols-12 items-center gap-12 lg:gap-14">
           {/* Left Column: Icon, Header, Paragraph, Slanted Contact Us Button */}
           <div className="lg:col-span-7 flex flex-col items-start">
-            {/* Vector Selection Icon from design */}
-            <div className="w-12 h-12 bg-[#1A3A6B] rounded-[8px] border border-blue-500/40 flex items-center justify-center mb-6 shadow-md shadow-blue-900/40">
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                <rect x="4" y="4" width="13" height="13" rx="1.5" stroke="#60A5FA" strokeWidth="1.5" strokeDasharray="3 2" />
-                <rect x="3" y="3" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
-                <rect x="14.5" y="3" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
-                <rect x="3" y="14.5" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
-                <rect x="14.5" y="14.5" width="3.5" height="3.5" fill="#3B82F6" stroke="#93C5FD" strokeWidth="1" />
-                <path d="M7 17L12 12M12 12V15M12 12H9" stroke="white" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" />
-                <path d="M12 12L19 19L16 20L19 22L17.5 23L14.5 21L13 23L12 12Z" fill="white" />
-              </svg>
+            {/* Design Tool Vector Selection Icon from user attachment */}
+            <div className="w-13 h-13 bg-[#1A3A6B] rounded-[8px] border border-blue-500/40 flex items-center justify-center mb-6 shadow-md shadow-blue-900/40 p-2.5">
+              <img
+                src="/assets/special-discount-vector-icon.png"
+                alt="Web Design & Development Vector Icon"
+                className="w-8 h-8 object-contain"
+              />
             </div>
 
             <h2 className="text-3xl sm:text-4xl lg:text-[42px] font-bold text-white leading-[1.25] mb-6 tracking-tight">
@@ -377,10 +465,10 @@ export default function HomePage() {
           100% { transform: translateY(0px); }
         }
         .animate-marquee {
-          animation: marquee 50s linear infinite;
+          animation: marquee 120s linear infinite;
         }
         .animate-marquee-reverse {
-          animation: marquee-reverse 50s linear infinite;
+          animation: marquee-reverse 120s linear infinite;
         }
         .animate-clients-slide-right {
           animation: clients-slide-right 50s linear infinite;

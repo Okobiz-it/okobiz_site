@@ -350,14 +350,12 @@ html.light footer .text-gray-400 {
 
 /* G. PageBanner Photographic Header (All Inner Pages) */
 html.dark .page-banner,
-html.dark section.page-banner,
-html.dark section:has(> .bg-black\/75),
-html.dark section:has(> .bg-black\/80) {
-  background-color: #0B0E14 !important;
+html.dark section.page-banner {
+  background-color: transparent !important;
 }
 html.light .page-banner,
 html.light section.page-banner {
-  background-color: #F8FAFC !important;
+  background-color: transparent !important;
 }
 html.light .page-banner h1,
 html.light section.page-banner h1 {

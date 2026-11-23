@@ -10,18 +10,23 @@ export default function PageBanner({ title, className = "", subtitle }: PageBann
   return (
     <section
       style={{ backgroundImage: "url('/assets/sub-banner-DifPcO04.webp')" }}
-      className={`page-banner bg-cover bg-no-repeat bg-bottom relative h-48 sm:h-56 md:h-64 lg:h-80 flex items-center justify-center border-b border-slate-200 dark:border-gray-800 transition-colors ${className}`}
+      className={`page-banner bg-cover bg-no-repeat bg-center relative h-40 sm:h-48 md:h-52 flex items-center justify-center border-b border-slate-200/80 dark:border-white/10 transition-colors ${className}`}
     >
-      {/* Light-mode bright luminous white overlay; dark-mode deep cinema backdrop */}
-      <div className="absolute inset-0 bg-white/92 dark:bg-black/85 backdrop-blur-[2px] transition-colors" />
-      <div className="absolute inset-0 bg-gradient-to-b from-white/95 via-white/85 to-slate-100/90 dark:hidden pointer-events-none" />
+      {/* 
+        Subtle white-luminous ambient overlay:
+        Gives the photographic banner a lighter, slightly frosted white ambient look
+        matching the design screenshot, while keeping text sharp and high-contrast.
+      */}
+      <div className="absolute inset-0 bg-white/60 dark:bg-black/45 backdrop-blur-[0.5px] transition-colors" />
+      <div className="absolute inset-0 bg-gradient-to-r from-white/20 via-white/5 to-white/20 dark:from-white/10 dark:via-transparent dark:to-white/10 pointer-events-none" />
+      <div className="absolute inset-0 bg-gradient-to-b from-white/25 via-transparent to-white/15 dark:from-white/10 dark:via-transparent dark:to-white/10 pointer-events-none" />
 
-      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-16">
-        <h1 className="text-2xl sm:text-3xl md:text-4xl lg:text-5xl font-black tracking-wider uppercase text-slate-900 dark:text-white drop-shadow-xs dark:drop-shadow-[0_2px_10px_rgba(0,0,0,0.85)] transition-colors">
+      <div className="relative z-10 text-center px-4 max-w-4xl mx-auto pt-10 sm:pt-12">
+        <h1 className="text-xl sm:text-2xl md:text-3xl font-extrabold tracking-widest uppercase text-slate-900 dark:text-white drop-shadow-md transition-colors">
           {title}
         </h1>
         {subtitle && (
-          <p className="mt-3 text-sm sm:text-base font-medium text-slate-600 dark:text-slate-200 max-w-2xl mx-auto drop-shadow-xs dark:drop-shadow-[0_1px_4px_rgba(0,0,0,0.8)] transition-colors">
+          <p className="mt-2 text-xs sm:text-sm font-medium text-slate-700 dark:text-slate-200 max-w-2xl mx-auto drop-shadow-xs transition-colors">
             {subtitle}
           </p>
         )}
