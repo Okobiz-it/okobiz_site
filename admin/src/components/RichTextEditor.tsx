@@ -5,6 +5,7 @@ import {
   Bold,
   Italic,
   Underline,
+  Heading1,
   Heading2,
   Heading3,
   List,
@@ -70,6 +71,11 @@ function convertMarkdownToHtml(text: string): string {
     if (!trimmed) {
       closeList();
       result.push("<br/>");
+      continue;
+    }
+    if (/^#\s+(.+)$/.test(trimmed)) {
+      closeList();
+      result.push(`<h1>${trimmed.replace(/^#\s+/, "")}</h1>`);
       continue;
     }
     if (/^##\s+(.+)$/.test(trimmed)) {
@@ -224,6 +230,7 @@ export default function RichTextEditor({
     bold: false,
     italic: false,
     underline: false,
+    h1: false,
     h2: false,
     h3: false,
     bullet: false,
@@ -287,7 +294,7 @@ export default function RichTextEditor({
 
     try {
       document.execCommand("styleWithCSS", false, "true");
-    } catch (e) {}
+    } catch (e) { }
 
     document.execCommand("foreColor", false, color);
 
@@ -338,7 +345,7 @@ export default function RichTextEditor({
 
     try {
       document.execCommand("styleWithCSS", false, "true");
-    } catch (e) {}
+    } catch (e) { }
 
     if (!color || color === "transparent") {
       const ok = document.execCommand("hiliteColor", false, "transparent");
@@ -409,6 +416,7 @@ export default function RichTextEditor({
         bold: document.queryCommandState("bold"),
         italic: document.queryCommandState("italic"),
         underline: document.queryCommandState("underline"),
+        h1: checkInsideTag("h1"),
         h2: checkInsideTag("h2"),
         h3: checkInsideTag("h3"),
         bullet: document.queryCommandState("insertUnorderedList"),
@@ -417,7 +425,7 @@ export default function RichTextEditor({
         code: checkInsideTag("code"),
         link: checkInsideTag("a")
       });
-    } catch (e) {}
+    } catch (e) { }
   }, []);
 
   // Sync value from props into editor only when external change occurs
@@ -489,8 +497,8 @@ export default function RichTextEditor({
     triggerChange();
   };
 
-  // Toggle Headings (H2 / H3)
-  const toggleHeading = (e: React.MouseEvent, tag: "h2" | "h3") => {
+  // Toggle Headings (H1 / H2 / H3)
+  const toggleHeading = (e: React.MouseEvent, tag: "h1" | "h2" | "h3") => {
     e.preventDefault();
     restoreSelection();
     editorRef.current?.focus();
@@ -640,11 +648,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "bold")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.bold
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.bold
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Bold (Ctrl+B) - Click again to remove"
           >
             <Bold size={13} />
@@ -654,11 +661,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "italic")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.italic
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.italic
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Italic (Ctrl+I) - Click again to remove"
           >
             <Italic size={13} />
@@ -668,11 +674,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={toggleUnderline}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.underline
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.underline
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Underline (Ctrl+U) - Click again to remove"
           >
             <Underline size={13} />
@@ -690,11 +695,10 @@ export default function RichTextEditor({
                 setShowTextColorPicker(prev => !prev);
                 setShowHighlightPicker(false);
               }}
-              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
-                showTextColorPicker
-                  ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                  : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-              }`}
+              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${showTextColorPicker
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+                }`}
               title="Change Text Color"
             >
               <div className="flex flex-col items-center">
@@ -866,11 +870,10 @@ export default function RichTextEditor({
                 setShowHighlightPicker(prev => !prev);
                 setShowTextColorPicker(false);
               }}
-              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${
-                showHighlightPicker
-                  ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                  : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-              }`}
+              className={`flex items-center gap-1 px-1.5 py-1 rounded-[4px] transition ${showHighlightPicker
+                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+                }`}
               title="Text Highlight Marker"
             >
               <Highlighter size={13} />
@@ -1033,15 +1036,27 @@ export default function RichTextEditor({
 
           <span className="w-[1px] h-4 bg-slate-300 dark:bg-gray-800 mx-0.5" />
 
+          {/* Heading 1 */}
+          <button
+            type="button"
+            onMouseDown={(e) => toggleHeading(e, "h1")}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.h1
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
+            title="Heading 1 - Click again to revert"
+          >
+            <Heading1 size={13} />
+          </button>
+
           {/* Heading 2 */}
           <button
             type="button"
             onMouseDown={(e) => toggleHeading(e, "h2")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.h2
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.h2
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Heading 2 - Click again to revert"
           >
             <Heading2 size={13} />
@@ -1051,11 +1066,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => toggleHeading(e, "h3")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.h3
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.h3
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Heading 3 - Click again to revert"
           >
             <Heading3 size={13} />
@@ -1067,11 +1081,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "insertUnorderedList")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.bullet
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.bullet
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Bullet List - Click again to remove"
           >
             <List size={13} />
@@ -1081,11 +1094,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={(e) => execFormat(e, "insertOrderedList")}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.number
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.number
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Numbered List - Click again to remove"
           >
             <ListOrdered size={13} />
@@ -1095,11 +1107,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={toggleBlockquote}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.quote
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.quote
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Blockquote - Click again to revert"
           >
             <Quote size={13} />
@@ -1109,11 +1120,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={toggleCode}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.code
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.code
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title="Inline Code - Click again to remove"
           >
             <Code size={13} />
@@ -1123,11 +1133,10 @@ export default function RichTextEditor({
           <button
             type="button"
             onMouseDown={toggleLink}
-            className={`p-1.5 rounded-[4px] transition ${
-              activeStates.link
-                ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
-                : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
-            }`}
+            className={`p-1.5 rounded-[4px] transition ${activeStates.link
+              ? "editor-btn-active bg-[#0167D6] text-white text-white-always shadow-xs"
+              : "text-slate-700 dark:text-gray-400 hover:text-slate-900 dark:hover:text-white hover:bg-slate-200 dark:hover:bg-white/10"
+              }`}
             title={activeStates.link ? "Remove Link" : "Insert Link"}
           >
             <LinkIcon size={13} />
@@ -1289,11 +1298,10 @@ export default function RichTextEditor({
                     ? "No changes to save"
                     : "Save current text as default terms & conditions"
                 }
-                className={`text-[10px] font-semibold transition px-2.5 py-0.5 rounded shadow-2xs flex items-center gap-1 ${
-                  isSaveDisabled || isSavingText
-                    ? "text-slate-400 dark:text-gray-500 bg-slate-100 dark:bg-gray-800/40 border border-slate-200 dark:border-gray-800 cursor-not-allowed opacity-60"
-                    : "text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 cursor-pointer"
-                }`}
+                className={`text-[10px] font-semibold transition px-2.5 py-0.5 rounded shadow-2xs flex items-center gap-1 ${isSaveDisabled || isSavingText
+                  ? "text-slate-400 dark:text-gray-500 bg-slate-100 dark:bg-gray-800/40 border border-slate-200 dark:border-gray-800 cursor-not-allowed opacity-60"
+                  : "text-emerald-700 dark:text-emerald-300 hover:text-emerald-800 dark:hover:text-emerald-200 bg-emerald-50 dark:bg-emerald-950/60 border border-emerald-300 dark:border-emerald-700 cursor-pointer"
+                  }`}
               >
                 {isSavingText ? (
                   <>

@@ -78,7 +78,7 @@ const QuotationSchema = new Schema<IQuotation>(
     deliverables: { type: String, default: "" },
     additional_notes: { type: String, default: "" },
     company_signatory_name: { type: String, default: "Md. Sorower Jahan" },
-    company_signatory_title: { type: String, default: "CEO, okobiz" },
+    company_signatory_title: { type: String, default: "CEO | Okobiz" },
     company_phone: { type: String, default: "+880 1973590937" },
     company_email: { type: String, default: "info@okobiz.com" },
     doc_type: { type: String, default: "QUOTATION" },

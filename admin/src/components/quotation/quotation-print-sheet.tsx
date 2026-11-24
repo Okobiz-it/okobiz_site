@@ -115,34 +115,45 @@ export const formatPrice = (val: number | string | undefined | null): string => 
 // ─────────────────────────────────────────────────────────────
 // TOP-LEVEL REUSABLE COMPONENTS
 // ─────────────────────────────────────────────────────────────
-export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data }) => (
-  <div className="pt-2.5 mt-auto pb-0.5 select-none shrink-0 signatory-block">
-    <div className="flex justify-between items-end">
-      <div>
-        <div className="font-bold text-zinc-900 mb-1 text-[14px] print:text-[14px]">Thanks &amp; Regards</div>
-        <div className="h-8" />
-        <div className="font-bold text-zinc-900 text-[14px] print:text-[14px] leading-snug">
-          {data.company_signatory_name || "Md. Sorower Jahan"} |{" "}
-          {data.company_signatory_title
-            ? data.company_signatory_title.includes("okobiz")
-              ? data.company_signatory_title
-              : `${data.company_signatory_title}, okobiz`
-            : "CEO, okobiz"}
+export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data }) => {
+  const signatoryTitleDisplay = (() => {
+    const raw = (data.company_signatory_title || "CEO").trim();
+    if (/okobiz/i.test(raw)) {
+      return raw.replace(/,\s*okobiz/i, " | Okobiz").replace(/\|\s*okobiz/i, "| Okobiz");
+    }
+    return `${raw} | Okobiz`;
+  })();
+
+  return (
+    <div className="pt-2.5 mt-auto pb-0.5 select-none shrink-0 signatory-block">
+      <div className="flex justify-between items-end">
+        <div>
+          <div className="font-bold text-zinc-900 mb-1 text-[14px] print:text-[14px]">Thanks &amp; Regards</div>
+          <div className="h-14" />
+          <div className="font-bold text-zinc-900 text-[14px] print:text-[14px] leading-snug">
+            {data.company_signatory_name || "Md. Sorower Jahan"}
+          </div>
+          <div className="font-semibold text-zinc-700 text-[13px] print:text-[13px] leading-snug">
+            {signatoryTitleDisplay}
+          </div>
+          <div className="text-zinc-600 text-[12.2px] print:text-[12.2px] leading-snug">
+            Contact No: {data.company_phone || "+880 1973590937"}
+          </div>
         </div>
-        <div className="font-semibold text-zinc-700 text-[13px] print:text-[13px] leading-snug">okobiz</div>
-        <div className="text-zinc-600 text-[12.2px] print:text-[12.2px] leading-snug">
-          Contact No: {data.company_phone || "+880 1973590937"}
+
+        <div className="text-right">
+          <div className="font-bold text-zinc-900 text-[14px] print:text-[14px] pb-1">
+            Client Signature
+          </div>
         </div>
       </div>
 
-      <div className="text-right">
-        <div className="h-8" />
-        <div className="w-52 border-t-2 border-dashed border-zinc-800 mb-1.5 ml-auto" />
-        <div className="font-bold text-zinc-900 text-[14px] print:text-[14px]">Client Signature &amp; Seal</div>
+      <div className="mt-3 text-center text-[11px] print:text-[11px] text-zinc-500 italic select-none">
+        *System generated quotation. No need to signature
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export const FirstPageHeader: React.FC<{ data: QuotationPrintData; formattedDate: string }> = ({
   data,
@@ -483,7 +494,7 @@ export function estimateBlockHeight(html: string, isListItem = false): number {
   const match = html.match(new RegExp(`^<${tag}(?:\\s+[^>]*)?>([\\s\\S]*?)<\\/${tag}>$`, "i"));
   const inner = match ? match[1] : html;
 
-  const rawSegments = inner.split(/<br\s*\/?>|\r?\n/i);
+  const rawSegments = inner.split(/<br\s*\/?>|<\/p>\s*<p(?:\s+[^>]*)?>|\r?\n/i);
   let totalLines = 0;
   for (const seg of rawSegments) {
     const segText = seg.replace(/<[^>]*>/g, "").trim();
@@ -701,15 +712,39 @@ export function tokenizeHtmlBlocks(rawHtml: string): AtomicBlock[] {
         const liHtml = liMatch[0];
         const textOnly = liHtml.replace(/<[^>]*>/g, "").trim();
         if (textOnly) {
-          blocks.push({
-            type: "li",
-            html: liHtml,
-            isListItem: true,
-            listType: isOl ? "ol" : "ul",
-            itemIndex: startNum + count,
-            height: estimateBlockHeight(liHtml, true),
-          });
-          count++;
+          const pRegex = /<p(?:\s+[^>]*)?>[\s\S]*?<\/p>/gi;
+          const pMatches = liHtml.match(pRegex);
+          if (pMatches && pMatches.length > 1) {
+            // Compound list item with multiple paragraphs: decompose into atomic sub-blocks
+            pMatches.forEach((pHtml, pIdx) => {
+              const pText = pHtml.replace(/<[^>]*>/g, "").trim();
+              if (pText) {
+                const subLiHtml =
+                  pIdx === 0
+                    ? `<li>${pHtml}</li>`
+                    : `<li data-continued="true" style="list-style-type: none;">${pHtml}</li>`;
+                blocks.push({
+                  type: "li",
+                  html: subLiHtml,
+                  isListItem: true,
+                  listType: isOl ? "ol" : "ul",
+                  itemIndex: pIdx === 0 ? startNum + count : undefined,
+                  height: estimateBlockHeight(subLiHtml, true),
+                });
+              }
+            });
+            count++;
+          } else {
+            blocks.push({
+              type: "li",
+              html: liHtml,
+              isListItem: true,
+              listType: isOl ? "ol" : "ul",
+              itemIndex: startNum + count,
+              height: estimateBlockHeight(liHtml, true),
+            });
+            count++;
+          }
         }
       }
     } else {
@@ -764,7 +799,11 @@ export function assembleBlocks(blocksSlice: AtomicBlock[]): string {
         currentStart = b.itemIndex || 1;
         out.push(currentListType === "ol" ? `<ol start="${currentStart}">` : "<ul>");
       }
-      out.push(b.html);
+      if (b.itemIndex !== undefined && b.listType === "ol" && !b.html.includes("value=")) {
+        out.push(b.html.replace(/^<li\b/i, `<li value="${b.itemIndex}"`));
+      } else {
+        out.push(b.html);
+      }
     } else {
       if (inList) {
         out.push(currentListType === "ol" ? "</ol>" : "</ul>");
@@ -795,7 +834,7 @@ export function buildQuotationPages(data: QuotationPrintData): QuotationPageMode
   const TABLE_TFOOT_HEIGHT = 48;
   const TABLE_MARGINS_TOTAL = 10;
   const TABLE_CONTINUES_NOTE_HEIGHT = 16;
-  const SIGNATORY_HEIGHT = 135;
+  const SIGNATORY_HEIGHT = 160;
   const CONTINUATION_TABLE_HEADER_HEIGHT = 28;
 
   let clientCardH = 16.0;

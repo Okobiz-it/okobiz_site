@@ -146,7 +146,7 @@ export async function POST(req: NextRequest) {
       deliverables: body.deliverables || "",
       additional_notes: body.additional_notes || "",
       company_signatory_name: body.company_signatory_name || "Md. Sorower Jahan",
-      company_signatory_title: body.company_signatory_title || "CEO, okobiz",
+      company_signatory_title: body.company_signatory_title || "CEO | Okobiz",
       company_phone: body.company_phone || "+880 1973590937",
       company_email: body.company_email || "info@okobiz.com",
       status: body.status || "DRAFT",

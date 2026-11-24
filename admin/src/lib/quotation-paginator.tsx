@@ -370,7 +370,8 @@ export async function paginateMeasured(
           // Orphan heading check: only standalone headings (h1-h6 or lone <p><strong> without body text)
           const isStandaloneHeading =
             nextB.type.startsWith("h") ||
-            (nextB.type === "p" && nextB.html.startsWith("<p><strong>") && !nextB.html.includes("<br"));
+            (nextB.type === "p" && nextB.html.startsWith("<p><strong>") && !nextB.html.includes("<br")) ||
+            (nextB.type === "li" && nextB.html.startsWith("<li><p><strong>") && !nextB.html.includes("<br"));
           if (isStandaloneHeading) {
             if (unallocatedBlocks.length > 1) {
               const probeNext = unallocatedBlocks[1];
@@ -437,15 +438,27 @@ export async function paginateMeasured(
 
           if (fits(bodyWithSig)) {
             showSignatory = true;
-          } else if (pageBlocks.length > 2) {
-            // Signatory doesn't fit: pull back last heading + paragraph so signature is not alone
-            let pullCount = 0;
-            while (pageBlocks.length > 1 && pullCount < 2) {
-              const popped = pageBlocks.pop()!;
-              unallocatedBlocks.unshift(popped);
-              pullCount++;
-              if (popped.type.startsWith("h") || popped.html.startsWith("<p><strong>")) {
-                break;
+          } else if (pageBlocks.length > 1) {
+            // Signatory doesn't fit on this page and must go to a new page.
+            // Move minimal companion content to the next page so the signature is not an orphan.
+            // Pop exactly 1 content block (1 list item or 1 paragraph is plenty for a companion).
+            const popped = pageBlocks.pop()!;
+            unallocatedBlocks.unshift(popped);
+
+            // If the remaining last block on the current page is an orphan heading,
+            // also move that heading so it doesn't sit orphaned at the very bottom of the page.
+            if (pageBlocks.length > 0) {
+              const remainingLast = pageBlocks[pageBlocks.length - 1];
+              const isOrphanHeading =
+                remainingLast.type.startsWith("h") ||
+                (remainingLast.type === "p" &&
+                  remainingLast.html.startsWith("<p><strong>") &&
+                  !remainingLast.html.includes("<br")) ||
+                (remainingLast.type === "li" &&
+                  remainingLast.html.startsWith("<li><p><strong>") &&
+                  !remainingLast.html.includes("<br"));
+              if (isOrphanHeading && pageBlocks.length > 1) {
+                unallocatedBlocks.unshift(pageBlocks.pop()!);
               }
             }
             pageNarrativeHtml = assembleBlocks(pageBlocks);

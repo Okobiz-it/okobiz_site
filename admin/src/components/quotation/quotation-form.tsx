@@ -246,7 +246,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
     initialData?.company_signatory_name || "Md. Sorower Jahan"
   );
   const [signatoryTitle, setSignatoryTitle] = useState(
-    initialData?.company_signatory_title || "CEO, okobiz"
+    initialData?.company_signatory_title || "CEO | Okobiz"
   );
   const [signatoryPhone, setSignatoryPhone] = useState(
     initialData?.company_phone || "+880 1973590937"
@@ -783,7 +783,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                 <Input
                   value={signatoryTitle}
                   onChange={(e) => setSignatoryTitle(e.target.value)}
-                  placeholder="CEO, okobiz"
+                  placeholder="CEO | Okobiz"
                 />
               </div>
 

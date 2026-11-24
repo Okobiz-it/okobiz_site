@@ -372,7 +372,8 @@ export async function sendQuotationEmail({
 
         <div style="border-top: 1px solid #e4e4e7; margin-top: 24px; padding-top: 16px; font-size: 13px; color: #71717a;">
           <p style="margin: 0; font-weight: 700; color: #18181b;">Thanks & Regards,</p>
-          <p style="margin: 4px 0 0; font-weight: 600;">Md. Sorower Jahan | CEO, okobiz</p>
+          <p style="margin: 4px 0 0; font-weight: 600;">Md. Sorower Jahan</p>
+          <p style="margin: 2px 0 0; color: #52525b; font-weight: 500;">CEO | Okobiz</p>
           <p style="margin: 2px 0 0;">Mobile: +880 1973590937 | Web: okobiz.com</p>
         </div>
       </div>
