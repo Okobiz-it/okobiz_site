@@ -139,22 +139,50 @@ export function BillForm({
   // Calculate Net Grand Total (Deduct advance if enabled)
   const grandTotal = Math.max(0, subTotal - (hasAdvancePayment ? advanceAmount : 0));
 
-  // Amount In Words (Based on Net Due Grand Total)
+  // Amount In Words (Prioritizes Total Due Amount if advance paid, otherwise Total Amount)
   const [inWords, setInWords] = useState<string>(() => {
-    if (initialData?.in_words && initialData.in_words.trim().length > 0) {
+    if (hasAdvancePayment && advanceAmount > 0) {
+      if (grandTotal <= 0) return "";
+      return numberToWords(grandTotal).replace(" Taka Only", " Taka Only.");
+    }
+    if (subTotal <= 0) return "";
+    if (
+      initialData?.in_words &&
+      initialData.in_words.trim().length > 0 &&
+      !initialData.in_words.includes("Zero")
+    ) {
       return initialData.in_words;
     }
-    const val = Number(initialData?.grand_total || initialData?.software_amount) || grandTotal;
-    return numberToWords(val).replace(" Taka Only", " Taka Only.");
+    return numberToWords(subTotal).replace(" Taka Only", " Taka Only.");
   });
 
-  // Automatically update inWords when grandTotal changes (unless manually edited)
+  // Automatically update inWords when effective payable amount changes (unless manually edited for the same amount)
   const [isWordsManuallyEdited, setIsWordsManuallyEdited] = useState(false);
+  const prevEffectiveAmountRef = useRef<number>(
+    hasAdvancePayment && advanceAmount > 0 ? grandTotal : subTotal
+  );
+
   useEffect(() => {
-    if (!isWordsManuallyEdited && grandTotal > 0) {
-      setInWords(numberToWords(grandTotal).replace(" Taka Only", " Taka Only."));
+    const effectiveAmount = hasAdvancePayment && advanceAmount > 0 ? grandTotal : subTotal;
+
+    if (effectiveAmount !== prevEffectiveAmountRef.current) {
+      prevEffectiveAmountRef.current = effectiveAmount;
+      setIsWordsManuallyEdited(false);
+
+      if (effectiveAmount <= 0) {
+        setInWords("");
+      } else {
+        setInWords(numberToWords(effectiveAmount).replace(" Taka Only", " Taka Only."));
+      }
+      return;
     }
-  }, [grandTotal, isWordsManuallyEdited]);
+
+    if (effectiveAmount <= 0) {
+      setInWords("");
+    } else if (!isWordsManuallyEdited) {
+      setInWords(numberToWords(effectiveAmount).replace(" Taka Only", " Taka Only."));
+    }
+  }, [hasAdvancePayment, advanceAmount, grandTotal, subTotal, isWordsManuallyEdited]);
 
   // Submission & Preview state
   const [isSubmitting, setIsSubmitting] = useState<boolean>(false);
@@ -233,7 +261,7 @@ export function BillForm({
     advance_amount: hasAdvancePayment ? advanceAmount : 0,
     advance_label: advanceLabel,
     grand_total: grandTotal,
-    in_words: inWords,
+    in_words: hasAdvancePayment && advanceAmount > 0 && grandTotal <= 0 ? "" : inWords,
     additional_notes: additionalNotes,
     company_phone: "+880 1973590937",
     company_email: "info@okobiz.com",
@@ -252,7 +280,7 @@ export function BillForm({
     advanceAmount: hasAdvancePayment ? advanceAmount : 0,
     advanceLabel: advanceLabel.trim(),
     grandTotal,
-    inWords: inWords.trim(),
+    inWords: hasAdvancePayment && advanceAmount > 0 && grandTotal <= 0 ? "" : inWords.trim(),
     additionalNotes: additionalNotes.trim(),
   });
   const initialReviseSnapshotRef = useRef<string | null>(null);
@@ -341,7 +369,7 @@ export function BillForm({
         advance_label: advanceLabel,
         grand_total: grandTotal,
         software_amount: grandTotal,
-        in_words: inWords,
+        in_words: hasAdvancePayment && advanceAmount > 0 && grandTotal <= 0 ? "" : inWords.trim(),
         additional_notes: additionalNotes,
         company_signatory_name: "Admin & Accounts",
         company_signatory_title: "Okobiz",
@@ -786,15 +814,22 @@ export function BillForm({
                 <label className="text-xs font-bold text-slate-700 dark:text-gray-300 block mb-1">
                   Amount in Words:
                 </label>
-                <Input
-                  value={inWords}
-                  onChange={(e) => {
-                    setInWords(e.target.value);
-                    setIsWordsManuallyEdited(true);
-                  }}
-                  placeholder="e.g. Five Thousand Taka Only."
-                  className="font-semibold text-sm text-slate-800 dark:text-gray-200"
-                />
+                {hasAdvancePayment && advanceAmount > 0 && grandTotal <= 0 ? (
+                  <div className="text-xs font-medium text-emerald-700 dark:text-emerald-300 bg-emerald-50 dark:bg-emerald-950/40 border border-emerald-200 dark:border-emerald-800 p-2.5 rounded-md flex items-center gap-2">
+                    <span className="w-2 h-2 rounded-full bg-emerald-500 shrink-0" />
+                    <span>Bill is fully paid (Total Due Amount is Tk. 0/-). &quot;In Words&quot; will not appear on the bill.</span>
+                  </div>
+                ) : (
+                  <Input
+                    value={inWords}
+                    onChange={(e) => {
+                      setInWords(e.target.value);
+                      setIsWordsManuallyEdited(true);
+                    }}
+                    placeholder="e.g. Five Thousand Taka Only."
+                    className="font-semibold text-sm text-slate-800 dark:text-gray-200"
+                  />
+                )}
               </div>
             </div>
           </CardContent>

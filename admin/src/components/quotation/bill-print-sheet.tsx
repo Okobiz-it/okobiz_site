@@ -60,6 +60,53 @@ export const formatBillPrice = (val: number | string | undefined | null): string
 };
 
 // ─────────────────────────────────────────────────────────────
+// Resolution helper: when Total Due Amount is 0, "In Words" disappears.
+// When client paid something, prioritize TOTAL DUE AMOUNT.
+// When client did not pay something, prioritize TOTAL AMOUNT.
+// ─────────────────────────────────────────────────────────────
+export interface BillInWordsResolution {
+  showInWords: boolean;
+  inWordsDisplay: string;
+}
+
+export function resolveBillInWords(
+  data: BillPrintData,
+  subTotal: number,
+  grandTotal: number
+): BillInWordsResolution {
+  const hasAdvance = Boolean(
+    data.has_advance_payment && Number(data.advance_amount || 0) > 0
+  );
+  const advanceAmount = Number(data.advance_amount || 0);
+
+  // If client paid something: always prioritize TOTAL DUE AMOUNT
+  if (hasAdvance) {
+    const dueAmount = Math.max(0, subTotal - advanceAmount);
+
+    // When the total due amount is zero, In Words disappears from the bill (client has fully paid)
+    if (dueAmount <= 0) {
+      return { showInWords: false, inWordsDisplay: "" };
+    }
+
+    const words = numberToWords(dueAmount).replace(" Taka Only", " Taka Only.");
+    return { showInWords: true, inWordsDisplay: words };
+  }
+
+  // If client did NOT pay something: reflect TOTAL AMOUNT (subTotal)
+  const totalAmount = subTotal > 0 ? subTotal : Math.max(0, grandTotal);
+  if (totalAmount <= 0) {
+    return { showInWords: false, inWordsDisplay: "" };
+  }
+
+  const words =
+    data.in_words && data.in_words.trim().length > 0 && !data.in_words.includes("Zero")
+      ? data.in_words
+      : numberToWords(totalAmount).replace(" Taka Only", " Taka Only.");
+
+  return { showInWords: true, inWordsDisplay: words };
+}
+
+// ─────────────────────────────────────────────────────────────
 // SHARED BILL PAGE SHELL COMPONENT
 // - Both real render and sandbox measurement use this exact component!
 // ─────────────────────────────────────────────────────────────
@@ -69,6 +116,7 @@ interface BillPageShellProps {
   subTotal: number;
   grandTotal: number;
   inWordsDisplay: string;
+  showInWords?: boolean;
   page: BillPageModel;
   measureMode?: boolean;
 }
@@ -79,6 +127,7 @@ export const BillPageShell: React.FC<BillPageShellProps> = ({
   subTotal,
   grandTotal,
   inWordsDisplay,
+  showInWords = true,
   page,
   measureMode = false,
 }) => {
@@ -283,9 +332,11 @@ export const BillPageShell: React.FC<BillPageShellProps> = ({
         {/* In Words & Bottom-Left Closing Block (Only on final page) */}
         {page.isLastPage && (
           <>
-            <div className="text-[13px] font-bold text-zinc-900 mt-2 shrink-0">
-              In Words: {inWordsDisplay.endsWith(".") ? inWordsDisplay : `${inWordsDisplay}.`}
-            </div>
+            {showInWords && inWordsDisplay && inWordsDisplay.trim().length > 0 && (
+              <div className="text-[13px] font-bold text-zinc-900 mt-2 shrink-0">
+                In Words: {inWordsDisplay.endsWith(".") ? inWordsDisplay : `${inWordsDisplay}.`}
+              </div>
+            )}
 
             {/* BOTTOM LEFT CLOSING BLOCK (Exact dark bold typography) */}
             <div className="mt-auto pt-6 pb-2 text-left select-none shrink-0">
@@ -426,10 +477,7 @@ export async function paginateBillMeasured(
         ? Number(data.grand_total)
         : Math.max(0, subTotal - (hasAdvance ? advanceAmount : 0));
 
-    const inWordsDisplay =
-      data.in_words && data.in_words.trim().length > 0
-        ? data.in_words
-        : numberToWords(grandTotal).replace(" Taka Only", " Taka Only.");
+    const { showInWords, inWordsDisplay } = resolveBillInWords(data, subTotal, grandTotal);
 
     const fits = (body: HTMLElement) => body.scrollHeight - body.clientHeight <= 0;
 
@@ -442,6 +490,7 @@ export async function paginateBillMeasured(
             subTotal={subTotal}
             grandTotal={grandTotal}
             inWordsDisplay={inWordsDisplay}
+            showInWords={showInWords}
             page={pageModel}
             measureMode={true}
           />
@@ -604,11 +653,9 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
     return Math.max(0, subTotal - (hasAdvance ? advanceAmount : 0));
   }, [data.grand_total, subTotal, hasAdvance, advanceAmount]);
 
-  const inWordsDisplay = useMemo(() => {
-    return data.in_words && data.in_words.trim().length > 0
-      ? data.in_words
-      : numberToWords(grandTotal).replace(" Taka Only", " Taka Only.");
-  }, [data.in_words, grandTotal]);
+  const { showInWords, inWordsDisplay } = useMemo(() => {
+    return resolveBillInWords(data, subTotal, grandTotal);
+  }, [data, subTotal, grandTotal]);
 
   // Initialize pages with calibrated synchronous layout
   const [pages, setPages] = useState<BillPageModel[]>(() => buildBillPagesSync(allRows, hasAdvance));
@@ -631,9 +678,10 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
       adv_lbl: data.advance_label,
       total: grandTotal,
       words: inWordsDisplay,
+      show_words: showInWords,
       rows: allRows,
     });
-  }, [data, allRows, subTotal, grandTotal, inWordsDisplay]);
+  }, [data, allRows, subTotal, grandTotal, inWordsDisplay, showInWords]);
 
   // Measured closed-loop pagination
   useLayoutEffect(() => {
@@ -704,6 +752,7 @@ export const BillPrintSheet: React.FC<{ data: BillPrintData }> = ({ data }) => {
           subTotal={subTotal}
           grandTotal={grandTotal}
           inWordsDisplay={inWordsDisplay}
+          showInWords={showInWords}
           page={page}
           measureMode={false}
         />
