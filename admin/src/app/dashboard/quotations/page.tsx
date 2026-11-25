@@ -1,21 +1,18 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { format } from "@/lib/date";
 import {
   FileText,
   Plus,
   Search,
   Printer,
-  Mail,
   Edit,
   Trash2,
-  CheckCircle,
   Clock,
   RefreshCw,
-  ExternalLink,
+  Coins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
@@ -32,29 +29,50 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ReviseIcon } from "@/components/quotation/revise-icon";
+import {
+  DATE_RANGE_LABELS,
+  DateRangeFilterControl,
+  TablePagination,
+} from "@/components/quotation/quotation-list-controls";
+import {
+  DateRangePreset,
+  ITEMS_PER_PAGE,
+  accumulateLatestStats,
+  extractCalendarYMD,
+  getDateRangeBounds,
+  getDocId,
+  matchesDocumentSearch,
+  paginateItems,
+} from "@/lib/quotation-revisions";
 
 export default function ManageQuotationsPage() {
-  const router = useRouter();
   const [quotations, setQuotations] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
   const [nextRefNo, setNextRefNo] = useState("");
+
+  // Date range summary filter (This Month default)
+  const [dateRangePreset, setDateRangePreset] = useState<DateRangePreset>("THIS_MONTH");
+  const [customStartDate, setCustomStartDate] = useState(() => {
+    return getDateRangeBounds("THIS_MONTH").start || "";
+  });
+  const [customEndDate, setCustomEndDate] = useState(() => {
+    return extractCalendarYMD(new Date()) || "";
+  });
+
+  // Table pagination (15 items per page)
+  const [currentPage, setCurrentPage] = useState(1);
 
   // Delete modal state
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
-
-  // Email resend state
-  const [sendingEmailId, setSendingEmailId] = useState<string | null>(null);
 
   const fetchQuotations = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.append("doc_type", "QUOTATION");
-      if (search) params.append("search", search);
-      if (statusFilter !== "ALL") params.append("status", statusFilter);
 
       const res = await fetch(`/api/quotations?${params.toString()}`);
       const data = await res.json();
@@ -62,7 +80,7 @@ export default function ManageQuotationsPage() {
         setQuotations(data.data || []);
         if (data.nextRefNo) setNextRefNo(data.nextRefNo);
       }
-    } catch (err) {
+    } catch {
       toast.error("Failed to load quotations");
     } finally {
       setLoading(false);
@@ -71,26 +89,29 @@ export default function ManageQuotationsPage() {
 
   useEffect(() => {
     fetchQuotations();
-  }, [statusFilter]);
+  }, []);
+
+  // Reset to page 1 whenever search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchQuotations();
+    setCurrentPage(1);
   };
 
   const handleDelete = async () => {
     if (!deleteId) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/quotations/${deleteId}`, {
+      const res = await fetch(`/api/quotations/${encodeURIComponent(deleteId)}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (data.success) {
         toast.success("Quotation deleted successfully");
-        setQuotations((prev) =>
-          prev.filter((q) => (q._id || q.id) !== deleteId)
-        );
+        await fetchQuotations();
       } else {
         toast.error(data.message || "Failed to delete");
       }
@@ -102,43 +123,37 @@ export default function ManageQuotationsPage() {
     }
   };
 
-  const handleSendEmail = async (quote: any) => {
-    const quoteId = quote._id || quote.id;
-    if (!quote.email) {
-      toast.error("No client email found on this quotation. Please edit and add an email.");
-      return;
-    }
+  // Summary KPIs for selected date range (counting only latest revised version per family)
+  const summaryStats = useMemo(
+    () =>
+      accumulateLatestStats(
+        quotations,
+        dateRangePreset,
+        customStartDate,
+        customEndDate
+      ),
+    [quotations, dateRangePreset, customStartDate, customEndDate]
+  );
 
-    setSendingEmailId(quoteId);
-    const toastId = toast.loading(`Sending quotation PDF to ${quote.email}...`);
+  // Filter across ALL quotations across all pages
+  const filteredQuotations = useMemo(() => {
+    return quotations.filter((q) => matchesDocumentSearch(q, search));
+  }, [quotations, search]);
 
-    try {
-      const res = await fetch(`/api/quotations/${quoteId}/send-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: quote.email }),
-      });
-      const result = await res.json();
-      toast.dismiss(toastId);
+  const pagination = useMemo(
+    () => paginateItems(filteredQuotations, currentPage, ITEMS_PER_PAGE),
+    [filteredQuotations, currentPage]
+  );
 
-      if (result.success) {
-        toast.success(`Quotation successfully dispatched to ${quote.email}`);
-        fetchQuotations();
-      } else {
-        toast.error(result.message || "Failed to send email");
-      }
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      toast.error(err.message || "Failed to send email");
-    } finally {
-      setSendingEmailId(null);
-    }
-  };
+  const rangeSubtitle =
+    dateRangePreset === "CUSTOM"
+      ? `${customStartDate || "..."} to ${customEndDate || "..."}`
+      : DATE_RANGE_LABELS[dateRangePreset];
 
   return (
     <div className="space-y-6 w-full">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-blue-50 dark:bg-blue-900/30 text-[#0167D6] flex items-center justify-center">
@@ -147,11 +162,20 @@ export default function ManageQuotationsPage() {
             Quotations Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Create, manage, print and email professional client quotations for Okobiz software, web & hardware solutions
+            Create, manage, revise, print and review professional client quotations for Okobiz software, web &amp; hardware solutions
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangeFilterControl
+            value={dateRangePreset}
+            onChange={setDateRangePreset}
+            customStart={customStartDate}
+            customEnd={customEndDate}
+            onCustomStartChange={setCustomStartDate}
+            onCustomEndChange={setCustomEndDate}
+          />
+
           <Link href="/dashboard/quotations/create">
             <Button className="bg-[#0167D6] hover:bg-blue-700 text-white font-semibold flex items-center gap-2 shadow-xs cursor-pointer">
               <Plus className="w-4 h-4" /> Create Quotation
@@ -165,9 +189,11 @@ export default function ManageQuotationsPage() {
         <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500">Total Quotations</p>
+              <p className="text-xs font-semibold text-slate-500">
+                Total Quotations <span className="text-[11px] font-normal text-slate-400">({rangeSubtitle})</span>
+              </p>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                {quotations.length}
+                {summaryStats.count}
               </h3>
             </div>
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-[#0167D6] flex items-center justify-center">
@@ -193,13 +219,15 @@ export default function ManageQuotationsPage() {
         <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500">Emailed to Clients</p>
+              <p className="text-xs font-semibold text-slate-500">
+                Total Quotations Value <span className="text-[11px] font-normal text-slate-400">({rangeSubtitle})</span>
+              </p>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                {quotations.filter((q) => q.email_sent_at).length}
+                ৳ {summaryStats.totalAmount.toLocaleString("en-BD")}
               </h3>
             </div>
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center">
-              <Mail className="w-5 h-5" />
+              <Coins className="w-5 h-5" />
             </div>
           </CardContent>
         </Card>
@@ -226,10 +254,7 @@ export default function ManageQuotationsPage() {
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  setSearch("");
-                  fetchQuotations();
-                }}
+                onClick={() => setSearch("")}
                 className="h-9 text-xs cursor-pointer"
               >
                 Clear
@@ -238,18 +263,6 @@ export default function ManageQuotationsPage() {
           </form>
 
           <div className="flex items-center gap-2">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 rounded-md border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 focus:outline-hidden"
-            >
-              <option value="ALL">All Status</option>
-              <option value="SENT">Sent</option>
-              <option value="DRAFT">Draft</option>
-              <option value="ACCEPTED">Accepted</option>
-              <option value="REJECTED">Rejected</option>
-            </select>
-
             <Button
               variant="outline"
               size="icon"
@@ -271,38 +284,41 @@ export default function ManageQuotationsPage() {
               <tr>
                 <th className="py-3 px-4">Ref No.</th>
                 <th className="py-3 px-4">Date</th>
-                <th className="py-3 px-4">Client & Organization</th>
-                <th className="py-3 px-4">Scope & Package</th>
+                <th className="py-3 px-4">Client &amp; Organization</th>
+                <th className="py-3 px-4">Scope &amp; Package</th>
                 <th className="py-3 px-4 text-right">Grand Total</th>
-                <th className="py-3 px-4 text-center">Email Status</th>
                 <th className="py-3 px-4 text-right">Actions</th>
               </tr>
             </thead>
             <tbody className="divide-y divide-slate-100 dark:divide-slate-800/60">
               {loading ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
+                  <td colSpan={6} className="py-12 text-center text-slate-500">
                     <RefreshCw className="w-6 h-6 animate-spin mx-auto mb-2 text-[#0167D6]" />
                     Loading quotations...
                   </td>
                 </tr>
-              ) : quotations.length === 0 ? (
+              ) : pagination.pageItems.length === 0 ? (
                 <tr>
-                  <td colSpan={7} className="py-12 text-center text-slate-500">
+                  <td colSpan={6} className="py-12 text-center text-slate-500">
                     <FileText className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-                    No quotations found. Click "Create Quotation" to generate your first client quotation!
+                    {search
+                      ? "No matching quotations found across all pages."
+                      : 'No quotations found. Click "Create Quotation" to generate your first client quotation!'}
                   </td>
                 </tr>
               ) : (
-                quotations.map((quote) => {
-                  const quoteId = quote._id || quote.id;
+                pagination.pageItems.map((quote) => {
+                  const quoteId = getDocId(quote);
+                  const canRevise =
+                    !Boolean(quote.is_revised) && !summaryStats.supersededIds.has(quoteId);
                   return (
                     <tr
                       key={quoteId}
                       className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
                     >
                       {/* Ref No */}
-                      <td className="py-3 px-4 font-mono font-bold text-[#0167D6] dark:text-blue-400">
+                      <td className="py-3 px-4 font-mono font-bold text-[#0167D6] dark:text-blue-400 whitespace-nowrap">
                         {quote.ref_no}
                       </td>
 
@@ -319,15 +335,22 @@ export default function ManageQuotationsPage() {
                           {quote.client_name}
                         </div>
                         {quote.organization_name && (
-                          <div className="text-slate-500 text-[11px]">
+                          <div className="text-slate-600 dark:text-slate-300 text-[11px] font-medium">
                             {quote.organization_name}
                           </div>
                         )}
-                        {quote.email && (
-                          <div className="text-slate-400 text-[10px] font-mono mt-0.5">
-                            {quote.email}
-                          </div>
-                        )}
+                        <div className="flex flex-col gap-0.5 mt-0.5">
+                          {quote.phone && (
+                            <div className="text-slate-500 text-[11px] font-mono">
+                              📞 {quote.phone}
+                            </div>
+                          )}
+                          {quote.email && (
+                            <div className="text-slate-400 text-[10px] font-mono">
+                              ✉ {quote.email}
+                            </div>
+                          )}
+                        </div>
                       </td>
 
                       {/* Scope & Package */}
@@ -335,18 +358,11 @@ export default function ManageQuotationsPage() {
                         <div className="truncate font-medium text-slate-800 dark:text-slate-200" title={quote.subject}>
                           {quote.subject}
                         </div>
-                        {(quote.billing_cycle || quote.has_hardware) && (
+                        {quote.has_hardware && (
                           <div className="flex items-center gap-1.5 mt-1">
-                            {quote.billing_cycle && (
-                              <Badge variant="outline" className="text-[10px] py-0 px-1.5">
-                                {quote.billing_cycle}
-                              </Badge>
-                            )}
-                            {quote.has_hardware && (
-                              <Badge className="bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[10px] py-0 px-1.5">
-                                Hardware Incl.
-                              </Badge>
-                            )}
+                            <Badge className="bg-amber-50 text-amber-800 dark:bg-amber-950/50 dark:text-amber-300 border border-amber-200 dark:border-amber-800 text-[10px] py-0 px-1.5">
+                              Hardware Incl.
+                            </Badge>
                           </div>
                         )}
                       </td>
@@ -358,24 +374,12 @@ export default function ManageQuotationsPage() {
                           : "—"}
                       </td>
 
-                      {/* Email Status */}
-                      <td className="py-3 px-4 text-center whitespace-nowrap">
-                        {quote.email_sent_at ? (
-                          <span className="inline-flex items-center gap-1 text-[11px] font-medium text-emerald-700 dark:text-emerald-400 bg-emerald-50 dark:bg-emerald-950/40 px-2 py-0.5 rounded-full border border-emerald-200 dark:border-emerald-800">
-                            <CheckCircle className="w-3 h-3 text-emerald-600" />
-                            Sent ({format(new Date(quote.email_sent_at), "dd MMM, hh:mm a")})
-                          </span>
-                        ) : (
-                          <span className="text-slate-400 text-[11px]">Not sent</span>
-                        )}
-                      </td>
-
                       {/* Actions */}
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1">
                           {/* View & Print PDF */}
                           <Link
-                            href={`/dashboard/quotations/${quoteId}/print`}
+                            href={`/dashboard/quotations/${encodeURIComponent(quoteId)}/print`}
                             target="_blank"
                             title="View & Print Official PDF"
                           >
@@ -384,31 +388,27 @@ export default function ManageQuotationsPage() {
                             </Button>
                           </Link>
 
-                          {/* Send / Resend Email */}
-                          <Button
-                            variant="ghost"
-                            size="icon"
-                            title="Email PDF to Client"
-                            onClick={() => handleSendEmail(quote)}
-                            disabled={sendingEmailId === quoteId}
-                            className="h-8 w-8 text-slate-600 hover:text-emerald-600 cursor-pointer"
-                          >
-                            {sendingEmailId === quoteId ? (
-                              <RefreshCw className="w-3.5 h-3.5 animate-spin text-emerald-600" />
-                            ) : (
-                              <Mail className="w-4 h-4" />
-                            )}
-                          </Button>
-
                           {/* Edit */}
                           <Link
-                            href={`/dashboard/quotations/${quoteId}/edit`}
+                            href={`/dashboard/quotations/${encodeURIComponent(quoteId)}/edit`}
                             title="Edit Quotation"
                           >
                             <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-600 hover:text-amber-600 cursor-pointer">
                               <Edit className="w-4 h-4" />
                             </Button>
                           </Link>
+
+                          {/* Revise (shown only on the latest non-revised version) */}
+                          {canRevise && (
+                            <Link
+                              href={`/dashboard/quotations/${encodeURIComponent(quoteId)}/revise`}
+                              title="Revise Quotation"
+                            >
+                              <Button variant="ghost" size="icon" className="h-8 w-8 text-slate-600 hover:text-[#0167D6] cursor-pointer">
+                                <ReviseIcon className="w-[18px] h-[18px]" />
+                              </Button>
+                            </Link>
+                          )}
 
                           {/* Delete */}
                           <Button
@@ -429,15 +429,25 @@ export default function ManageQuotationsPage() {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          startIndex={pagination.startIndex}
+          endIndex={pagination.endIndex}
+          itemLabel="quotations"
+          onPageChange={setCurrentPage}
+        />
       </Card>
 
-      {/* Delete Confirmation Alert Dialog */}
-      <AlertDialog open={deleteId !== null} onOpenChange={() => setDeleteId(null)}>
+      {/* Delete Confirmation Modal */}
+      <AlertDialog open={!!deleteId} onOpenChange={() => setDeleteId(null)}>
         <AlertDialogContent>
           <AlertDialogHeader>
             <AlertDialogTitle>Are you absolutely sure?</AlertDialogTitle>
             <AlertDialogDescription>
-              This will permanently delete this quotation record from the system. This action cannot be undone.
+              This action cannot be undone. This will permanently remove this quotation record from the system.
             </AlertDialogDescription>
           </AlertDialogHeader>
           <AlertDialogFooter>
@@ -445,7 +455,7 @@ export default function ManageQuotationsPage() {
             <AlertDialogAction
               onClick={handleDelete}
               disabled={isDeleting}
-              className="bg-red-600 hover:bg-red-700 text-white"
+              className="bg-red-600 hover:bg-red-700 text-white font-semibold"
             >
               {isDeleting ? "Deleting..." : "Delete Quotation"}
             </AlertDialogAction>
@@ -455,4 +465,3 @@ export default function ManageQuotationsPage() {
     </div>
   );
 }
-

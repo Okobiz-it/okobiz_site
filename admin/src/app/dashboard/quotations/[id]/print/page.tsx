@@ -5,25 +5,23 @@ import { useParams, useRouter } from "next/navigation";
 import { QuotationPrintSheet } from "@/components/quotation/quotation-print-sheet";
 import { BillPrintSheet } from "@/components/quotation/bill-print-sheet";
 import { Button } from "@/components/ui/button";
-import { Printer, Download, Mail, ArrowLeft, RefreshCw } from "lucide-react";
+import { Printer, ArrowLeft, RefreshCw } from "lucide-react";
 import { toast } from "@/lib/toast";
-import { exportQuotationToPdf } from "@/lib/pdf-download";
 
 export default function QuotationPrintPage() {
   const params = useParams();
   const router = useRouter();
   const [data, setData] = useState<any>(null);
   const [loading, setLoading] = useState(true);
-  const [isSendingEmail, setIsSendingEmail] = useState(false);
-  const [isDownloading, setIsDownloading] = useState(false);
   const [paginationReady, setPaginationReady] = useState(false);
   const printSheetRef = useRef<HTMLDivElement>(null);
 
-  const quoteId = params.id as string;
+  const rawQuoteId = params.id as string;
+  const quoteId = rawQuoteId ? decodeURIComponent(rawQuoteId).trim() : "";
 
   useEffect(() => {
     if (!quoteId) return;
-    fetch(`/api/quotations/${quoteId}`)
+    fetch(`/api/quotations/${encodeURIComponent(quoteId)}`)
       .then((res) => res.json())
       .then((resData) => {
         if (resData.success) {
@@ -82,58 +80,6 @@ export default function QuotationPrintPage() {
     window.print();
   };
 
-  const handleDirectDownload = async () => {
-    if (!printSheetRef.current || !data) return;
-    setIsDownloading(true);
-    await waitForPaginationReady();
-    const toastId = toast.loading("Generating pristine PDF for direct download...");
-
-    try {
-      const isBill = data.doc_type === "BILL";
-      const cleanRefNo = (data.ref_no || (isBill ? "bill" : "quotation")).replace(/[^a-zA-Z0-9_-]/g, "_");
-      await exportQuotationToPdf(printSheetRef.current, `${isBill ? "Bill" : "Quotation"}_${cleanRefNo}.pdf`);
-      toast.dismiss(toastId);
-      toast.success("PDF downloaded successfully!");
-    } catch (err: any) {
-      console.error("Direct download error:", err);
-      toast.dismiss(toastId);
-      toast.error(err.message || "Failed to download PDF. Try using Print.");
-    } finally {
-      setIsDownloading(false);
-    }
-  };
-
-  const handleSendEmail = async () => {
-    if (!data?.email) {
-      toast.error("Client email is missing in this quotation");
-      return;
-    }
-
-    setIsSendingEmail(true);
-    const toastId = toast.loading(`Sending official PDF to ${data.email}...`);
-
-    try {
-      const res = await fetch(`/api/quotations/${quoteId}/send-email`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ email: data.email }),
-      });
-      const result = await res.json();
-      toast.dismiss(toastId);
-
-      if (result.success) {
-        toast.success(`Quotation successfully dispatched to ${data.email}`);
-      } else {
-        toast.error(result.message || "Failed to send email");
-      }
-    } catch (err: any) {
-      toast.dismiss(toastId);
-      toast.error(err.message || "Failed to send email");
-    } finally {
-      setIsSendingEmail(false);
-    }
-  };
-
   if (loading) {
     return (
       <div className="flex flex-col items-center justify-center min-h-[60vh] text-slate-500">
@@ -155,8 +101,8 @@ export default function QuotationPrintPage() {
   }
 
   return (
-    <div className="w-full min-h-full bg-slate-100 dark:bg-slate-950 pb-16 print:bg-white print:p-0 print:pb-0">
-      {/* Non-printable Floating Top Action Bar - Flush to Header */}
+    <div className="min-h-screen bg-slate-100 dark:bg-black/90 pb-16 print:p-0 print:m-0 print:bg-white print:dark:bg-white print:min-h-0">
+      {/* Top Floating Action Bar */}
       <div className="no-print sticky top-0 z-40 bg-white/95 dark:bg-slate-900/95 backdrop-blur-md border-b border-slate-200 dark:border-slate-800 px-4 sm:px-8 py-3 shadow-sm">
         <div className="max-w-[850px] mx-auto flex items-center justify-between">
           <Button
@@ -169,40 +115,6 @@ export default function QuotationPrintPage() {
           </Button>
 
           <div className="flex items-center gap-2.5">
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleSendEmail}
-              disabled={isSendingEmail}
-              className="flex items-center gap-1.5 text-xs text-blue-600 border-blue-200 hover:bg-blue-50 dark:hover:bg-blue-900/20 cursor-pointer"
-            >
-              {isSendingEmail ? (
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Mail className="w-3.5 h-3.5" />
-              )}
-              {isSendingEmail ? "Sending..." : "Email to Client"}
-            </Button>
-
-            <Button
-              variant="outline"
-              size="sm"
-              onClick={handleDirectDownload}
-              disabled={isDownloading || !paginationReady}
-              className="flex items-center gap-1.5 text-xs text-slate-700 border-slate-300 hover:bg-slate-100 dark:text-slate-200 dark:border-slate-700 dark:hover:bg-slate-800 cursor-pointer shadow-xs disabled:opacity-60"
-            >
-              {isDownloading ? (
-                <RefreshCw className="w-3.5 h-3.5 animate-spin" />
-              ) : (
-                <Download className="w-3.5 h-3.5 text-slate-600 dark:text-slate-300" />
-              )}
-              {isDownloading
-                ? "Downloading..."
-                : !paginationReady
-                ? "Paginating..."
-                : "Direct Download PDF"}
-            </Button>
-
             <Button
               size="sm"
               onClick={handlePrint}
@@ -229,4 +141,3 @@ export default function QuotationPrintPage() {
     </div>
   );
 }
-

@@ -34,10 +34,13 @@ import {
 import { QuotationRichEditor } from "./quotation-rich-editor";
 import { QuotationPrintSheet } from "./quotation-print-sheet";
 import { numberToWords } from "@/lib/number-to-words";
+import { parseRevisionRef } from "@/lib/quotation-revisions";
 
 interface QuotationFormProps {
   initialData?: any;
   isEdit?: boolean;
+  reviseFromId?: string;
+  sourceRefNo?: string;
 }
 
 interface SyncedSoftwareRowProps {
@@ -171,8 +174,14 @@ function SyncedSoftwareRow({
   );
 }
 
-export function QuotationForm({ initialData, isEdit = false }: QuotationFormProps) {
+export function QuotationForm({
+  initialData,
+  isEdit = false,
+  reviseFromId,
+  sourceRefNo,
+}: QuotationFormProps) {
   const router = useRouter();
+  const isRevise = Boolean(reviseFromId);
 
   // Basic Details
   const [refNo, setRefNo] = useState(initialData?.ref_no || "");
@@ -200,22 +209,16 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
   // Unified Rich Terms Content
   const [termsContent, setTermsContent] = useState<string>(() => {
-    if (initialData?.terms_conditions) {
-      if (
-        initialData.project_breakdown ||
-        initialData.client_requirements ||
-        initialData.deliverables
-      ) {
-        return [
-          initialData.project_breakdown,
-          initialData.terms_conditions,
-          initialData.client_requirements,
-          initialData.deliverables,
-        ]
-          .filter(Boolean)
-          .join("\n\n");
-      }
-      return initialData.terms_conditions;
+    const raw = (initialData?.terms_conditions || "").trim();
+    const legacyParts = [
+      initialData?.project_breakdown,
+      raw,
+      initialData?.client_requirements,
+      initialData?.deliverables,
+    ].filter(Boolean);
+
+    if (legacyParts.length > 0) {
+      return legacyParts.join("\n\n");
     }
     return DEFAULT_UNIFIED_TERMS_AND_CONDITIONS;
   });
@@ -241,6 +244,62 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
     }
   }, [grandTotal, isWordsManuallyEdited]);
 
+  // Synchronize state when initialData updates or loads
+  useEffect(() => {
+    if (!initialData) return;
+    if (initialData.ref_no) setRefNo(initialData.ref_no);
+    if (initialData.quote_date) {
+      setQuoteDate(new Date(initialData.quote_date).toISOString().split("T")[0]);
+    }
+    if (initialData.client_name) setClientName(initialData.client_name);
+    if (initialData.organization_name !== undefined) setOrganizationName(initialData.organization_name || "");
+    if (initialData.address !== undefined) setAddress(initialData.address || "");
+    if (initialData.phone !== undefined) setPhone(initialData.phone || "");
+    if (initialData.email !== undefined) setEmail(initialData.email || "");
+    if (initialData.subject) setSubject(initialData.subject);
+    if (initialData.company_signatory_name) setSignatoryName(initialData.company_signatory_name);
+    if (initialData.company_signatory_title) setSignatoryTitle(initialData.company_signatory_title);
+    if (initialData.company_phone) setSignatoryPhone(initialData.company_phone);
+    const rawTerms = (initialData.terms_conditions || "").trim();
+    const legacyParts = [
+      initialData.project_breakdown,
+      rawTerms,
+      initialData.client_requirements,
+      initialData.deliverables,
+    ].filter(Boolean);
+
+    const mergedTerms = legacyParts.length > 0 ? legacyParts.join("\n\n") : rawTerms;
+    if (mergedTerms) {
+      setTermsContent(mergedTerms);
+      setSavedTermsBaseline(mergedTerms);
+    }
+  }, [initialData]);
+
+  // Handle phone input: strictly numeric digits only
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericOnly = e.target.value.replace(/\D/g, "");
+    setPhone(numericOnly);
+  };
+
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Backspace" ||
+      e.key === "Delete" ||
+      e.key === "Tab" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "Enter" ||
+      (e.ctrlKey || e.metaKey)
+    ) {
+      return;
+    }
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
+
   // Signatory
   const [signatoryName, setSignatoryName] = useState(
     initialData?.company_signatory_name || "Md. Sorower Jahan"
@@ -263,7 +322,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
   // Automatically load saved default terms and conditions from database for new quotations
   useEffect(() => {
-    if (isEdit || initialData?.terms_conditions) return;
+    if (isEdit || isRevise || initialData?.terms_conditions) return;
     let isMounted = true;
     fetch("/api/quotations/default-terms")
       .then((res) => res.json())
@@ -287,33 +346,50 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
     Boolean(termsContent && termsContent.trim().length > 0) &&
     normalizeTermsHtml(termsContent) !== normalizeTermsHtml(savedTermsBaseline);
 
-  // Save current terms & conditions as default in database
-  const handleSaveDefaultTerms = async () => {
+  // Save current terms & conditions
+  const handleSaveTerms = async () => {
     if (!isTermsDirty || !termsContent || termsContent.trim().length === 0) {
       return;
     }
 
     setIsSavingDefaultTerms(true);
-    const loadingId = toast.loading("Saving default terms & conditions to database...");
+    const loadingId = toast.loading(
+      isEdit ? "Saving quotation terms & conditions..." : "Saving default terms & conditions..."
+    );
+
     try {
-      const res = await fetch("/api/quotations/default-terms", {
+      const quoteId = initialData?._id || initialData?.id;
+
+      // 1. When editing an existing quotation, immediately persist to this quotation document
+      if (isEdit && quoteId) {
+        const resQuote = await fetch(`/api/quotations/${encodeURIComponent(quoteId)}`, {
+          method: "PATCH",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ terms_conditions: termsContent }),
+        });
+        const resDataQuote = await resQuote.json();
+        if (!resQuote.ok || !resDataQuote.success) {
+          throw new Error(resDataQuote.message || "Failed to update quotation terms");
+        }
+      }
+
+      // 2. Also persist to default terms in settings
+      await fetch("/api/quotations/default-terms", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ defaultTerms: termsContent }),
       });
+
+      setSavedTermsBaseline(termsContent);
       toast.dismiss(loadingId);
-      const resData = await res.json();
-      if (resData.success) {
-        setSavedTermsBaseline(termsContent);
-        toast.success(
-          "Default terms & conditions saved successfully! They will now appear automatically on the create quotation page."
-        );
-      } else {
-        toast.error(resData.message || "Failed to save default terms");
-      }
+      toast.success(
+        isEdit
+          ? "Terms & conditions saved successfully for this quotation!"
+          : "Default terms & conditions saved successfully! They will appear automatically for new quotations."
+      );
     } catch (err: any) {
       toast.dismiss(loadingId);
-      toast.error(err.message || "An error occurred while saving default terms");
+      toast.error(err.message || "An error occurred while saving terms");
     } finally {
       setIsSavingDefaultTerms(false);
     }
@@ -332,7 +408,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
   // Fetch next Ref No if creating new
   useEffect(() => {
-    if (!isEdit && !refNo) {
+    if (!isEdit && !isRevise && !refNo) {
       fetch("/api/quotations")
         .then((res) => res.json())
         .then((data) => {
@@ -374,14 +450,14 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
   const currentQuotationData = {
     id: initialData?._id || initialData?.id,
-    ref_no: refNo,
+    ref_no: refNo.trim(),
     quote_date: quoteDate,
-    client_name: clientName,
-    organization_name: organizationName,
-    address,
-    phone,
-    email,
-    subject,
+    client_name: clientName.trim(),
+    organization_name: organizationName.trim(),
+    address: address.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+    subject: subject.trim(),
     software_columns: softwareColumns,
     software_rows: softwareRows,
     software_amount: grandTotal,
@@ -406,6 +482,28 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
     company_phone: signatoryPhone,
   };
 
+  const currentSnapshot = JSON.stringify({
+    quoteDate,
+    clientName: clientName.trim(),
+    organizationName: organizationName.trim(),
+    address: address.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+    subject: subject.trim(),
+    softwareRows,
+    grandTotal,
+    inWords: inWords.trim(),
+    termsContent: (termsContent || "").trim(),
+    signatoryName: signatoryName.trim(),
+    signatoryTitle: signatoryTitle.trim(),
+    signatoryPhone: signatoryPhone.trim(),
+  });
+  const initialReviseSnapshotRef = useRef<string | null>(null);
+  if (isRevise && initialReviseSnapshotRef.current === null) {
+    initialReviseSnapshotRef.current = currentSnapshot;
+  }
+  const isReviseUnchanged = isRevise && currentSnapshot === initialReviseSnapshotRef.current;
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!clientName.trim()) {
@@ -416,14 +514,41 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
       toast.error("Please enter Reference Number");
       return;
     }
+    if (phone.trim()) {
+      if (!/^\d+$/.test(phone.trim())) {
+        toast.error("Client Phone / Mobile must contain numeric digits only");
+        return;
+      }
+      if (phone.trim().length < 6) {
+        toast.error("Client Phone / Mobile must be at least 6 digits");
+        return;
+      }
+    }
+    if (email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        toast.error("Please enter a valid Client Email Address (e.g. client@example.com)");
+        return;
+      }
+    }
 
     setIsSubmitting(true);
-    const toastId = toast.loading(isEdit ? "Updating quotation..." : "Saving quotation...");
+    const toastId = toast.loading(
+      isEdit ? "Updating quotation..." : isRevise ? "Saving revised quotation..." : "Saving quotation..."
+    );
 
     try {
+      const { baseRef, revNumber } = parseRevisionRef(currentQuotationData.ref_no);
       const payload = {
         ...currentQuotationData,
-        send_email: false,
+        ...(isRevise
+          ? {
+              parent_id: reviseFromId,
+              root_ref_no: baseRef,
+              revision_number: revNumber,
+              is_revised: false,
+            }
+          : {}),
       };
 
       const quoteId = initialData?._id || initialData?.id;
@@ -442,7 +567,13 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
       }
 
       toast.dismiss(toastId);
-      toast.success(isEdit ? "Quotation updated successfully!" : "Quotation saved successfully!");
+      toast.success(
+        isEdit
+          ? "Quotation updated successfully!"
+          : isRevise
+          ? "Revised quotation saved successfully!"
+          : "Quotation saved successfully!"
+      );
 
       router.push("/dashboard/quotations");
       router.refresh();
@@ -472,8 +603,17 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
           <div>
             <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <FileText className="w-5 h-5 text-[#0167D6]" />
-              {isEdit ? `Edit Quotation (${refNo})` : "Create New Quotation"}
+              {isRevise
+                ? `Revise Quotation (${refNo})`
+                : isEdit
+                ? `Edit Quotation (${refNo})`
+                : "Create New Quotation"}
             </h1>
+            {isRevise && sourceRefNo && (
+              <p className="text-xs text-slate-500 mt-0.5">
+                Creating revision from <span className="font-mono font-semibold">{sourceRefNo}</span>
+              </p>
+            )}
           </div>
         </div>
 
@@ -492,15 +632,22 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
             type="button"
             size="sm"
             onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs"
+            disabled={isSubmitting || isReviseUnchanged}
+            title={isReviseUnchanged ? "Make at least one change to save a revised quotation" : undefined}
+            className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
             ) : (
               <Save className="w-4 h-4" />
             )}
-            <span>{isEdit ? "Update Quotation" : "Save Quotation"}</span>
+            <span>
+              {isEdit
+                ? "Update Quotation"
+                : isRevise
+                ? "Save Revised Quotation"
+                : "Save Quotation"}
+            </span>
           </Button>
         </div>
       </div>
@@ -574,8 +721,11 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
                 </label>
                 <Input
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. +880 1712 345678"
+                  onChange={handlePhoneChange}
+                  onKeyDown={handlePhoneKeyDown}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="e.g. 01712345678 (numeric digits only)"
                 />
               </div>
 
@@ -746,9 +896,15 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
             <QuotationRichEditor
               value={termsContent}
               onChange={setTermsContent}
-              onSaveText={handleSaveDefaultTerms}
+              onSaveText={handleSaveTerms}
               isSavingText={isSavingDefaultTerms}
               isSaveDisabled={!isTermsDirty}
+              saveButtonText={isEdit ? "Save Terms" : "Save as Default"}
+              saveButtonTitle={
+                isEdit
+                  ? "Save terms & conditions directly to this quotation"
+                  : "Save current terms as default for future quotations"
+              }
             />
           </CardContent>
         </Card>
@@ -802,7 +958,7 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
             <div className="pt-3 border-t border-slate-200 dark:border-gray-800 flex items-center gap-2 text-xs text-slate-600 dark:text-gray-400">
               <CheckCircle2 className="w-4 h-4 text-[#0167D6] shrink-0" />
               <span>
-                Saving will store this quotation in <strong>Manage Quotations</strong> where you can print, email, edit, or delete it anytime.
+                Saving will store this quotation in <strong>Manage Quotations</strong> where you can print, edit, or delete it anytime.
               </span>
             </div>
           </CardContent>
@@ -829,15 +985,22 @@ export function QuotationForm({ initialData, isEdit = false }: QuotationFormProp
 
           <Button
             type="submit"
-            disabled={isSubmitting}
-            className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 px-6 cursor-pointer shadow-xs"
+            disabled={isSubmitting || isReviseUnchanged}
+            title={isReviseUnchanged ? "Make at least one change to save a revised quotation" : undefined}
+            className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 px-6 cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <RefreshCw className="w-4 h-4 animate-spin" />
             ) : (
               <Save className="w-4 h-4" />
             )}
-            <span>{isEdit ? "Update Quotation" : "Save Quotation"}</span>
+            <span>
+              {isEdit
+                ? "Update Quotation"
+                : isRevise
+                ? "Save Revised Quotation"
+                : "Save Quotation"}
+            </span>
           </Button>
         </div>
       </form>

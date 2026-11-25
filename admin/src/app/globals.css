@@ -325,12 +325,25 @@ html.light [style*="color:#ffffff"] {
 }
 
 /* Modal Tab Contrast in Light Mode: ensure active tabs have prominent brand blue text and soft blue tint */
-html.light button.border-\[\#3368B2\],
-html.light button.border-\[\#0167D6\],
-html.light button[class*="border-\[\#3368B2\]"].text-white,
-html.light button[class*="border-\[\#0167D6\]"].text-white {
+html.light button.border-\[\#3368B2\]:not([role="checkbox"]),
+html.light button.border-\[\#0167D6\]:not([role="checkbox"]),
+html.light button[class*="border-\[\#3368B2\]"].text-white:not([role="checkbox"]),
+html.light button[class*="border-\[\#0167D6\]"].text-white:not([role="checkbox"]) {
   color: #0167D6 !important;
   background-color: #EFF6FF !important;
+}
+
+/* Checked Checkbox Protection in Light Mode */
+html.light button[role="checkbox"][aria-checked="true"],
+button[role="checkbox"][aria-checked="true"] {
+  background-color: #0167D6 !important;
+  border-color: #0167D6 !important;
+  color: #FFFFFF !important;
+}
+html.light button[role="checkbox"][aria-checked="true"] svg,
+button[role="checkbox"][aria-checked="true"] svg {
+  color: #FFFFFF !important;
+  stroke: #FFFFFF !important;
 }
 
 /* Form Labels in Light Mode - Guaranteed Bold High Contrast */

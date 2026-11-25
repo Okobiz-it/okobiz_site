@@ -35,6 +35,11 @@ export interface IQuotation {
   company_phone?: string;
   company_email?: string;
   doc_type?: "QUOTATION" | "BILL" | string;
+  parent_id?: string | null;
+  root_ref_no?: string;
+  revision_number?: number;
+  is_revised?: boolean;
+  revised_to_id?: string | null;
   bill_rows?: any[];
   sub_total?: number;
   has_advance_payment?: boolean;
@@ -82,6 +87,11 @@ const QuotationSchema = new Schema<IQuotation>(
     company_phone: { type: String, default: "+880 1973590937" },
     company_email: { type: String, default: "info@okobiz.com" },
     doc_type: { type: String, default: "QUOTATION" },
+    parent_id: { type: String, default: null },
+    root_ref_no: { type: String, default: "" },
+    revision_number: { type: Number, default: 0 },
+    is_revised: { type: Boolean, default: false },
+    revised_to_id: { type: String, default: null },
     bill_rows: { type: Schema.Types.Mixed, default: [] },
     sub_total: { type: Number, default: 0 },
     has_advance_payment: { type: Boolean, default: false },

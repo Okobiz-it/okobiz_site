@@ -2,89 +2,125 @@ import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
 import { getDataStore, saveDatastore } from "@/lib/dataStore";
 import Quotation from "@/models/Quotation";
-import { sendQuotationEmail } from "@/lib/email";
+import {
+  computeSupersededIds,
+  getDocId,
+  matchesDocumentSearch,
+  parseRevisionRef,
+} from "@/lib/quotation-revisions";
 
 export const dynamic = "force-dynamic";
 
-async function generateNextRefNo(existingCount: number, docType: string = "QUOTATION"): Promise<string> {
+function generateNextRefNoFromDocs(docs: any[], docType: string = "QUOTATION"): string {
   const now = new Date();
   const day = String(now.getDate()).padStart(2, "0");
   const year = String(now.getFullYear()).slice(-2);
-  const sequence = String(existingCount + 1).padStart(3, "0");
-  if (docType === "BILL") {
-    const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
-    const month = monthNames[now.getMonth()];
-    return `okobiz/bill/${month}/${sequence}/${year}`;
+  const monthNames = ["jan", "feb", "mar", "apr", "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"];
+  const month = monthNames[now.getMonth()];
+
+  const sameTypeDocs = docs.filter((q) =>
+    docType === "BILL" ? q?.doc_type === "BILL" : q?.doc_type !== "BILL"
+  );
+
+  // Exclude revisions (-R1, -R2, ...) when counting unique base quotations/bills
+  const baseDocsCount = sameTypeDocs.filter((q) => {
+    if (q?.parent_id) return false;
+    const { revNumber } = parseRevisionRef(q?.ref_no || "");
+    return revNumber === 0;
+  }).length;
+
+  const existingRefs = new Set(
+    sameTypeDocs.map((q) => String(q?.ref_no || "").trim().toLowerCase())
+  );
+
+  let seq = baseDocsCount + 1;
+  while (true) {
+    const sequence = String(seq).padStart(3, "0");
+    const candidate =
+      docType === "BILL"
+        ? `okobiz/bill/${month}/${sequence}/${year}`
+        : `okobiz/bizpos/${sequence}/${day}/${year}`;
+    if (!existingRefs.has(candidate.toLowerCase())) {
+      return candidate;
+    }
+    seq += 1;
   }
-  return `okobiz/bizpos/${sequence}/${day}/${year}`;
+}
+
+function sortByCreatedDesc(list: any[]): any[] {
+  return [...list].sort(
+    (a, b) => new Date(b?.created_at || 0).getTime() - new Date(a?.created_at || 0).getTime()
+  );
 }
 
 export async function GET(req: NextRequest) {
   try {
     const { searchParams } = new URL(req.url);
-    const search = (searchParams.get("search") || "").toLowerCase();
+    const search = (searchParams.get("search") || "").toLowerCase().trim();
     const status = searchParams.get("status") || "";
     const docType = (searchParams.get("doc_type") || "").toUpperCase();
 
     const store = getDataStore();
-    let quotationsList: any[] = [];
-    let totalCount = 0;
+    if (!Array.isArray(store.quotations)) store.quotations = [];
+
+    let allDocsInSystem: any[] = [];
 
     const db = await connectDB();
     if (db) {
       try {
-        const query: any = {};
-        if (status && status !== "ALL") {
-          query.status = status;
+        // Bi-directional sync: ensure any local store quotations are in MongoDB
+        if (store.quotations.length > 0) {
+          for (const localQ of store.quotations) {
+            const exists = await Quotation.findOne({
+              $or: [{ _id: localQ._id }, { ref_no: localQ.ref_no }],
+            }).lean();
+            if (!exists) {
+              await Quotation.create(localQ).catch(() => {});
+            }
+          }
         }
-        if (docType === "BILL") {
-          query.doc_type = "BILL";
-        } else if (docType === "QUOTATION") {
-          query.doc_type = { $ne: "BILL" };
+
+        allDocsInSystem = await Quotation.find({}).sort({ created_at: -1 }).lean();
+
+        if (allDocsInSystem.length > 0) {
+          store.quotations = allDocsInSystem;
+          saveDatastore(store);
         }
-        if (search) {
-          query.$or = [
-            { ref_no: { $regex: search, $options: "i" } },
-            { client_name: { $regex: search, $options: "i" } },
-            { organization_name: { $regex: search, $options: "i" } },
-            { email: { $regex: search, $options: "i" } },
-            { phone: { $regex: search, $options: "i" } },
-            { subject: { $regex: search, $options: "i" } },
-          ];
-        }
-        quotationsList = await Quotation.find(query).sort({ created_at: -1 }).lean();
-        totalCount = await Quotation.countDocuments(docType ? { doc_type: docType === "BILL" ? "BILL" : { $ne: "BILL" } } : {});
       } catch (dbErr: any) {
         console.warn("MongoDB GET quotations error:", dbErr.message);
       }
     }
 
-    // Fallback to dataStore if DB returned empty or offline
-    if (quotationsList.length === 0 && Array.isArray(store.quotations)) {
-      quotationsList = store.quotations.filter((q: any) => {
-        const matchStatus = !status || status === "ALL" || q.status === status;
-        const matchDocType =
-          !docType ||
-          (docType === "BILL" ? q.doc_type === "BILL" : q.doc_type !== "BILL");
-        const matchSearch =
-          !search ||
-          (q.ref_no && q.ref_no.toLowerCase().includes(search)) ||
-          (q.client_name && q.client_name.toLowerCase().includes(search)) ||
-          (q.organization_name && q.organization_name.toLowerCase().includes(search)) ||
-          (q.email && q.email.toLowerCase().includes(search)) ||
-          (q.phone && q.phone.toLowerCase().includes(search)) ||
-          (q.subject && q.subject.toLowerCase().includes(search));
-        return matchStatus && matchDocType && matchSearch;
-      });
-      totalCount = quotationsList.length;
+    // Fallback to dataStore if DB returned empty or connection failed
+    if (allDocsInSystem.length === 0 && Array.isArray(store.quotations)) {
+      allDocsInSystem = sortByCreatedDesc(store.quotations);
     }
 
-    const nextRefNo = await generateNextRefNo(totalCount, "QUOTATION");
-    const nextBillRefNo = await generateNextRefNo(totalCount, "BILL");
+    const allTypeDocs = allDocsInSystem.filter((q: any) => {
+      if (!docType) return true;
+      return docType === "BILL" ? q.doc_type === "BILL" : q.doc_type !== "BILL";
+    });
+
+    // Compute superseded status across the full doc_type dataset before search/status filtering
+    const supersededIds = computeSupersededIds(allTypeDocs);
+
+    const enrichedDocs = allTypeDocs.map((doc) => ({
+      ...doc,
+      is_revised: Boolean(doc.is_revised) || supersededIds.has(getDocId(doc)),
+    }));
+
+    const filteredList = enrichedDocs.filter((q: any) => {
+      const matchStatus = !status || status === "ALL" || q.status === status;
+      const matchSearch = matchesDocumentSearch(q, search);
+      return matchStatus && matchSearch;
+    });
+
+    const nextRefNo = generateNextRefNoFromDocs(allDocsInSystem, "QUOTATION");
+    const nextBillRefNo = generateNextRefNoFromDocs(allDocsInSystem, "BILL");
 
     return NextResponse.json({
       success: true,
-      data: quotationsList,
+      data: filteredList,
       nextRefNo,
       nextBillRefNo,
     });
@@ -104,22 +140,83 @@ export async function POST(req: NextRequest) {
     if (!store.quotations) store.quotations = [];
 
     const doc_type = body.doc_type || "QUOTATION";
+    const db = await connectDB();
+
+    // Load current docs to validate uniqueness and parent revision state
+    let existingDocs: any[] = store.quotations;
+    if (db) {
+      try {
+        existingDocs = await Quotation.find({}).lean();
+      } catch (dbErr: any) {
+        console.warn("MongoDB read during POST quotation:", dbErr.message);
+      }
+    }
+
     let ref_no = (body.ref_no || "").trim();
     if (!ref_no) {
-      ref_no = await generateNextRefNo(store.quotations.length, doc_type);
+      ref_no = generateNextRefNoFromDocs(existingDocs, doc_type);
+    }
+
+    // Prevent overwriting an existing record on duplicate ref_no
+    const duplicateRef = existingDocs.find(
+      (q: any) => String(q?.ref_no || "").trim().toLowerCase() === ref_no.toLowerCase()
+    );
+    if (duplicateRef) {
+      return NextResponse.json(
+        {
+          success: false,
+          message: `A document with Reference No. "${ref_no}" already exists.`,
+        },
+        { status: 409 }
+      );
+    }
+
+    const parentId = body.parent_id ? String(body.parent_id).trim() : null;
+    if (parentId) {
+      const parentDoc = existingDocs.find(
+        (q: any) => getDocId(q) === parentId || q.ref_no === parentId
+      );
+      const alreadyHasChild = existingDocs.some(
+        (q: any) => q?.parent_id && String(q.parent_id) === parentId
+      );
+      if (parentDoc?.is_revised || alreadyHasChild) {
+        return NextResponse.json(
+          {
+            success: false,
+            message: "This version has already been revised. Please revise the latest version.",
+          },
+          { status: 409 }
+        );
+      }
+    }
+
+    const { baseRef, revNumber } = parseRevisionRef(ref_no);
+    let newId = "quote-" + Date.now();
+    while (existingDocs.some((q: any) => String(q?._id) === newId)) {
+      newId = `quote-${Date.now()}-${Math.random().toString(36).slice(2, 6)}`;
     }
 
     const newQuotation = {
-      _id: "quote-" + Date.now(),
+      _id: newId,
       ref_no,
       doc_type,
+      parent_id: parentId,
+      root_ref_no: (body.root_ref_no || baseRef || ref_no).trim(),
+      revision_number:
+        body.revision_number !== undefined ? Number(body.revision_number) : revNumber,
+      is_revised: false,
+      revised_to_id: null,
       quote_date: body.quote_date ? new Date(body.quote_date) : new Date(),
-      client_name: body.client_name || "Valued Client",
-      organization_name: body.organization_name || "",
-      address: body.address || "",
-      phone: body.phone || "",
-      email: body.email || "",
-      subject: body.subject || (doc_type === "BILL" ? "Due Bill for Web & Software Solution" : "Quotation for Web & Software Solution"),
+      client_name: (body.client_name || "").trim() || "Valued Client",
+      organization_name: (body.organization_name || "").trim(),
+      address: (body.address || "").trim(),
+      phone: (body.phone || "").trim(),
+      email: (body.email || "").trim(),
+      subject:
+        (body.subject || "").trim() ||
+        (doc_type === "BILL"
+          ? "Due Bill for Web & Software Solution"
+          : "Quotation for Web & Software Solution"),
       bill_rows: body.bill_rows || [],
       sub_total: Number(body.sub_total || 0),
       has_advance_payment: Boolean(body.has_advance_payment),
@@ -128,8 +225,8 @@ export async function POST(req: NextRequest) {
       software_columns: body.software_columns || [],
       software_rows: body.software_rows || [],
       software_amount: Number(body.software_amount || 0),
-      plan_name: body.plan_name || "Starter",
-      billing_cycle: body.billing_cycle || "MONTHLY",
+      plan_name: body.plan_name || "",
+      billing_cycle: body.billing_cycle || "",
       license_fee_title: body.license_fee_title || "One-time Setup & License Fee",
       license_fee_amount: Number(body.license_fee_amount || 0),
       subscription_amount: Number(body.subscription_amount || 0),
@@ -149,84 +246,58 @@ export async function POST(req: NextRequest) {
       company_signatory_title: body.company_signatory_title || "CEO | Okobiz",
       company_phone: body.company_phone || "+880 1973590937",
       company_email: body.company_email || "info@okobiz.com",
-      status: body.status || "DRAFT",
+      status: body.status || "SENT",
       email_sent_at: null,
       created_at: new Date(),
       updated_at: new Date(),
     };
 
-    // Save to local store
+    // Save to local store and lock parent if revising
     store.quotations.unshift(newQuotation);
+    if (parentId) {
+      const parentIdx = store.quotations.findIndex(
+        (q: any) => getDocId(q) === parentId || q.ref_no === parentId
+      );
+      if (parentIdx !== -1) {
+        store.quotations[parentIdx] = {
+          ...store.quotations[parentIdx],
+          is_revised: true,
+          revised_to_id: newQuotation._id,
+          updated_at: new Date(),
+        };
+      }
+    }
     saveDatastore(store);
 
     let createdDoc: any = newQuotation;
 
-    // Save to MongoDB
-    const db = await connectDB();
+    // Save to MongoDB and mark parent revised
     if (db) {
       try {
         const created = await Quotation.create(newQuotation);
         if (created) {
           createdDoc = created.toObject ? created.toObject() : created;
         }
+        if (parentId) {
+          await Quotation.findOneAndUpdate(
+            { $or: [{ _id: parentId }, { ref_no: parentId }] },
+            {
+              $set: {
+                is_revised: true,
+                revised_to_id: newQuotation._id,
+                updated_at: new Date(),
+              },
+            }
+          );
+        }
       } catch (dbErr: any) {
         console.warn("MongoDB Quotation create error:", dbErr.message);
-      }
-    }
-
-    let emailSent = false;
-    let emailError = null;
-
-    if (body.send_email && body.email) {
-      try {
-        let attachmentBuffer: Buffer | undefined;
-        if (body.pdf_base64) {
-          const base64Data = body.pdf_base64.replace(/^data:application\/pdf;base64,/, "");
-          attachmentBuffer = Buffer.from(base64Data, "base64");
-        }
-
-        const origin = req.headers.get("origin") || req.nextUrl?.origin;
-        const appUrl = origin || process.env.NEXT_PUBLIC_ADMIN_URL || "http://localhost:3001";
-        const viewOnlineUrl = `${appUrl}/dashboard/quotations/${createdDoc._id || createdDoc.id}/print`;
-
-        await sendQuotationEmail({
-          to: body.email,
-          clientName: createdDoc.client_name,
-          organizationName: createdDoc.organization_name,
-          refNo: createdDoc.ref_no,
-          subject: createdDoc.subject,
-          grandTotal: Number(createdDoc.grand_total),
-          inWords: createdDoc.in_words,
-          attachmentBuffer,
-          viewOnlineUrl,
-        });
-
-        // Update email_sent_at
-        createdDoc.email_sent_at = new Date();
-        const storeIdx = store.quotations.findIndex((q: any) => q._id === createdDoc._id);
-        if (storeIdx !== -1) {
-          store.quotations[storeIdx].email_sent_at = new Date().toISOString();
-          saveDatastore(store);
-        }
-
-        if (db) {
-          try {
-            await Quotation.findByIdAndUpdate(createdDoc._id, { email_sent_at: new Date() });
-          } catch {}
-        }
-
-        emailSent = true;
-      } catch (err: any) {
-        console.error("Failed to send quotation email:", err);
-        emailError = err.message || "Failed to dispatch email";
       }
     }
 
     return NextResponse.json({
       success: true,
       data: createdDoc,
-      emailSent,
-      emailError,
     });
   } catch (error: any) {
     console.error("POST /api/quotations error:", error);
@@ -236,4 +307,3 @@ export async function POST(req: NextRequest) {
     );
   }
 }
-

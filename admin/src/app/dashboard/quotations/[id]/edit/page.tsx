@@ -14,20 +14,28 @@ export default function EditQuotationPage() {
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
+  const rawId = params.id as string;
+  const quoteId = rawId ? decodeURIComponent(rawId).trim() : "";
+
   useEffect(() => {
-    if (!params.id) return;
-    fetch(`/api/quotations/${params.id}`)
+    if (!quoteId) return;
+    setLoading(true);
+    setError(null);
+
+    fetch(`/api/quotations/${encodeURIComponent(quoteId)}`)
       .then((res) => res.json())
       .then((resData) => {
-        if (resData.success) {
+        if (resData.success && resData.data) {
           setData(resData.data);
         } else {
-          setError(resData.message || "Failed to load quotation");
+          setError(resData.message || "Failed to load quotation details");
         }
       })
-      .catch((err) => setError(err.message))
+      .catch((err) => {
+        setError(err.message || "Failed to connect to quotation service");
+      })
       .finally(() => setLoading(false));
-  }, [params.id]);
+  }, [quoteId]);
 
   if (loading) {
     return (
@@ -42,10 +50,32 @@ export default function EditQuotationPage() {
     return (
       <div className="max-w-md mx-auto text-center py-16">
         <h2 className="text-lg font-bold text-red-600 mb-2">Error Loading Quotation</h2>
-        <p className="text-sm text-slate-600 mb-4">{error || "Quotation not found"}</p>
-        <Button onClick={() => router.push("/dashboard/quotations")}>
-          <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Quotations
-        </Button>
+        <p className="text-sm text-slate-600 dark:text-slate-400 mb-4">{error || "Quotation not found"}</p>
+        <div className="flex items-center justify-center gap-3">
+          <Button
+            variant="outline"
+            onClick={() => {
+              setLoading(true);
+              setError(null);
+              fetch(`/api/quotations/${encodeURIComponent(quoteId)}`)
+                .then((res) => res.json())
+                .then((resData) => {
+                  if (resData.success && resData.data) {
+                    setData(resData.data);
+                  } else {
+                    setError(resData.message || "Failed to load quotation details");
+                  }
+                })
+                .catch((err) => setError(err.message || "Failed to connect to quotation service"))
+                .finally(() => setLoading(false));
+            }}
+          >
+            <RefreshCw className="w-4 h-4 mr-1.5" /> Retry
+          </Button>
+          <Button onClick={() => router.push("/dashboard/quotations")}>
+            <ArrowLeft className="w-4 h-4 mr-1.5" /> Back to Quotations
+          </Button>
+        </div>
       </div>
     );
   }
@@ -60,4 +90,3 @@ export default function EditQuotationPage() {
     </div>
   );
 }
-

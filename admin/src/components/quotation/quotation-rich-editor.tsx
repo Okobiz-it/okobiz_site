@@ -10,6 +10,8 @@ interface QuotationRichEditorProps {
   onSaveText?: () => void;
   isSavingText?: boolean;
   isSaveDisabled?: boolean;
+  saveButtonText?: string;
+  saveButtonTitle?: string;
 }
 
 export function QuotationRichEditor({
@@ -19,6 +21,8 @@ export function QuotationRichEditor({
   onSaveText,
   isSavingText = false,
   isSaveDisabled = false,
+  saveButtonText,
+  saveButtonTitle,
 }: QuotationRichEditorProps) {
   return (
     <div className="quotation-rich-editor-wrapper w-full">
@@ -30,6 +34,8 @@ export function QuotationRichEditor({
         onSaveText={onSaveText}
         isSavingText={isSavingText}
         isSaveDisabled={isSaveDisabled}
+        saveButtonText={saveButtonText}
+        saveButtonTitle={saveButtonTitle}
       />
     </div>
   );

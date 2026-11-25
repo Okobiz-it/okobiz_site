@@ -23,14 +23,23 @@ import { Badge } from "@/components/ui/badge";
 import { toast } from "@/lib/toast";
 import { BillPrintSheet, BillRow } from "./bill-print-sheet";
 import { numberToWords } from "@/lib/number-to-words";
+import { parseRevisionRef } from "@/lib/quotation-revisions";
 
 interface BillFormProps {
   initialData?: any;
   isEdit?: boolean;
+  reviseFromId?: string;
+  sourceRefNo?: string;
 }
 
-export function BillForm({ initialData, isEdit = false }: BillFormProps) {
+export function BillForm({
+  initialData,
+  isEdit = false,
+  reviseFromId,
+  sourceRefNo,
+}: BillFormProps) {
   const router = useRouter();
+  const isRevise = Boolean(reviseFromId);
 
   // Basic Details
   const [refNo, setRefNo] = useState(initialData?.ref_no || "");
@@ -48,6 +57,46 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     initialData?.subject || "Due Bill for Website Design & Development"
   );
   const [additionalNotes, setAdditionalNotes] = useState(initialData?.additional_notes || "");
+
+  // Synchronize state when initialData updates or loads
+  useEffect(() => {
+    if (!initialData) return;
+    if (initialData.ref_no) setRefNo(initialData.ref_no);
+    if (initialData.quote_date) {
+      setQuoteDate(new Date(initialData.quote_date).toISOString().split("T")[0]);
+    }
+    if (initialData.client_name) setClientName(initialData.client_name);
+    if (initialData.organization_name !== undefined) setOrganizationName(initialData.organization_name || "");
+    if (initialData.address !== undefined) setAddress(initialData.address || "");
+    if (initialData.phone !== undefined) setPhone(initialData.phone || "");
+    if (initialData.email !== undefined) setEmail(initialData.email || "");
+    if (initialData.subject) setSubject(initialData.subject);
+  }, [initialData]);
+
+  // Handle phone input: strictly numeric digits only
+  const handlePhoneChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const numericOnly = e.target.value.replace(/\D/g, "");
+    setPhone(numericOnly);
+  };
+
+  const handlePhoneKeyDown = (e: React.KeyboardEvent<HTMLInputElement>) => {
+    if (
+      e.key === "Backspace" ||
+      e.key === "Delete" ||
+      e.key === "Tab" ||
+      e.key === "ArrowLeft" ||
+      e.key === "ArrowRight" ||
+      e.key === "ArrowUp" ||
+      e.key === "ArrowDown" ||
+      e.key === "Enter" ||
+      (e.ctrlKey || e.metaKey)
+    ) {
+      return;
+    }
+    if (!/^\d$/.test(e.key)) {
+      e.preventDefault();
+    }
+  };
 
   // Bill Rows (Expense Head & Amount)
   const [billRows, setBillRows] = useState<BillRow[]>(() => {
@@ -113,7 +162,7 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
 
   // Fetch next Ref No if creating new
   useEffect(() => {
-    if (!isEdit && !refNo) {
+    if (!isEdit && !isRevise && !refNo) {
       fetch("/api/quotations")
         .then((res) => res.json())
         .then((data) => {
@@ -190,6 +239,28 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     company_email: "info@okobiz.com",
   };
 
+  const currentSnapshot = JSON.stringify({
+    quoteDate,
+    clientName: clientName.trim(),
+    organizationName: organizationName.trim(),
+    address: address.trim(),
+    phone: phone.trim(),
+    email: email.trim(),
+    subject: subject.trim(),
+    billRows,
+    hasAdvancePayment,
+    advanceAmount: hasAdvancePayment ? advanceAmount : 0,
+    advanceLabel: advanceLabel.trim(),
+    grandTotal,
+    inWords: inWords.trim(),
+    additionalNotes: additionalNotes.trim(),
+  });
+  const initialReviseSnapshotRef = useRef<string | null>(null);
+  if (isRevise && initialReviseSnapshotRef.current === null) {
+    initialReviseSnapshotRef.current = currentSnapshot;
+  }
+  const isReviseUnchanged = isRevise && currentSnapshot === initialReviseSnapshotRef.current;
+
   // Form submit handler
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -201,6 +272,23 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     if (!clientName.trim()) {
       toast.error("Client Name is required");
       return;
+    }
+    if (phone.trim()) {
+      if (!/^\d+$/.test(phone.trim())) {
+        toast.error("Client Phone / Mobile must contain numeric digits only");
+        return;
+      }
+      if (phone.trim().length < 6) {
+        toast.error("Client Phone / Mobile must be at least 6 digits");
+        return;
+      }
+    }
+    if (email.trim()) {
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      if (!emailRegex.test(email.trim())) {
+        toast.error("Please enter a valid Client Email Address (e.g. client@example.com)");
+        return;
+      }
     }
     if (!subject.trim()) {
       toast.error("Bill Subject is required");
@@ -216,9 +304,12 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
     }
 
     setIsSubmitting(true);
-    const loadingToastId = toast.loading(isEdit ? "Updating bill..." : "Creating official bill...");
+    const loadingToastId = toast.loading(
+      isEdit ? "Updating bill..." : isRevise ? "Saving revised bill..." : "Creating official bill..."
+    );
 
     try {
+      const { baseRef, revNumber } = parseRevisionRef(refNo);
       const payload = {
         ref_no: refNo,
         quote_date: quoteDate,
@@ -229,6 +320,14 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
         email,
         subject,
         doc_type: "BILL",
+        ...(isRevise
+          ? {
+              parent_id: reviseFromId,
+              root_ref_no: baseRef,
+              revision_number: revNumber,
+              is_revised: false,
+            }
+          : {}),
         bill_rows: billRows,
         software_rows: billRows.map((r, idx) => ({
           sl: idx + 1,
@@ -262,7 +361,13 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
       toast.dismiss(loadingToastId);
 
       if (resData.success) {
-        toast.success(isEdit ? "Bill updated successfully" : "Bill created successfully");
+        toast.success(
+          isEdit
+            ? "Bill updated successfully"
+            : isRevise
+            ? "Revised bill saved successfully"
+            : "Bill created successfully"
+        );
         router.push("/dashboard/quotations/manage-bills");
         router.refresh();
       } else {
@@ -294,10 +399,20 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
           <div>
             <h1 className="text-xl font-bold text-slate-900 dark:text-white flex items-center gap-2">
               <Receipt className="w-5 h-5 text-[#0167D6]" />
-              {isEdit ? "Edit Official Bill" : "Create Official Bill"}
+              {isRevise
+                ? `Revise Official Bill (${refNo})`
+                : isEdit
+                ? "Edit Official Bill"
+                : "Create Official Bill"}
             </h1>
             <p className="text-xs text-slate-500 dark:text-gray-400 mt-0.5">
-              Issue company bill vouchers on official Okobiz letterhead pad with automated amount calculations
+              {isRevise && sourceRefNo ? (
+                <>
+                  Creating revision from <span className="font-mono font-semibold">{sourceRefNo}</span>
+                </>
+              ) : (
+                "Issue company bill vouchers on official Okobiz letterhead pad with automated amount calculations"
+              )}
             </p>
           </div>
         </div>
@@ -315,8 +430,9 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting}
-            className="flex-1 sm:flex-none bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs"
+            disabled={isSubmitting || isReviseUnchanged}
+            title={isReviseUnchanged ? "Make at least one change to save a revised bill" : undefined}
+            className="flex-1 sm:flex-none bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
@@ -326,7 +442,7 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
             ) : (
               <>
                 <Save className="w-4 h-4 mr-2" />
-                {isEdit ? "Update Bill" : "Save Bill"}
+                {isEdit ? "Update Bill" : isRevise ? "Save Revised Bill" : "Save Bill"}
               </>
             )}
           </Button>
@@ -411,8 +527,11 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
                 </label>
                 <Input
                   value={phone}
-                  onChange={(e) => setPhone(e.target.value)}
-                  placeholder="e.g. +880 1712 345678"
+                  onChange={handlePhoneChange}
+                  onKeyDown={handlePhoneKeyDown}
+                  inputMode="numeric"
+                  pattern="[0-9]*"
+                  placeholder="e.g. 01712345678 (numeric digits only)"
                 />
               </div>
 
@@ -704,8 +823,9 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
 
           <Button
             type="submit"
-            disabled={isSubmitting}
-            className="bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs"
+            disabled={isSubmitting || isReviseUnchanged}
+            title={isReviseUnchanged ? "Make at least one change to save a revised bill" : undefined}
+            className="bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
               <>
@@ -715,7 +835,7 @@ export function BillForm({ initialData, isEdit = false }: BillFormProps) {
             ) : (
               <>
                 <Save className="w-4 h-4 mr-2" />
-                {isEdit ? "Update Bill" : "Save Bill"}
+                {isEdit ? "Update Bill" : isRevise ? "Save Revised Bill" : "Save Bill"}
               </>
             )}
           </Button>

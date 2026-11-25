@@ -436,17 +436,16 @@ export async function paginateMeasured(
             showSignatory: true,
           });
 
-          if (fits(bodyWithSig)) {
-            showSignatory = true;
-          } else if (pageBlocks.length > 1) {
-            // Signatory doesn't fit on this page and must go to a new page.
-            // Move minimal companion content to the next page so the signature is not an orphan.
-            // Pop exactly 1 content block (1 list item or 1 paragraph is plenty for a companion).
-            const popped = pageBlocks.pop()!;
-            unallocatedBlocks.unshift(popped);
+          // Allow subpixel / flexbox tolerance (up to 8px)
+          const fitsWithSig = bodyWithSig.scrollHeight - bodyWithSig.clientHeight <= 8;
 
-            // If the remaining last block on the current page is an orphan heading,
-            // also move that heading so it doesn't sit orphaned at the very bottom of the page.
+          if (fitsWithSig) {
+            showSignatory = true;
+          } else {
+            // Signatory doesn't fit on this page and must go to a new page.
+            // DO NOT pop regular content (list items or paragraphs) off this page!
+            // Leaving regular content on this page ensures the page remains full with zero bottom gap.
+            // ONLY pop if the trailing element is an orphan heading with zero children.
             if (pageBlocks.length > 0) {
               const remainingLast = pageBlocks[pageBlocks.length - 1];
               const isOrphanHeading =
@@ -459,9 +458,9 @@ export async function paginateMeasured(
                   !remainingLast.html.includes("<br"));
               if (isOrphanHeading && pageBlocks.length > 1) {
                 unallocatedBlocks.unshift(pageBlocks.pop()!);
+                pageNarrativeHtml = assembleBlocks(pageBlocks);
               }
             }
-            pageNarrativeHtml = assembleBlocks(pageBlocks);
           }
         }
       } else if (unallocatedRows.length === 0 && unallocatedBlocks.length === 0) {
@@ -481,6 +480,20 @@ export async function paginateMeasured(
           showSignatory,
         });
       }
+    }
+
+    // Ensure signatory is placed: if all blocks finished but signatory could not fit on any page,
+    // add a final page for the signatory block so it is never clipped or forced onto an overflowing page
+    const anyPageHasSig = pages.some((p) => p.showSignatory);
+    if (!anyPageHasSig && pages.length > 0) {
+      pages.push({
+        pageNumber: pageNumber++,
+        isFirstPage: false,
+        isLastPage: true,
+        tableChunk: null,
+        narrativeHtml: null,
+        showSignatory: true,
+      });
     }
 
     // Ensure final page has isLastPage and showSignatory set

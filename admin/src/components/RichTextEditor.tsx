@@ -34,6 +34,8 @@ interface RichTextEditorProps {
   onSaveText?: () => void;
   isSavingText?: boolean;
   isSaveDisabled?: boolean;
+  saveButtonText?: string;
+  saveButtonTitle?: string;
 }
 
 // Converts legacy markdown to HTML on initial load so user sees formatted text immediately
@@ -162,11 +164,13 @@ export default function RichTextEditor({
   minHeight = "min-h-[440px]",
   onSaveText,
   isSavingText = false,
-  isSaveDisabled = false
+  isSaveDisabled = false,
+  saveButtonText,
+  saveButtonTitle
 }: RichTextEditorProps) {
   const editorRef = useRef<HTMLDivElement | null>(null);
   const isInternalChangeRef = useRef(false);
-  const lastEmittedValueRef = useRef<string>(value || "");
+  const lastEmittedValueRef = useRef<string | null>(null);
   const savedRangeRef = useRef<Range | null>(null);
 
   // Dynamic user height resizing
@@ -438,13 +442,15 @@ export default function RichTextEditor({
       return;
     }
 
-    // If incoming value is identical to what this editor last emitted or current DOM, do nothing
-    if (value === lastEmittedValueRef.current || value === editor.innerHTML) {
+    const htmlContent = convertMarkdownToHtml(value || "");
+
+    // If DOM already matches the HTML content and was already populated, do nothing
+    if (editor.innerHTML === htmlContent && lastEmittedValueRef.current !== null) {
       return;
     }
 
-    const htmlContent = convertMarkdownToHtml(value || "");
-    if (editor.innerHTML !== htmlContent) {
+    // Populate editor whenever DOM doesn't match htmlContent or on initial mount
+    if (editor.innerHTML !== htmlContent || !editor.innerHTML || lastEmittedValueRef.current === null) {
       editor.innerHTML = htmlContent;
       lastEmittedValueRef.current = value || "";
     }
@@ -1296,7 +1302,7 @@ export default function RichTextEditor({
                 title={
                   isSaveDisabled
                     ? "No changes to save"
-                    : "Save current text as default terms & conditions"
+                    : saveButtonTitle || "Save terms & conditions"
                 }
                 className={`text-[10px] font-semibold transition px-2.5 py-0.5 rounded shadow-2xs flex items-center gap-1 ${isSaveDisabled || isSavingText
                   ? "text-slate-400 dark:text-gray-500 bg-slate-100 dark:bg-gray-800/40 border border-slate-200 dark:border-gray-800 cursor-not-allowed opacity-60"
@@ -1318,7 +1324,7 @@ export default function RichTextEditor({
                           : "text-emerald-600 dark:text-emerald-400"
                       }
                     />
-                    <span>Save Text</span>
+                    <span>{saveButtonText || "Save Text"}</span>
                   </>
                 )}
               </button>

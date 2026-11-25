@@ -289,9 +289,6 @@ export const BillPageShell: React.FC<BillPageShellProps> = ({
 
             {/* BOTTOM LEFT CLOSING BLOCK (Exact dark bold typography) */}
             <div className="mt-auto pt-6 pb-2 text-left select-none shrink-0">
-              <p className="text-[14px] font-bold text-zinc-950 dark:text-black mb-3" style={{ color: "#09090b" }}>
-                Please pay the bill.
-              </p>
               <p className="text-[14px] font-extrabold text-zinc-950 dark:text-black mb-3" style={{ color: "#09090b" }}>
                 Thank you
               </p>

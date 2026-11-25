@@ -1,8 +1,7 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useMemo } from "react";
 import Link from "next/link";
-import { useRouter } from "next/navigation";
 import { format } from "@/lib/date";
 import {
   Receipt,
@@ -11,10 +10,8 @@ import {
   Printer,
   Edit,
   Trash2,
-  CheckCircle,
   Clock,
   RefreshCw,
-  ExternalLink,
   Coins,
 } from "lucide-react";
 import { Button } from "@/components/ui/button";
@@ -32,24 +29,48 @@ import {
   AlertDialogHeader,
   AlertDialogTitle,
 } from "@/components/ui/alert-dialog";
+import { ReviseIcon } from "@/components/quotation/revise-icon";
+import {
+  DATE_RANGE_LABELS,
+  DateRangeFilterControl,
+  TablePagination,
+} from "@/components/quotation/quotation-list-controls";
+import {
+  DateRangePreset,
+  ITEMS_PER_PAGE,
+  accumulateLatestStats,
+  extractCalendarYMD,
+  getDateRangeBounds,
+  getDocId,
+  matchesDocumentSearch,
+  paginateItems,
+} from "@/lib/quotation-revisions";
 
 export default function ManageBillsPage() {
-  const router = useRouter();
   const [bills, setBills] = useState<any[]>([]);
   const [loading, setLoading] = useState(true);
   const [search, setSearch] = useState("");
-  const [statusFilter, setStatusFilter] = useState("ALL");
   const [deleteId, setDeleteId] = useState<string | null>(null);
   const [isDeleting, setIsDeleting] = useState(false);
   const [nextBillRefNo, setNextBillRefNo] = useState("");
+
+  // Date range summary filter (This Month default)
+  const [dateRangePreset, setDateRangePreset] = useState<DateRangePreset>("THIS_MONTH");
+  const [customStartDate, setCustomStartDate] = useState(() => {
+    return getDateRangeBounds("THIS_MONTH").start || "";
+  });
+  const [customEndDate, setCustomEndDate] = useState(() => {
+    return extractCalendarYMD(new Date()) || "";
+  });
+
+  // Table pagination (15 items per page)
+  const [currentPage, setCurrentPage] = useState(1);
 
   const fetchBills = async () => {
     setLoading(true);
     try {
       const params = new URLSearchParams();
       params.append("doc_type", "BILL");
-      if (search) params.append("search", search);
-      if (statusFilter !== "ALL") params.append("status", statusFilter);
 
       const res = await fetch(`/api/quotations?${params.toString()}`);
       const data = await res.json();
@@ -66,24 +87,29 @@ export default function ManageBillsPage() {
 
   useEffect(() => {
     fetchBills();
-  }, [statusFilter]);
+  }, []);
+
+  // Reset to page 1 whenever search query changes
+  useEffect(() => {
+    setCurrentPage(1);
+  }, [search]);
 
   const handleSearchSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    fetchBills();
+    setCurrentPage(1);
   };
 
   const handleDelete = async () => {
     if (!deleteId) return;
     setIsDeleting(true);
     try {
-      const res = await fetch(`/api/quotations/${deleteId}`, {
+      const res = await fetch(`/api/quotations/${encodeURIComponent(deleteId)}`, {
         method: "DELETE",
       });
       const data = await res.json();
       if (data.success) {
         toast.success("Bill deleted successfully");
-        setBills((prev) => prev.filter((b) => (b._id || b.id) !== deleteId));
+        await fetchBills();
       } else {
         toast.error(data.message || "Failed to delete bill");
       }
@@ -95,12 +121,37 @@ export default function ManageBillsPage() {
     }
   };
 
-  const totalBilled = bills.reduce((acc, b) => acc + (Number(b.grand_total) || 0), 0);
+  // Summary KPIs for selected date range (counting only latest revised version per family)
+  const summaryStats = useMemo(
+    () =>
+      accumulateLatestStats(
+        bills,
+        dateRangePreset,
+        customStartDate,
+        customEndDate
+      ),
+    [bills, dateRangePreset, customStartDate, customEndDate]
+  );
+
+  // Filter across ALL bills across all pages
+  const filteredBills = useMemo(() => {
+    return bills.filter((b) => matchesDocumentSearch(b, search));
+  }, [bills, search]);
+
+  const pagination = useMemo(
+    () => paginateItems(filteredBills, currentPage, ITEMS_PER_PAGE),
+    [filteredBills, currentPage]
+  );
+
+  const rangeSubtitle =
+    dateRangePreset === "CUSTOM"
+      ? `${customStartDate || "..."} to ${customEndDate || "..."}`
+      : DATE_RANGE_LABELS[dateRangePreset];
 
   return (
     <div className="space-y-6 w-full">
       {/* Top Header */}
-      <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4">
+      <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-4">
         <div>
           <h1 className="text-2xl font-bold text-slate-900 dark:text-slate-100 flex items-center gap-2.5">
             <div className="w-9 h-9 rounded-lg bg-emerald-50 dark:bg-emerald-950/40 text-emerald-600 flex items-center justify-center">
@@ -109,11 +160,20 @@ export default function ManageBillsPage() {
             Bills Management
           </h1>
           <p className="text-sm text-slate-500 mt-1">
-            Create, manage, print and track official company bill vouchers on the Okobiz letterhead pad
+            Create, manage, revise, print and track official company bill vouchers on the Okobiz letterhead pad
           </p>
         </div>
 
-        <div className="flex items-center gap-3">
+        <div className="flex flex-wrap items-center gap-3">
+          <DateRangeFilterControl
+            value={dateRangePreset}
+            onChange={setDateRangePreset}
+            customStart={customStartDate}
+            customEnd={customEndDate}
+            onCustomStartChange={setCustomStartDate}
+            onCustomEndChange={setCustomEndDate}
+          />
+
           <Link href="/dashboard/quotations/create-bill">
             <Button className="bg-[#0167D6] hover:bg-blue-700 text-white font-semibold flex items-center gap-2 shadow-xs cursor-pointer">
               <Plus className="w-4 h-4" /> Create Bill
@@ -127,9 +187,11 @@ export default function ManageBillsPage() {
         <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500">Total Bills Issued</p>
+              <p className="text-xs font-semibold text-slate-500">
+                Total Bills Issued <span className="text-[11px] font-normal text-slate-400">({rangeSubtitle})</span>
+              </p>
               <h3 className="text-2xl font-bold text-slate-900 dark:text-slate-100 mt-1">
-                {bills.length}
+                {summaryStats.count}
               </h3>
             </div>
             <div className="w-10 h-10 rounded-xl bg-blue-50 dark:bg-blue-900/30 text-[#0167D6] flex items-center justify-center">
@@ -158,9 +220,11 @@ export default function ManageBillsPage() {
         <Card className="border border-slate-200 dark:border-slate-800 bg-white dark:bg-slate-900">
           <CardContent className="p-4 flex items-center justify-between">
             <div>
-              <p className="text-xs font-semibold text-slate-500">Total Billed Amount</p>
+              <p className="text-xs font-semibold text-slate-500">
+                Total Billed Amount <span className="text-[11px] font-normal text-slate-400">({rangeSubtitle})</span>
+              </p>
               <h3 className="text-2xl font-bold text-emerald-600 dark:text-emerald-400 mt-1 font-mono">
-                ৳ {totalBilled.toLocaleString("en-IN")}
+                ৳ {summaryStats.totalAmount.toLocaleString("en-IN")}
               </h3>
             </div>
             <div className="w-10 h-10 rounded-xl bg-emerald-50 dark:bg-emerald-900/30 text-emerald-600 flex items-center justify-center">
@@ -191,10 +255,7 @@ export default function ManageBillsPage() {
                 type="button"
                 variant="ghost"
                 size="sm"
-                onClick={() => {
-                  setSearch("");
-                  fetchBills();
-                }}
+                onClick={() => setSearch("")}
                 className="h-9 text-xs cursor-pointer"
               >
                 Clear
@@ -203,17 +264,6 @@ export default function ManageBillsPage() {
           </form>
 
           <div className="flex items-center gap-2">
-            <select
-              value={statusFilter}
-              onChange={(e) => setStatusFilter(e.target.value)}
-              className="h-9 rounded-md border border-slate-200 bg-white px-3 py-1 text-xs text-slate-700 dark:bg-slate-900 dark:border-slate-800 dark:text-slate-300 focus:outline-hidden"
-            >
-              <option value="ALL">All Status</option>
-              <option value="SENT">Sent</option>
-              <option value="DRAFT">Draft</option>
-              <option value="PAID">Paid</option>
-            </select>
-
             <Button
               variant="outline"
               size="icon"
@@ -250,23 +300,27 @@ export default function ManageBillsPage() {
                     Loading bills...
                   </td>
                 </tr>
-              ) : bills.length === 0 ? (
+              ) : pagination.pageItems.length === 0 ? (
                 <tr>
                   <td colSpan={7} className="py-12 text-center text-slate-500">
                     <Receipt className="w-8 h-8 mx-auto mb-2 text-slate-300" />
-                    No bills found. Click &quot;Create Bill&quot; to issue your first client bill voucher!
+                    {search
+                      ? "No matching bills found across all pages."
+                      : 'No bills found. Click "Create Bill" to issue your first client bill voucher!'}
                   </td>
                 </tr>
               ) : (
-                bills.map((bill) => {
-                  const billId = bill._id || bill.id;
+                pagination.pageItems.map((bill) => {
+                  const billId = getDocId(bill);
+                  const canRevise =
+                    !Boolean(bill.is_revised) && !summaryStats.supersededIds.has(billId);
                   return (
                     <tr
                       key={billId}
                       className="hover:bg-slate-50/60 dark:hover:bg-slate-800/40 transition-colors"
                     >
                       {/* Ref No */}
-                      <td className="py-3 px-4 font-mono font-bold text-[#0167D6] dark:text-blue-400">
+                      <td className="py-3 px-4 font-mono font-bold text-[#0167D6] dark:text-blue-400 whitespace-nowrap">
                         {bill.ref_no}
                       </td>
 
@@ -322,7 +376,7 @@ export default function ManageBillsPage() {
                       <td className="py-3 px-4 text-right whitespace-nowrap">
                         <div className="flex items-center justify-end gap-1.5">
                           <Link
-                            href={`/dashboard/quotations/${billId}/print`}
+                            href={`/dashboard/quotations/${encodeURIComponent(billId)}/print`}
                             target="_blank"
                             title="Print / View Official Bill Pad"
                           >
@@ -337,7 +391,7 @@ export default function ManageBillsPage() {
                           </Link>
 
                           <Link
-                            href={`/dashboard/quotations/${billId}/edit`}
+                            href={`/dashboard/quotations/${encodeURIComponent(billId)}/edit`}
                             title="Edit Bill"
                           >
                             <Button
@@ -349,6 +403,22 @@ export default function ManageBillsPage() {
                               <span className="hidden sm:inline">Edit</span>
                             </Button>
                           </Link>
+
+                          {canRevise && (
+                            <Link
+                              href={`/dashboard/quotations/${encodeURIComponent(billId)}/revise`}
+                              title="Revise Bill"
+                            >
+                              <Button
+                                variant="outline"
+                                size="sm"
+                                className="h-7 px-2 text-xs flex items-center gap-1 border-slate-200 hover:border-[#0167D6] hover:text-[#0167D6] cursor-pointer"
+                              >
+                                <ReviseIcon className="w-4 h-4" />
+                                <span className="hidden sm:inline">Revise</span>
+                              </Button>
+                            </Link>
+                          )}
 
                           <Button
                             variant="outline"
@@ -368,6 +438,16 @@ export default function ManageBillsPage() {
             </tbody>
           </table>
         </div>
+
+        <TablePagination
+          currentPage={pagination.currentPage}
+          totalPages={pagination.totalPages}
+          totalItems={pagination.totalItems}
+          startIndex={pagination.startIndex}
+          endIndex={pagination.endIndex}
+          itemLabel="bills"
+          onPageChange={setCurrentPage}
+        />
       </Card>
 
       {/* Delete Confirmation Alert Dialog */}
@@ -394,4 +474,3 @@ export default function ManageBillsPage() {
     </div>
   );
 }
-

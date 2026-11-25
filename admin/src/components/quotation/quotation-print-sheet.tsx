@@ -93,15 +93,15 @@ export interface AtomicBlock {
 // CALIBRATED METRICS FOR SYNCHRONOUS FALLBACK (SSR & INITIAL PAINT)
 // ─────────────────────────────────────────────────────────────
 export const METRICS = {
-  PARA_CHARS: 122,
-  LI_CHARS: 116,
-  LINE_H: 11.5 * 1.38, // 15.87px
-  PARA_MARGIN: 2.5,
-  LI_MARGIN: 2.0,
+  PARA_CHARS: 112,
+  LI_CHARS: 106,
+  LINE_H: 12.5 * 1.375, // 17.19px (matched to particulars 12.5px font)
+  PARA_MARGIN: 2.0,
+  LI_MARGIN: 1.5,
   TABLE_SCOPE_CHARS: 30,
   TABLE_PART_CHARS: 58,
-  TABLE_LINE_H: 15,
-  TABLE_ROW_PAD: 9, // 8px padding + 1px border
+  TABLE_LINE_H: 14.5,
+  TABLE_ROW_PAD: 6.0, // py-1 = 4px top + 4px bottom padding
 };
 
 export const formatPrice = (val: number | string | undefined | null): string => {
@@ -125,11 +125,11 @@ export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data })
   })();
 
   return (
-    <div className="pt-2.5 mt-auto pb-0.5 select-none shrink-0 signatory-block">
+    <div className="pt-2 mt-auto pb-0.5 select-none shrink-0 signatory-block">
       <div className="flex justify-between items-end">
         <div>
-          <div className="font-bold text-zinc-900 mb-1 text-[14px] print:text-[14px]">Thanks &amp; Regards</div>
-          <div className="h-14" />
+          <div className="font-bold text-zinc-900 mb-0.5 text-[14px] print:text-[14px]">Thanks &amp; Regards</div>
+          <div className="h-10" />
           <div className="font-bold text-zinc-900 text-[14px] print:text-[14px] leading-snug">
             {data.company_signatory_name || "Md. Sorower Jahan"}
           </div>
@@ -148,7 +148,7 @@ export const SignatoryBlock: React.FC<{ data: QuotationPrintData }> = ({ data })
         </div>
       </div>
 
-      <div className="mt-3 text-center text-[11px] print:text-[11px] text-zinc-500 italic select-none">
+      <div className="mt-2 text-center text-[11px] print:text-[11px] text-zinc-500 italic select-none">
         *System generated quotation. No need to signature
       </div>
     </div>
@@ -160,7 +160,7 @@ export const FirstPageHeader: React.FC<{ data: QuotationPrintData; formattedDate
   formattedDate,
 }) => (
   <div className="first-page-header shrink-0">
-    <div className="flex justify-between items-start text-[13px] font-semibold mb-2.5">
+    <div className="flex justify-between items-start text-[13px] font-semibold mb-1.5">
       <div>{formattedDate}</div>
       {data.ref_no && (
         <div className="text-right">
@@ -170,7 +170,7 @@ export const FirstPageHeader: React.FC<{ data: QuotationPrintData; formattedDate
       )}
     </div>
 
-    <div className="text-[12px] leading-snug mb-2">
+    <div className="text-[12px] leading-snug mb-1">
       <div className="font-semibold mb-0.5">To</div>
       {data.client_name && <div className="font-bold text-zinc-900">{data.client_name}</div>}
       {data.organization_name && (
@@ -181,7 +181,7 @@ export const FirstPageHeader: React.FC<{ data: QuotationPrintData; formattedDate
       {data.email && <div className="text-zinc-600">Email: {data.email}</div>}
     </div>
 
-    <div className="text-[13.8px] print:text-[13.8px] font-bold text-zinc-900 mb-3.5 pb-1 border-b border-zinc-200">
+    <div className="text-[13.5px] print:text-[13.5px] font-bold text-zinc-900 mb-1.5 pb-0.5 border-b border-zinc-200">
       <span>Subject: </span>
       <span className="underline">{data.subject || "Quotation for Web & Software Solution"}</span>
     </div>
@@ -227,25 +227,25 @@ export const SoftwareTable: React.FC<{
             >
               <th
                 style={{ width: "7%", backgroundColor: "#1E65B8", color: "#ffffff" }}
-                className="quotation-th py-2 px-2 text-center text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
+                className="quotation-th py-1 px-2 text-center text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
               >
                 <span className="text-white-always !text-white font-bold">SL</span>
               </th>
               <th
                 style={{ width: "28%", backgroundColor: "#1E65B8", color: "#ffffff" }}
-                className="quotation-th py-2 px-3 text-left text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
+                className="quotation-th py-1 px-3 text-left text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
               >
                 <span className="text-white-always !text-white font-bold">SCOPE OF WORK</span>
               </th>
               <th
                 style={{ width: "51%", backgroundColor: "#1E65B8", color: "#ffffff" }}
-                className="quotation-th py-2 px-3 text-left text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
+                className="quotation-th py-1 px-3 text-left text-[12.5px] font-bold uppercase tracking-wider border-r border-white/50 text-white-always !text-white"
               >
                 <span className="text-white-always !text-white font-bold">PARTICULARS</span>
               </th>
               <th
                 style={{ width: "14%", backgroundColor: "#1E65B8", color: "#ffffff" }}
-                className="quotation-th py-2 px-2 text-center text-[12.5px] font-bold uppercase tracking-wider text-white-always !text-white"
+                className="quotation-th py-1 px-2 text-center text-[12.5px] font-bold uppercase tracking-wider text-white-always !text-white"
               >
                 <span className="text-white-always !text-white font-bold">AMOUNT</span>
               </th>
@@ -259,19 +259,19 @@ export const SoftwareTable: React.FC<{
                 style={{ backgroundColor: "transparent", height: "auto" }}
               >
                 <td
-                  className="py-2 px-2 text-center font-bold text-zinc-900 align-top border-r border-zinc-500 w-[7%] bg-transparent text-[12.5px]"
+                  className="py-1 px-2 text-center font-bold text-zinc-900 align-top border-r border-zinc-500 w-[7%] bg-transparent text-[12.5px]"
                   style={{ backgroundColor: "transparent" }}
                 >
                   {row.sl || index + 1}
                 </td>
                 <td
-                  className="py-2 px-3 font-bold text-zinc-900 align-top border-r border-zinc-500 w-[28%] bg-transparent whitespace-pre-line leading-snug text-[12.5px]"
+                  className="py-1 px-3 font-bold text-zinc-900 align-top border-r border-zinc-500 w-[28%] bg-transparent whitespace-pre-line leading-snug text-[12.5px]"
                   style={{ backgroundColor: "transparent" }}
                 >
                   {row.scope}
                 </td>
                 <td
-                  className="py-2 px-3 text-zinc-800 leading-snug align-top border-r border-zinc-500 w-[51%] bg-transparent whitespace-pre-line text-[12.5px]"
+                  className="py-1 px-3 text-zinc-800 leading-snug align-top border-r border-zinc-500 w-[51%] bg-transparent whitespace-pre-line text-[12.5px]"
                   style={{ backgroundColor: "transparent" }}
                 >
                   {row.particulars}
@@ -279,7 +279,7 @@ export const SoftwareTable: React.FC<{
                 {index === 0 && (
                   <td
                     rowSpan={rows.length}
-                    className="py-2 px-2 text-center font-bold text-zinc-900 text-[15px] align-middle bg-transparent w-[14%]"
+                    className="py-1 px-2 text-center font-bold text-zinc-900 text-[15px] align-middle bg-transparent w-[14%]"
                     style={{ backgroundColor: "transparent" }}
                   >
                     {formattedGrandTotal}
@@ -293,13 +293,13 @@ export const SoftwareTable: React.FC<{
               <tr className="bg-transparent font-bold border-b border-zinc-800" style={{ backgroundColor: "transparent" }}>
                 <td
                   colSpan={3}
-                  className="py-2 px-3.5 text-right text-[12.5px] font-bold text-zinc-900 border-r border-zinc-800 uppercase tracking-wide bg-transparent"
+                  className="py-1 px-3.5 text-right text-[12.5px] font-bold text-zinc-900 border-r border-zinc-800 uppercase tracking-wide bg-transparent"
                   style={{ backgroundColor: "transparent" }}
                 >
                   Grand Total =
                 </td>
                 <td
-                  className="py-2 px-2.5 text-center text-[13px] font-bold text-zinc-900 bg-transparent"
+                  className="py-1 px-2.5 text-center text-[13px] font-bold text-zinc-900 bg-transparent"
                   style={{ backgroundColor: "transparent" }}
                 >
                   {formattedGrandTotal}
@@ -308,7 +308,7 @@ export const SoftwareTable: React.FC<{
               <tr className="bg-transparent font-bold" style={{ backgroundColor: "transparent" }}>
                 <td
                   colSpan={4}
-                  className="py-2 px-3.5 text-left text-[12.5px] font-bold text-zinc-900 bg-transparent"
+                  className="py-1 px-3.5 text-left text-[12.5px] font-bold text-zinc-900 bg-transparent"
                   style={{ backgroundColor: "transparent" }}
                 >
                   In Word: {inWordsDisplay}
@@ -349,7 +349,7 @@ export const QuotationPageShell: React.FC<{
       <OkobizHeaderBanner />
 
       <div
-        className="quotation-page-body flex-1 flex flex-col px-[12mm] pb-[8px] print:px-[12mm] print:pb-[8px] relative z-10 bg-transparent"
+        className="quotation-page-body flex-1 flex flex-col px-[12mm] pb-[6px] print:px-[12mm] print:pb-[6px] relative z-10 bg-transparent"
       >
         {page.isFirstPage ? (
           <FirstPageHeader data={data} formattedDate={formattedDate} />
@@ -359,7 +359,7 @@ export const QuotationPageShell: React.FC<{
 
         {/* Table Chunk (if any on this page) */}
         {page.tableChunk && (
-          <div className="mt-1">
+          <div className="mt-0.5">
             <SoftwareTable
               rows={page.tableChunk.rows}
               isLast={page.tableChunk.isLastChunk}
@@ -373,7 +373,7 @@ export const QuotationPageShell: React.FC<{
         {/* Narrative Content */}
         {(measureMode || (page.narrativeHtml && page.narrativeHtml.trim().length > 0)) && (
           <div
-            className={`quotation-narrative-flow ${page.tableChunk ? "mt-2.5" : "mt-0"} text-xs text-zinc-800 leading-normal`}
+            className={`quotation-narrative-flow ${page.tableChunk ? "mt-2.5" : "mt-0"} text-[12.5px] text-zinc-800 leading-snug`}
             style={measureMode ? { flex: "none" } : { flex: "1 1 0%" }}
             dangerouslySetInnerHTML={{ __html: page.narrativeHtml || "" }}
           />
@@ -510,13 +510,13 @@ export function estimateTableRowHeight(row: SoftwareRow): number {
   const partText = (row.particulars || "").trim();
 
   if (scopeText.length === 0 && partText.length === 0) {
-    return 17.0;
+    return 15.0;
   }
 
   const scopeLines = Math.max(1, Math.ceil(scopeText.length / METRICS.TABLE_SCOPE_CHARS));
   const partLines = Math.max(1, Math.ceil(partText.length / METRICS.TABLE_PART_CHARS));
   const maxLines = Math.max(scopeLines, partLines);
-  if (maxLines === 1) return 23.0;
+  if (maxLines === 1) return 21.0;
   return METRICS.TABLE_ROW_PAD + maxLines * METRICS.TABLE_LINE_H;
 }
 
@@ -829,30 +829,30 @@ export function buildQuotationPages(data: QuotationPrintData): QuotationPageMode
   const raw = compileNarrativeText(data);
   const allBlocks = tokenizeHtmlBlocks(raw);
 
-  const PAGE_USABLE_HEIGHT = 975;
-  const TABLE_THEAD_HEIGHT = 24;
-  const TABLE_TFOOT_HEIGHT = 48;
-  const TABLE_MARGINS_TOTAL = 10;
+  const PAGE_USABLE_HEIGHT = 977;
+  const TABLE_THEAD_HEIGHT = 20;
+  const TABLE_TFOOT_HEIGHT = 42;
+  const TABLE_MARGINS_TOTAL = 6;
   const TABLE_CONTINUES_NOTE_HEIGHT = 16;
-  const SIGNATORY_HEIGHT = 160;
-  const CONTINUATION_TABLE_HEADER_HEIGHT = 28;
+  const SIGNATORY_HEIGHT = 145;
+  const CONTINUATION_TABLE_HEADER_HEIGHT = 24;
 
-  let clientCardH = 16.0;
-  if (data.client_name && data.client_name.trim().length > 0) clientCardH += 14.0;
-  if (data.organization_name && data.organization_name.trim().length > 0) clientCardH += 14.0;
+  let clientCardH = 12.0;
+  if (data.client_name && data.client_name.trim().length > 0) clientCardH += 13.0;
+  if (data.organization_name && data.organization_name.trim().length > 0) clientCardH += 13.0;
   if (data.address && data.address.trim().length > 0) {
     const addrLines = Math.max(1, Math.ceil(data.address.trim().length / 60));
-    clientCardH += addrLines * 14.0;
+    clientCardH += addrLines * 13.0;
   }
-  if (data.phone && data.phone.trim().length > 0) clientCardH += 14.0;
-  if (data.email && data.email.trim().length > 0) clientCardH += 14.0;
-  clientCardH += 6.0;
+  if (data.phone && data.phone.trim().length > 0) clientCardH += 13.0;
+  if (data.email && data.email.trim().length > 0) clientCardH += 13.0;
+  clientCardH += 3.0;
 
   const subjectText = data.subject || "Quotation for Web & Software Solution";
   const subjectLines = Math.max(1, Math.ceil((subjectText.length + 10) / 75));
-  const subjectH = 10 + subjectLines * 14;
+  const subjectH = 6 + subjectLines * 13.0;
 
-  const page1PreTableH = 20 + clientCardH + subjectH;
+  const page1PreTableH = 12 + clientCardH + subjectH;
   const page1AvailH = PAGE_USABLE_HEIGHT - page1PreTableH;
 
   const pages: QuotationPageModel[] = [];
@@ -1062,13 +1062,13 @@ export const QUOTATION_CSS = `
     color: #ffffff !important;
   }
   .quotation-narrative-flow {
-    font-size: 11.5px !important;
-    line-height: 1.38 !important;
-    color: #1e293b !important;
+    font-size: 12.5px !important;
+    line-height: 1.375 !important;
+    color: #27272a !important;
   }
   .quotation-narrative-flow h1 {
     display: block !important;
-    font-size: 15px !important;
+    font-size: 16px !important;
     font-weight: 800 !important;
     color: #09090b !important;
     margin-top: 8px !important;
@@ -1077,7 +1077,7 @@ export const QUOTATION_CSS = `
   }
   .quotation-narrative-flow h2 {
     display: block !important;
-    font-size: 13.5px !important;
+    font-size: 14.5px !important;
     font-weight: 700 !important;
     color: #09090b !important;
     margin-top: 6px !important;
@@ -1086,7 +1086,7 @@ export const QUOTATION_CSS = `
   }
   .quotation-narrative-flow h3 {
     display: block !important;
-    font-size: 12.5px !important;
+    font-size: 13.5px !important;
     font-weight: 700 !important;
     color: #09090b !important;
     margin-top: 5px !important;
@@ -1097,7 +1097,7 @@ export const QUOTATION_CSS = `
   .quotation-narrative-flow h5,
   .quotation-narrative-flow h6 {
     display: block !important;
-    font-size: 12px !important;
+    font-size: 12.5px !important;
     font-weight: 700 !important;
     color: #09090b !important;
     margin-top: 5px !important;
@@ -1136,8 +1136,9 @@ export const QUOTATION_CSS = `
   .quotation-narrative-flow li {
     display: list-item !important;
     margin-bottom: 2.0px !important;
-    line-height: 1.38 !important;
-    color: #1e293b !important;
+    font-size: 12.5px !important;
+    line-height: 1.375 !important;
+    color: #27272a !important;
   }
   .quotation-narrative-flow li[data-continued="true"] {
     list-style-type: none !important;
@@ -1145,7 +1146,9 @@ export const QUOTATION_CSS = `
   }
   .quotation-narrative-flow p {
     margin-bottom: 2.5px !important;
-    line-height: 1.38 !important;
+    font-size: 12.5px !important;
+    line-height: 1.375 !important;
+    color: #27272a !important;
   }
   .quotation-narrative-flow blockquote {
     display: block !important;
