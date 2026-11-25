@@ -68,18 +68,6 @@ export async function GET(req: NextRequest) {
     const db = await connectDB();
     if (db) {
       try {
-        // Bi-directional sync: ensure any local store quotations are in MongoDB
-        if (store.quotations.length > 0) {
-          for (const localQ of store.quotations) {
-            const exists = await Quotation.findOne({
-              $or: [{ _id: localQ._id }, { ref_no: localQ.ref_no }],
-            }).lean();
-            if (!exists) {
-              await Quotation.create(localQ).catch(() => {});
-            }
-          }
-        }
-
         allDocsInSystem = await Quotation.find({}).sort({ created_at: -1 }).lean();
 
         if (allDocsInSystem.length > 0) {
