@@ -498,11 +498,11 @@ export function QuotationForm({
     signatoryTitle: signatoryTitle.trim(),
     signatoryPhone: signatoryPhone.trim(),
   });
-  const initialReviseSnapshotRef = useRef<string | null>(null);
-  if (isRevise && initialReviseSnapshotRef.current === null) {
-    initialReviseSnapshotRef.current = currentSnapshot;
+  const initialSnapshotRef = useRef<string | null>(null);
+  if ((isEdit || isRevise) && initialSnapshotRef.current === null) {
+    initialSnapshotRef.current = currentSnapshot;
   }
-  const isReviseUnchanged = isRevise && currentSnapshot === initialReviseSnapshotRef.current;
+  const isUnchanged = (isEdit || isRevise) && currentSnapshot === initialSnapshotRef.current;
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
@@ -632,8 +632,14 @@ export function QuotationForm({
             type="button"
             size="sm"
             onClick={handleSubmit}
-            disabled={isSubmitting || isReviseUnchanged}
-            title={isReviseUnchanged ? "Make at least one change to save a revised quotation" : undefined}
+            disabled={isSubmitting || isUnchanged}
+            title={
+              isUnchanged
+                ? isEdit
+                  ? "No changes made to update"
+                  : "Make at least one change to save a revised quotation"
+                : undefined
+            }
             className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
@@ -985,8 +991,14 @@ export function QuotationForm({
 
           <Button
             type="submit"
-            disabled={isSubmitting || isReviseUnchanged}
-            title={isReviseUnchanged ? "Make at least one change to save a revised quotation" : undefined}
+            disabled={isSubmitting || isUnchanged}
+            title={
+              isUnchanged
+                ? isEdit
+                  ? "No changes made to update"
+                  : "Make at least one change to save a revised quotation"
+                : undefined
+            }
             className="bg-[#0167D6] hover:bg-blue-600 text-white font-bold flex items-center gap-1.5 px-6 cursor-pointer shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (

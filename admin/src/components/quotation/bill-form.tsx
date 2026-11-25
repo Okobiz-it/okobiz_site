@@ -283,11 +283,11 @@ export function BillForm({
     inWords: hasAdvancePayment && advanceAmount > 0 && grandTotal <= 0 ? "" : inWords.trim(),
     additionalNotes: additionalNotes.trim(),
   });
-  const initialReviseSnapshotRef = useRef<string | null>(null);
-  if (isRevise && initialReviseSnapshotRef.current === null) {
-    initialReviseSnapshotRef.current = currentSnapshot;
+  const initialSnapshotRef = useRef<string | null>(null);
+  if ((isEdit || isRevise) && initialSnapshotRef.current === null) {
+    initialSnapshotRef.current = currentSnapshot;
   }
-  const isReviseUnchanged = isRevise && currentSnapshot === initialReviseSnapshotRef.current;
+  const isUnchanged = (isEdit || isRevise) && currentSnapshot === initialSnapshotRef.current;
 
   // Form submit handler
   const handleSubmit = async (e: React.FormEvent) => {
@@ -458,8 +458,14 @@ export function BillForm({
           <Button
             type="button"
             onClick={handleSubmit}
-            disabled={isSubmitting || isReviseUnchanged}
-            title={isReviseUnchanged ? "Make at least one change to save a revised bill" : undefined}
+            disabled={isSubmitting || isUnchanged}
+            title={
+              isUnchanged
+                ? isEdit
+                  ? "No changes made to update"
+                  : "Make at least one change to save a revised bill"
+                : undefined
+            }
             className="flex-1 sm:flex-none bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
@@ -858,8 +864,14 @@ export function BillForm({
 
           <Button
             type="submit"
-            disabled={isSubmitting || isReviseUnchanged}
-            title={isReviseUnchanged ? "Make at least one change to save a revised bill" : undefined}
+            disabled={isSubmitting || isUnchanged}
+            title={
+              isUnchanged
+                ? isEdit
+                  ? "No changes made to update"
+                  : "Make at least one change to save a revised bill"
+                : undefined
+            }
             className="bg-[#0167D6] hover:bg-blue-700 text-white font-medium shadow-xs disabled:opacity-50 disabled:cursor-not-allowed"
           >
             {isSubmitting ? (
